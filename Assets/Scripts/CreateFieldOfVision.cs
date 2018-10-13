@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CreateTriangle : MonoBehaviour {
+public class CreateFieldOfVision : MonoBehaviour {
+
+    public Material material;
 
     Mesh mesh;
     Vector3[] vertices;
@@ -12,6 +14,12 @@ public class CreateTriangle : MonoBehaviour {
 	void Start () {
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
+
+        GetComponent<MeshRenderer>().material = material;
+        // Set the alpha component of the material's color to 0 so the FoV is transparent
+        Color materialColor = GetComponent<MeshRenderer>().material.GetColor("_Color");
+        materialColor.a = 0f;
+        GetComponent<MeshRenderer>().material.color = materialColor;
 
         vertices = new[] {
             new Vector3(0,0,0),
