@@ -23,6 +23,7 @@ GameObject:
   - component: {fileID: 23863415201432928}
   - component: {fileID: 135380124033677964}
   - component: {fileID: 54531007492633456}
+  - component: {fileID: 114639669113291780}
   m_Layer: 0
   m_Name: Prey
   m_TagString: Prey
@@ -37,7 +38,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1873624272913930}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.1, z: 0}
   m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_Children: []
   m_Father: {fileID: 0}
@@ -100,6 +101,17 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
+--- !u!114 &114639669113291780
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1873624272913930}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b34d2b8e5110b44cac325203fb09bc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!135 &135380124033677964
 SphereCollider:
   m_ObjectHideFlags: 1

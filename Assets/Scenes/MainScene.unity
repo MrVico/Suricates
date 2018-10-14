@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 313965653}
   m_Layer: 0
   m_Name: Plane
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 40
@@ -446,6 +446,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 1873624272913930, guid: 8a845f93e96a6c04a91e3f59a4d2d7bd, type: 2}
+  nbOfPreys: 10
 --- !u!1001 &1835797162
 Prefab:
   m_ObjectHideFlags: 0
@@ -455,7 +456,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4969230439295882, guid: a3ad9a411f6c5b246951ed533a7f6ad8, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 0.17
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4969230439295882, guid: a3ad9a411f6c5b246951ed533a7f6ad8, type: 2}
       propertyPath: m_LocalPosition.y
@@ -463,7 +464,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4969230439295882, guid: a3ad9a411f6c5b246951ed533a7f6ad8, type: 2}
       propertyPath: m_LocalPosition.z
-      value: 0.25
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4969230439295882, guid: a3ad9a411f6c5b246951ed533a7f6ad8, type: 2}
       propertyPath: m_LocalRotation.x
@@ -511,7 +512,7 @@ Prefab:
     - target: {fileID: 114539104651536212, guid: a3ad9a411f6c5b246951ed533a7f6ad8,
         type: 2}
       propertyPath: alpha
-      value: 1
+      value: 0.35
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 195619398230210542, guid: a3ad9a411f6c5b246951ed533a7f6ad8, type: 2}

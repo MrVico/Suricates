@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 
 public class Wander : SuricateBaseSM {
 
@@ -30,7 +29,7 @@ public class Wander : SuricateBaseSM {
 	}
 
     private Vector3 GetNewDestination() {
-        Vector3 destination = GetDirectionWithinAngle(obj.transform.forward, 90) * 20;
+        Vector3 destination = GetDirectionWithinAngle(obj.transform.forward, rotationAngle) * 20;
         //Debug.DrawRay(obj.transform.position, destination, Color.red, 3f);
         timer = 0;
         return destination;

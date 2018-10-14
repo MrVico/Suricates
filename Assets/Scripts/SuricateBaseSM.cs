@@ -8,6 +8,7 @@ public class SuricateBaseSM : StateMachineBehaviour {
     public float wanderingTime = 3f;
     public float moveSpeed = 2f;
     public float rotationSpeed = 5f;
+    public float rotationAngle = 70f;
     public float eatingTime = 1.5f;
 
     protected GameObject obj;

@@ -14,29 +14,30 @@ public class Chase : SuricateBaseSM {
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         base.OnStateEnter(animator, stateInfo, layerIndex);
-        prey = animator.GetComponentInChildren<CreateFieldOfVision>().GetPrey();
+        prey = animator.GetComponentInChildren<FieldOfVision>().GetPrey();
         eatingTimer = 0;
-        Debug.Log("Chasing prey " + prey.gameObject.name);
 	}
 
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
 	override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         if(eatingTimer == 0) {
             float distance = Vector3.Distance(obj.transform.position, prey.transform.position);
-            //Debug.Log("distance: " + distance);
             if (distance > 1.0f) {
                 Move(base.CHASE, prey.transform.position);
             }
             else {
+                prey.SendMessage("Catched");
                 Debug.Log("eating..." + prey.gameObject.name);
                 // For the next "eatingTime" we are eating
                 eatingTimer += Time.deltaTime;
             }
         }
         // We are currently eating a prey
+        // SHOULD WE PUT THIS INTO A EATING STATE???
         else {
             eatingTimer += Time.deltaTime;
             if (eatingTimer >= eatingTime) {
+                prey.SendMessage("Dead");
                 animator.ResetTrigger(chaseHash);
                 animator.SetTrigger(wanderHash);
             }
@@ -45,7 +46,6 @@ public class Chase : SuricateBaseSM {
 
 	// OnStateExit is called when a transition ends and the state machine finishes evaluating this state
 	override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-        Debug.Log("exiting");
         Destroy(prey);
     }
 }
