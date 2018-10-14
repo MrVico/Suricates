@@ -20,10 +20,15 @@ public class Chase : SuricateBaseSM {
 
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
 	override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-        if(eatingTimer == 0) {
+        // It is possible that the prey already got dealt with by another suricate
+        if (prey == null) {
+            animator.ResetTrigger(chaseHash);
+            animator.SetTrigger(wanderHash);
+        }
+        else if (eatingTimer == 0) {
             float distance = Vector3.Distance(obj.transform.position, prey.transform.position);
             if (distance > 1.0f) {
-                Move(base.CHASE, prey.transform.position);
+                Move(MovementController.CHASE, prey.transform.position);
             }
             else {
                 prey.SendMessage("Catched");
@@ -34,7 +39,7 @@ public class Chase : SuricateBaseSM {
         }
         // We are currently eating a prey
         // SHOULD WE PUT THIS INTO A EATING STATE???
-        else {
+        else if (eatingTimer > 0) {
             eatingTimer += Time.deltaTime;
             if (eatingTimer >= eatingTime) {
                 prey.SendMessage("Dead");
@@ -46,6 +51,8 @@ public class Chase : SuricateBaseSM {
 
 	// OnStateExit is called when a transition ends and the state machine finishes evaluating this state
 	override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-        Destroy(prey);
+        // It is possible that the prey already got dealt with by another suricate
+        if (prey != null)
+            Destroy(prey);
     }
 }

@@ -12,10 +12,12 @@ public class FieldOfVision : MonoBehaviour {
     private int chaseHash = Animator.StringToHash("chase");
     private int wanderHash = Animator.StringToHash("wander");
     private GameObject prey;
+    private Suricate.Type suricateType;
 
     // Use this for initialization
     void Start () {
         animator = transform.parent.GetComponent<Animator>();
+        suricateType = transform.parent.GetComponent<Suricate>().GetSuricateType();
         CreateFieldOfVision();
 	}
 
@@ -46,8 +48,10 @@ public class FieldOfVision : MonoBehaviour {
 
     // Not OnCollisionEnter 'cause this way we can directly switch to another target
     private void OnCollisionStay(Collision collision) {
-        // If we are already chasing a prey we focus on that :)
-        if (prey == null && collision.gameObject.CompareTag("Prey")) {            
+        Debug.Log("Collsion");
+        // If we are a hunter and already chasing a prey we focus on that :)
+        if (suricateType == Suricate.Type.Hunter && prey == null && collision.gameObject.CompareTag("Prey")) {
+            Debug.Log("PREY");          
             prey = collision.gameObject;
             //prey.tag = "Target";
             animator.ResetTrigger(wanderHash);
