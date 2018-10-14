@@ -48,12 +48,9 @@ public class FieldOfVision : MonoBehaviour {
 
     // Not OnCollisionEnter 'cause this way we can directly switch to another target
     private void OnCollisionStay(Collision collision) {
-        Debug.Log("Collsion");
         // If we are a hunter and already chasing a prey we focus on that :)
         if (suricateType == Suricate.Type.Hunter && prey == null && collision.gameObject.CompareTag("Prey")) {
-            Debug.Log("PREY");          
             prey = collision.gameObject;
-            //prey.tag = "Target";
             animator.ResetTrigger(wanderHash);
             animator.SetTrigger(chaseHash);
         }

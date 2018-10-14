@@ -24,9 +24,9 @@ GameObject:
   - component: {fileID: 135461275017696406}
   - component: {fileID: 95756756045875076}
   - component: {fileID: 114045469204417704}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Suricate
-  m_TagString: Untagged
+  m_TagString: Suricate
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 33683808616264972}
   - component: {fileID: 23297906321608670}
   - component: {fileID: 64569042385492716}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: FieldOfVision
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -88,8 +88,8 @@ MeshRenderer:
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
+  m_LightProbeUsage: 0
+  m_ReflectionProbeUsage: 0
   m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 0}
@@ -204,7 +204,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae90d3f5474eb104fb8700ea3a59a201, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stringType: hunter
+  type: 0
 --- !u!114 &114539104651536212
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -225,7 +225,7 @@ SphereCollider:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1250402928643518}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
