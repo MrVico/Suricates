@@ -46,14 +46,11 @@ public class CreateFieldOfVision : MonoBehaviour {
         GetComponent<MeshCollider>().sharedMesh = mesh;
 	}
 
-    // THERE'S SOME BIG ISSUE HERE, DOESN'T ALWAYS WORK...
-    // It only collides with the objects that are already inside the collider when the game starts...
-    private void OnCollisionEnter(Collision collision) {
+    // Not OnCollisionEnter 'cause this way we can directly switch to another target
+    private void OnCollisionStay(Collision collision) {
         // If we are already chasing a prey we focus on that :)
         if (prey == null && collision.gameObject.CompareTag("Prey")) {
-            Debug.Log("Prey found");
             prey = collision.gameObject;
-            Debug.Log("position: " + prey.transform.position);
             animator.ResetTrigger(wanderHash);
             animator.SetTrigger(chaseHash);
         }
