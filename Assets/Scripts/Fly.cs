@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class Fly : EagleBaseSM {
 
-    public float speed;
-    public float viewRange = 1;
-    public float viewRadius = 1;
+    private float speed;
+    // For capsule cast, viewRange = length & viewRadius = width
+    private float viewRange = 5;
+    private float viewRadius = 1;
     public Material capsuleMaterial;
 
     private Transform shape;
+    private GameObject sphere;
 
     private RaycastHit[] hits;
     //private int layerMask;
@@ -27,6 +29,7 @@ public class Fly : EagleBaseSM {
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
+        /*
         if(prey == null) {
             // layer mask on CapsuleCast doesn't work for shit, at least I can't seem to make it work...
             // Doesn't take the distance into account, even though I put viewRange = 1 it still looks up to a distance of 30...
@@ -43,7 +46,7 @@ public class Fly : EagleBaseSM {
                 }
             }
         }
-
+        */
         // When s is pressed we can see the collider with which the eagle sees
         if (Input.GetKeyDown("s")) {
             DrawCapsule();
@@ -51,10 +54,20 @@ public class Fly : EagleBaseSM {
         else if (Input.GetKeyDown("h")) {
             HideCapsule();
         }
+        else if (Input.GetKeyDown("d")) {
+            if(sphere == null) {
+                sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                sphere.transform.position = transform.position;
+                sphere.transform.localScale = new Vector3(viewRange, viewRange, viewRange);
+            }
+        }
+        else if (Input.GetKeyDown("f")) {
+            Destroy(sphere);
+        }
     }
 
-	// OnStateExit is called when a transition ends and the state machine finishes evaluating this state
-	override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
+    // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
+    override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
 	
 	}
 

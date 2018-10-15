@@ -55,9 +55,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 298d1555a3d2c5f4290b6c88a5803e04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 0
-  viewRange: 20
-  viewRadius: 10
   capsuleMaterial: {fileID: 2100000, guid: 2853f04c5ec0be84a9d6a8ac164aee79, type: 2}
 --- !u!1101 &1101205642752970388
 AnimatorStateTransition:

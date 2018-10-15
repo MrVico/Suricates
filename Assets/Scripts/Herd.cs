@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// The behaviour that the sentinel should have when he guards the others
 public class Herd : SuricateBaseSM {
 
 	 // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state

@@ -2,24 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FieldOfVision : MonoBehaviour {
+public class OldFieldOfVision : MonoBehaviour {
 
     public Material material;
-    [Range(0,1)]
+    [Range(0, 1)]
     public float alpha;
-    
+
     private Animator animator;
     private int chaseHash = Animator.StringToHash("chase");
     private int wanderHash = Animator.StringToHash("wander");
     private GameObject prey;
-    private Suricate.Type suricateType;
+    private OldSuricate.Type suricateType;
 
     // Use this for initialization
-    void Start () {
+    void Start() {
         animator = transform.parent.GetComponent<Animator>();
-        suricateType = transform.parent.GetComponent<Suricate>().GetSuricateType();
+        suricateType = transform.parent.GetComponent<OldSuricate>().GetSuricateType();
         CreateFieldOfVision();
-	}
+    }
 
     private void CreateFieldOfVision() {
         Mesh mesh = new Mesh();
@@ -49,7 +49,7 @@ public class FieldOfVision : MonoBehaviour {
     // Not OnCollisionEnter 'cause this way we can directly switch to another target
     private void OnCollisionStay(Collision collision) {
         // If we are a hunter and already chasing a prey we focus on that :)
-        if (suricateType == Suricate.Type.Hunter && prey == null && collision.gameObject.CompareTag("Prey")) {
+        if (suricateType == OldSuricate.Type.Hunter && prey == null && collision.gameObject.CompareTag("Prey")) {
             prey = collision.gameObject;
             animator.ResetTrigger(wanderHash);
             animator.SetTrigger(chaseHash);

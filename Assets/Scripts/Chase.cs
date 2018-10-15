@@ -6,16 +6,13 @@ public class Chase : SuricateBaseSM {
 
     public GameObject prey;
     
-    private int chaseHash = Animator.StringToHash("chase");
-    private int wanderHash = Animator.StringToHash("wander");
-
     private float eatingTimer;
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         base.OnStateEnter(animator, stateInfo, layerIndex);
         moveSpeed = 3f;
-        prey = animator.GetComponentInChildren<FieldOfVision>().GetPrey();
+        prey = animator.GetComponent<Suricate>().GetPrey();
         eatingTimer = 0;
 	}
 
@@ -23,8 +20,8 @@ public class Chase : SuricateBaseSM {
 	override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         // It is possible that the prey already got dealt with by another suricate
         if (prey == null) {
-            animator.ResetTrigger(chaseHash);
-            animator.SetTrigger(wanderHash);
+            animator.ResetTrigger(Suricate.chaseHash);
+            animator.SetTrigger(Suricate.wanderHash);
         }
         else if (eatingTimer == 0) {
             float distance = Vector3.Distance(obj.transform.position, prey.transform.position);
@@ -44,8 +41,8 @@ public class Chase : SuricateBaseSM {
             eatingTimer += Time.deltaTime;
             if (eatingTimer >= eatingTime) {
                 prey.SendMessage("Dead");
-                animator.ResetTrigger(chaseHash);
-                animator.SetTrigger(wanderHash);
+                animator.ResetTrigger(Suricate.chaseHash);
+                animator.SetTrigger(Suricate.wanderHash);
             }
         }
 	}
