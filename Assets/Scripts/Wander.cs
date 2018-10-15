@@ -17,12 +17,19 @@ public class Wander : SuricateBaseSM {
 
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
 	override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-        timer += Time.deltaTime;
-        if (timer >= wanderingTime) {
-            destination = MovementController.GetNewDestination(obj.transform.forward, rotationAngle, moveDistance);
-            timer = 0;
+        base.OnStateUpdate(animator, stateInfo, layerIndex);
+        if (eagle == null) {
+            timer += Time.deltaTime;
+            if (timer >= wanderingTime) {
+                destination = MovementController.GetNewDestination(obj.transform.forward, rotationAngle, moveDistance);
+                timer = 0;
+            }
+            Move(MovementController.WANDER, destination);
         }
-        Move(MovementController.WANDER, destination);
+        // An eagle caught us
+        else {
+            ThisIsTheEnd();
+        }
     }
 
 	// OnStateExit is called when a transition ends and the state machine finishes evaluating this state

@@ -7,6 +7,7 @@ public class Suricate : MonoBehaviour {
     // All the possible suricate state's
     public static int chaseHash = Animator.StringToHash("chase");
     public static int wanderHash = Animator.StringToHash("wander");
+    public static int deadHash = Animator.StringToHash("dead");
 
     public enum Type { Hunter, Sentinel };
 
@@ -17,6 +18,7 @@ public class Suricate : MonoBehaviour {
 
     private Animator animator;
     private GameObject prey;
+    private GameObject eagle;
 
     // Use this for initialization
     void Start() {
@@ -60,8 +62,10 @@ public class Suricate : MonoBehaviour {
         FoV.transform.parent = gameObject.transform;
         // Set the local position to 0 so both the suricate's and the FoV's positions are the same
         FoV.transform.localPosition = new Vector3(0, 0, 0);
+        // The FoV is part of the suricate
+        FoV.tag = "Suricate";
         // Add this script so that the collision are brought back here
-        FoV.AddComponent<FoVCollision>();
+        FoV.AddComponent<FOVCollision>();
     }
 
     // Not OnCollisionEnter 'cause this way we can directly switch to another target
@@ -72,6 +76,14 @@ public class Suricate : MonoBehaviour {
             animator.ResetTrigger(wanderHash);
             animator.SetTrigger(chaseHash);
         }
+    }
+
+    private void CatchedBy(GameObject eagle) {
+        this.eagle = eagle;
+    }
+
+    public GameObject GetEagle() {
+        return eagle;
     }
 
     public GameObject GetPrey() {

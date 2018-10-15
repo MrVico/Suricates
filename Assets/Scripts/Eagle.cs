@@ -7,6 +7,7 @@ public class Eagle : MonoBehaviour {
     // All the possible eagle state's
     public static int flyHash = Animator.StringToHash("fly");
     public static int diveHash = Animator.StringToHash("dive");
+    public static int flyAwayHash = Animator.StringToHash("fly away");
 
     private Animator animator;
     private GameObject prey;
@@ -20,16 +21,12 @@ public class Eagle : MonoBehaviour {
 	void Update () {
 		
 	}
-
-    /**
-     * Works for preys 
-     * Doesn't work for suricates
-     * */
+    
     private void OnCollisionStay(Collision collision) { 
-        Debug.Log("Eagle collision with "+collision.gameObject.name+" of type "+collision.gameObject.tag);
+        //Debug.Log("Eagle collision with "+collision.gameObject.name+" of type "+collision.gameObject.tag);
         // If we are already chasing a prey we focus on that :)
         if (prey == null && collision.gameObject.CompareTag("Suricate")) {
-            prey = collision.gameObject;
+            prey = collision.gameObject.transform.parent.gameObject;
             animator.ResetTrigger(flyHash);
             animator.SetTrigger(diveHash);
         }

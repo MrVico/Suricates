@@ -4,23 +4,21 @@ using UnityEngine;
 
 public class EagleBaseSM : StateMachineBehaviour {
 
-    protected static GameObject prey;
+    public float flyTime = 5f;
+    public float rotationSpeed = 10f;
+    // Full 360
+    public float rotationAngle = 180f;
+    public float moveDistance = 20f;
+    public float moveSpeed = 2f;
 
-    protected int diveHash = Animator.StringToHash("dive");
-    protected int flyHash = Animator.StringToHash("fly");
-
-    protected GameObject eagle;
-    
-    public void SetPrey(GameObject p) {
-        EagleBaseSM.prey = p;
-        Debug.Log("Setting prey " + prey.name);
-    }
-
-    public GameObject GetPrey() {
-        return EagleBaseSM.prey;
-    }    
+    protected GameObject obj;
+      
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-        eagle = animator.gameObject;
+        obj = animator.gameObject;
+    }
+
+    public void Move(string mode, Vector3 destination) {
+        MovementController.Move(obj.transform, mode, destination, rotationSpeed, moveSpeed);
     }
 }

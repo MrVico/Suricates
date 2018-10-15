@@ -8,8 +8,6 @@ public class MovementController {
     public static readonly string WANDER = "wander";
 
     public static void Move(Transform objTransform, string mode, Vector3 destination, float rotationSpeed, float moveSpeed) {
-        // If we are too close to the target it messes up the LookRotation function
-        //if (Vector3.Distance(objTransform.position, destination) > 0.01f)
         Quaternion rotation = RotateTowards(objTransform, mode, destination);
         objTransform.rotation = Quaternion.Slerp(objTransform.rotation, rotation, rotationSpeed * Time.deltaTime);
         objTransform.Translate(0, 0, Time.deltaTime * moveSpeed);
@@ -22,9 +20,11 @@ public class MovementController {
         if (mode == CHASE)
             direction = destination - objTransform.position;
         Quaternion rotation = Quaternion.LookRotation(direction);
-        // We only want to rotate left/right, so around the Y axis
-        rotation.x = 0;
-        rotation.z = 0;
+        // We only want to rotate left/right, so around the Y axis, if we aren't flying
+        if(objTransform.tag != "Predator") {
+            rotation.x = 0;
+            rotation.z = 0;
+        }
         return rotation;
     }
 

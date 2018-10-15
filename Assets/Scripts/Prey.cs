@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Prey : MonoBehaviour {
 
-    private float runSpeed = 1f;
-    private float safeDistance = 15f;
+    public float runSpeed = 1f;
+    public float safeDistance = 15f;
 
     private bool catched;
     private GameObject enemy;

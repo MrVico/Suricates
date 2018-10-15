@@ -17,11 +17,15 @@ public class Fly : EagleBaseSM {
     //private int layerMask;
 
     private Transform transform;
+    private Vector3 destination;
+    private float timer;
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         base.OnStateEnter(animator, stateInfo, layerIndex);
         transform = animator.transform;
+        timer = 0;
+        destination = MovementController.GetNewDestination(obj.transform.forward, rotationAngle, moveDistance);
         // Only collide with the suricate layer, which is in position 9
         // The ~ operator inverts a bitmask.
         //layerMask = (1 << 9);
@@ -29,6 +33,12 @@ public class Fly : EagleBaseSM {
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
+        timer += Time.deltaTime;
+        if (timer >= flyTime) {
+            destination = MovementController.GetNewDestination(obj.transform.forward, rotationAngle, moveDistance);
+            timer = 0;
+        }
+        Move(MovementController.WANDER, destination);
         /*
         if(prey == null) {
             // layer mask on CapsuleCast doesn't work for shit, at least I can't seem to make it work...
