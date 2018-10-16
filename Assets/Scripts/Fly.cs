@@ -27,9 +27,6 @@ public class Fly : EagleBaseSM {
         moveSpeed = 3f;
         timer = 0;
         destination = MovementController.GetNewDestination(obj.transform.position, obj.transform.forward, rotationAngle, moveDistance);
-        // Only collide with the suricate layer, which is in position 9
-        // The ~ operator inverts a bitmask.
-        //layerMask = (1 << 9);
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks

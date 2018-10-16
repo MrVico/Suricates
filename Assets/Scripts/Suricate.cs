@@ -59,7 +59,7 @@ public class Suricate : MonoBehaviour {
         // THIS ISN'T perfect, since the collider is a rectangle and not a triangle...
         FoV.GetComponent<MeshCollider>().sharedMesh = mesh;
         // Add the FoV as a child to the suricate
-        FoV.transform.parent = gameObject.transform;
+        FoV.transform.parent = transform;
         // Set the local position to 0 so both the suricate's and the FoV's positions are the same
         FoV.transform.localPosition = new Vector3(0, 0, 0);
         // The FoV is part of the suricate

@@ -15,9 +15,13 @@ public class MovementController : MonoBehaviour{
     }
 
     public static void Move(Transform objTransform, string mode, Vector3 destination, float rotationSpeed, float moveSpeed) {
-        Quaternion rotation = RotateTowards(objTransform, mode, destination);
-        objTransform.rotation = Quaternion.Slerp(objTransform.rotation, rotation, rotationSpeed * Time.deltaTime);
-        objTransform.Translate(0, 0, Time.deltaTime * moveSpeed);
+        if(objTransform.tag != "Predator" || mode == CHASE) {
+            Quaternion rotation = RotateTowards(objTransform, mode, destination);
+            objTransform.rotation = Quaternion.Slerp(objTransform.rotation, rotation, rotationSpeed * Time.deltaTime);
+            objTransform.Translate(0, 0, Time.deltaTime * moveSpeed);
+        }
+        else
+            objTransform.Translate(0, Time.deltaTime * moveSpeed, 0);
     }
 
     // Computes the rotation towards a destination
