@@ -24,8 +24,9 @@ public class Fly : EagleBaseSM {
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         base.OnStateEnter(animator, stateInfo, layerIndex);
         transform = animator.transform;
+        moveSpeed = 3f;
         timer = 0;
-        destination = MovementController.GetNewDestination(obj.transform.forward, rotationAngle, moveDistance);
+        destination = MovementController.GetNewDestination(obj.transform.position, obj.transform.forward, rotationAngle, moveDistance);
         // Only collide with the suricate layer, which is in position 9
         // The ~ operator inverts a bitmask.
         //layerMask = (1 << 9);
@@ -35,7 +36,7 @@ public class Fly : EagleBaseSM {
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         timer += Time.deltaTime;
         if (timer >= flyTime) {
-            destination = MovementController.GetNewDestination(obj.transform.forward, rotationAngle, moveDistance);
+            destination = MovementController.GetNewDestination(obj.transform.position, obj.transform.forward, rotationAngle, moveDistance);
             timer = 0;
         }
         Move(MovementController.WANDER, destination);

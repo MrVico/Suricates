@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class SuricateBaseSM : StateMachineBehaviour {
 
-    public float wanderingRadius = 10f;
-    public float wanderingTime = 3f;
-    public float moveSpeed = 1.5f;
-    public float moveDistance = 20f;
-    public float rotationSpeed = 5f;
-    public float rotationAngle = 70f;
-    public float eatingTime = 1.5f;
+    protected float wanderingRadius = 10f;
+    protected float wanderingTime = 3f;
+    protected float moveSpeed = 1.5f;
+    protected float moveDistance = 10f;
+    protected float rotationSpeed = 5f;
+    protected float rotationAngle = 70f;
+    protected float eatingTime = 1.5f;
 
     protected GameObject obj;
     protected GameObject eagle;

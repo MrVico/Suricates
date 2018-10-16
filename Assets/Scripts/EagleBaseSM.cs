@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class EagleBaseSM : StateMachineBehaviour {
 
-    public float flyTime = 5f;
-    public float rotationSpeed = 10f;
+    protected float flyTime = 5f;
+    protected float rotationSpeed = 10f;
     // Full 360
-    public float rotationAngle = 180f;
-    public float moveDistance = 20f;
-    public float moveSpeed = 2f;
+    protected float rotationAngle = 180f;
+    protected float moveDistance = 20f;
+    protected float moveSpeed = 3f;
 
     protected GameObject obj;
       
