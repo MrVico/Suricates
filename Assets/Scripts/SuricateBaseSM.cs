@@ -13,7 +13,7 @@ public class SuricateBaseSM : StateMachineBehaviour {
     protected float eatingTime = 1.5f;
 
     protected GameObject obj;
-    protected GameObject eagle;
+    protected GameObject raptor;
 
     private Quaternion rotation;
     private Animator animator;
@@ -27,7 +27,7 @@ public class SuricateBaseSM : StateMachineBehaviour {
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         // Each frame we check if an eagle didn't catch us
-        eagle = animator.GetComponent<Suricate>().GetEagle();
+        raptor = animator.GetComponent<Suricate>().GetRaptor();
     }
 
     protected void Move(string mode, Vector3 destination) {
@@ -36,7 +36,7 @@ public class SuricateBaseSM : StateMachineBehaviour {
 
     protected void ThisIsTheEnd() {
         // The eagle is taking it with him
-        obj.transform.parent = eagle.transform;
+        obj.transform.parent = raptor.transform;
         animator.ResetTrigger(Suricate.wanderHash);
         animator.ResetTrigger(Suricate.chaseHash);
         animator.SetTrigger(Suricate.deadHash);

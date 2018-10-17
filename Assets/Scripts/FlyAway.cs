@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FlyAway : EagleBaseSM {
+public class FlyAway : RaptorBaseSM {
 
-    // Position where the eagle goes once he is done
+    // Position where the raptor goes once he is done
     private Vector3 destination = new Vector3(0, 25, 25);
 
 	 // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state

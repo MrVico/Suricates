@@ -18,7 +18,7 @@ public class Wander : SuricateBaseSM {
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
 	override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         base.OnStateUpdate(animator, stateInfo, layerIndex);
-        if (eagle == null) {
+        if (raptor == null) {
             timer += Time.deltaTime;
             if (timer >= wanderingTime) {
                 destination = MovementController.GetNewDestination(obj.transform.position, obj.transform.forward, rotationAngle, moveDistance);

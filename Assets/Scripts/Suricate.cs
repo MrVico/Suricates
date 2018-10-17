@@ -18,16 +18,20 @@ public class Suricate : MonoBehaviour {
 
     private Animator animator;
     private GameObject prey;
-    private GameObject eagle;
+    private GameObject raptor;
 
     // Use this for initialization
     void Start() {
         animator = GetComponent<Animator>();
-        if (suricateType == Type.Hunter)
+        if (suricateType == Type.Hunter) {
             GetComponent<Animator>().SetBool("hunter", true);
-        else if (suricateType == Type.Sentinel)
+            // Only on the hunter 'cause the sentinel has better sight
+            CreateFieldOfVision();
+        }
+        else if (suricateType == Type.Sentinel) {
             GetComponent<Animator>().SetBool("sentinel", true);
-        CreateFieldOfVision();
+            Debug.DrawRay(transform.position, transform.forward*10, Color.red, 5f);
+        }
     }
 
     private void CreateFieldOfVision() {
@@ -58,12 +62,11 @@ public class Suricate : MonoBehaviour {
         mesh.triangles = triangles;
         // THIS ISN'T perfect, since the collider is a rectangle and not a triangle...
         FoV.GetComponent<MeshCollider>().sharedMesh = mesh;
+        FoV.GetComponent<MeshCollider>().convex = true;
         // Add the FoV as a child to the suricate
         FoV.transform.parent = transform;
         // Set the local position to 0 so both the suricate's and the FoV's positions are the same
         FoV.transform.localPosition = new Vector3(0, 0, 0);
-        // The FoV is part of the suricate
-        FoV.tag = "Suricate";
         // Add this script so that the collision are brought back here
         FoV.AddComponent<FOVCollision>();
     }
@@ -78,12 +81,12 @@ public class Suricate : MonoBehaviour {
         }
     }
 
-    private void CatchedBy(GameObject eagle) {
-        this.eagle = eagle;
+    private void CatchedBy(GameObject raptor) {
+        this.raptor = raptor;
     }
 
-    public GameObject GetEagle() {
-        return eagle;
+    public GameObject GetRaptor() {
+        return raptor;
     }
 
     public GameObject GetPrey() {

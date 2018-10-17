@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Fly : EagleBaseSM {
+public class Fly : RaptorBaseSM {
 
     private float speed;
     // For capsule cast, viewRange = length & viewRadius = width

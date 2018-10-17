@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EagleBaseSM : StateMachineBehaviour {
+public class RaptorBaseSM : StateMachineBehaviour {
 
     protected float flyTime = 5f;
     protected float rotationSpeed = 10f;

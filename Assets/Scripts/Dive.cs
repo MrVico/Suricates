@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Dive : EagleBaseSM {
+public class Dive : RaptorBaseSM {
 
     private GameObject prey;
     // Did we catch a suricate?
@@ -11,7 +11,7 @@ public class Dive : EagleBaseSM {
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         base.OnStateEnter(animator, stateInfo, layerIndex);
-        prey = animator.GetComponent<Eagle>().GetPrey();
+        prey = animator.GetComponent<Raptor>().GetPrey();
         Debug.Log("Diving towards " + prey.name);
         caught = false;
         // We dive fast
@@ -33,8 +33,8 @@ public class Dive : EagleBaseSM {
         }
         // We caught a suricate, we fly away with it
         else {
-            animator.ResetTrigger(Eagle.diveHash);
-            animator.SetTrigger(Eagle.flyAwayHash);
+            animator.ResetTrigger(Raptor.diveHash);
+            animator.SetTrigger(Raptor.flyAwayHash);
         }
     }
 

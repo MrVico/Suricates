@@ -15,13 +15,9 @@ public class MovementController : MonoBehaviour{
     }
 
     public static void Move(Transform objTransform, string mode, Vector3 destination, float rotationSpeed, float moveSpeed) {
-        if(objTransform.tag != "Predator" || mode == CHASE) {
-            Quaternion rotation = RotateTowards(objTransform, mode, destination);
-            objTransform.rotation = Quaternion.Slerp(objTransform.rotation, rotation, rotationSpeed * Time.deltaTime);
-            objTransform.Translate(0, 0, Time.deltaTime * moveSpeed);
-        }
-        else
-            objTransform.Translate(0, Time.deltaTime * moveSpeed, 0);
+        Quaternion rotation = RotateTowards(objTransform, mode, destination);
+        objTransform.rotation = Quaternion.Slerp(objTransform.rotation, rotation, rotationSpeed * Time.deltaTime);
+        objTransform.Translate(0, 0, Time.deltaTime * moveSpeed);
     }
 
     // Computes the rotation towards a destination
@@ -42,10 +38,18 @@ public class MovementController : MonoBehaviour{
     public static Vector3 GetNewDestination(Vector3 position, Vector3 direction, float rotationAngle, float distance) {
         Vector3 destination = GetDirectionWithinAngle(direction, rotationAngle) * distance;
         float angle = 0f;
+        int angleDirection;
+        // This way we don't always turn in the same direction
+        if(Random.value < 0.5f) {
+            angleDirection = 1;
+        }
+        else {
+            angleDirection = -1;
+        }
         // We need to get a destination inside the ground zone
         // We sum the two vectors to get the destination relative to the origin (0,0,0) 
         while (!IsDestinationInsideGroundZone(position + destination)) {
-            angle += 10f;
+            angle += 10f*angleDirection;
             destination = GetDirectionWithinAngle(direction, rotationAngle, true, angle) * distance;
             Debug.Log("Recomputing destination to be inside the zone...");
         }
