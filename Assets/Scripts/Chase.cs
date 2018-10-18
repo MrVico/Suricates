@@ -30,7 +30,7 @@ public class Chase : SuricateBaseSM {
         else if (eatingTimer == 0) {
             float distance = Vector3.Distance(obj.transform.position, prey.transform.position);
             if (distance > 1.0f) {
-                Move(MovementController.CHASE, prey.transform.position);
+                Move(prey.transform.position);
             }
             else {
                 prey.SendMessage("Catched");
@@ -40,7 +40,6 @@ public class Chase : SuricateBaseSM {
             }
         }
         // We are currently eating a prey
-        // SHOULD WE PUT THIS INTO A EATING STATE???
         else if (eatingTimer > 0) {
             eatingTimer += Time.deltaTime;
             if (eatingTimer >= eatingTime) {

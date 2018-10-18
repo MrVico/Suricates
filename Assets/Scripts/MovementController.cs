@@ -14,18 +14,16 @@ public class MovementController : MonoBehaviour{
         render = GetComponent<Renderer>();
     }
 
-    public static void Move(Transform objTransform, string mode, Vector3 destination, float rotationSpeed, float moveSpeed) {
-        Quaternion rotation = RotateTowards(objTransform, mode, destination);
+    public static void Move(Transform objTransform, Vector3 destination, float rotationSpeed, float moveSpeed) {
+        Quaternion rotation = RotateTowards(objTransform, destination);
         objTransform.rotation = Quaternion.Slerp(objTransform.rotation, rotation, rotationSpeed * Time.deltaTime);
         objTransform.Translate(0, 0, Time.deltaTime * moveSpeed);
     }
 
     // Computes the rotation towards a destination
-    public static Quaternion RotateTowards(Transform objTransform, string mode, Vector3 destination) {
+    public static Quaternion RotateTowards(Transform objTransform, Vector3 destination) {
         Vector3 direction = destination;
-        // We only want to recompute the direction if we are chasing something
-        if (mode == CHASE)
-            direction = destination - objTransform.position;
+        direction = destination - objTransform.position;
         Quaternion rotation = Quaternion.LookRotation(direction);
         // We only want to rotate left/right, so around the Y axis, if we aren't flying
         if(objTransform.tag != "Predator") {
@@ -35,8 +33,10 @@ public class MovementController : MonoBehaviour{
         return rotation;
     }
 
-    public static Vector3 GetNewDestination(Vector3 position, Vector3 direction, float rotationAngle, float distance) {
+    public static Vector3 GetNewDestination(Vector3 position, Vector3 direction, float rotationAngle, float distance, bool raptorReset=false) {
         Vector3 destination = GetDirectionWithinAngle(direction, rotationAngle) * distance;
+        if (raptorReset)
+            destination.y = 10;
         float angle = 0f;
         int angleDirection;
         // This way we don't always turn in the same direction
@@ -46,14 +46,14 @@ public class MovementController : MonoBehaviour{
         else {
             angleDirection = -1;
         }
-        // We need to get a destination inside the ground zone
         // We sum the two vectors to get the destination relative to the origin (0,0,0) 
+        destination = position + destination;
+        // We need to get a destination inside the ground zone
         while (!IsDestinationInsideGroundZone(position + destination)) {
             angle += 10f*angleDirection;
             destination = GetDirectionWithinAngle(direction, rotationAngle, true, angle) * distance;
-            Debug.Log("Recomputing destination to be inside the zone...");
         }
-        //Debug.DrawRay(position, destination, Color.red, 3f);
+        //Debug.DrawRay(position, (destination-position), Color.red, 3f);
         return destination;
     }
 

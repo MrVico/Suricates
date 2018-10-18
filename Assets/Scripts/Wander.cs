@@ -24,7 +24,7 @@ public class Wander : SuricateBaseSM {
                 destination = MovementController.GetNewDestination(obj.transform.position, obj.transform.forward, rotationAngle, moveDistance);
                 timer = 0;
             }
-            Move(MovementController.WANDER, destination);
+            Move(destination);
         }
         // An eagle caught us
         else {

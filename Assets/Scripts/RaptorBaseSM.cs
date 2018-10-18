@@ -18,7 +18,7 @@ public class RaptorBaseSM : StateMachineBehaviour {
         obj = animator.gameObject;
     }
 
-    public void Move(string mode, Vector3 destination) {
-        MovementController.Move(obj.transform, mode, destination, rotationSpeed, moveSpeed);
+    public void Move(Vector3 destination) {
+        MovementController.Move(obj.transform, destination, rotationSpeed, moveSpeed);
     }
 }

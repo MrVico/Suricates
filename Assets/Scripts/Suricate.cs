@@ -7,6 +7,8 @@ public class Suricate : MonoBehaviour {
     // All the possible suricate state's
     public static int chaseHash = Animator.StringToHash("chase");
     public static int wanderHash = Animator.StringToHash("wander");
+    public static int herdHash = Animator.StringToHash("herd");
+    public static int runHash = Animator.StringToHash("run");
     public static int deadHash = Animator.StringToHash("dead");
 
     public enum Type { Hunter, Sentinel };
@@ -19,6 +21,8 @@ public class Suricate : MonoBehaviour {
     private Animator animator;
     private GameObject prey;
     private GameObject raptor;
+    private GameObject[] holes;
+    private bool safe;
 
     // Use this for initialization
     void Start() {
@@ -30,8 +34,67 @@ public class Suricate : MonoBehaviour {
         }
         else if (suricateType == Type.Sentinel) {
             GetComponent<Animator>().SetBool("sentinel", true);
-            Debug.DrawRay(transform.position, transform.forward*10, Color.red, 5f);
         }
+        safe = false;
+        MemoriseHoles();
+    }
+
+    // Not OnCollisionEnter 'cause this way we can directly switch to another target
+    private void OnCollisionStay(Collision collision) {
+        // If we are a hunter and already chasing a prey we focus on that :)
+        if (suricateType == Type.Hunter && prey == null && collision.gameObject.CompareTag("Prey")) {
+            prey = collision.gameObject;
+            animator.ResetTrigger(wanderHash);
+            animator.SetTrigger(chaseHash);
+        }
+    }
+
+    private void OnTriggerEnter(Collider other) {
+        if (other.CompareTag("Hole")) {
+            Debug.Log(name + " is safe!");
+            safe = true;
+        }
+    }
+
+    private void CaughtBy(GameObject raptor) {
+        this.raptor = raptor;
+    }
+
+    public GameObject GetRaptor() {
+        return raptor;
+    }
+
+    public GameObject GetPrey() {
+        return prey;
+    }
+
+    // Every suricate knows all the holes made as homes
+    private void MemoriseHoles() {
+        holes = GameObject.FindGameObjectsWithTag("Hole");
+    }
+
+    // The suricate want to hide quickly
+    public GameObject GetNearestHole() {
+        GameObject nearest = holes[0];
+        foreach (GameObject hole in holes) {
+            // TODO: Skip the first one since we already got it
+            if (Vector3.Distance(animator.transform.position, hole.transform.position) < Vector3.Distance(animator.transform.position, nearest.transform.position))
+                nearest = hole;
+        }
+        return nearest;
+    }
+
+    // A raptor was spotted, run away!
+    private void ToSafety() {
+        Debug.Log("RUUUUUUUN");
+        animator.ResetTrigger(wanderHash);
+        animator.ResetTrigger(chaseHash);
+        animator.ResetTrigger(herdHash);
+        animator.SetTrigger(runHash);
+    } 
+
+    public bool IsSafe() {
+        return safe;
     }
 
     private void CreateFieldOfVision() {
@@ -69,27 +132,5 @@ public class Suricate : MonoBehaviour {
         FoV.transform.localPosition = new Vector3(0, 0, 0);
         // Add this script so that the collision are brought back here
         FoV.AddComponent<FOVCollision>();
-    }
-
-    // Not OnCollisionEnter 'cause this way we can directly switch to another target
-    private void OnCollisionStay(Collision collision) {
-        // If we are a hunter and already chasing a prey we focus on that :)
-        if (suricateType == Type.Hunter && prey == null && collision.gameObject.CompareTag("Prey")) {
-            prey = collision.gameObject;
-            animator.ResetTrigger(wanderHash);
-            animator.SetTrigger(chaseHash);
-        }
-    }
-
-    private void CatchedBy(GameObject raptor) {
-        this.raptor = raptor;
-    }
-
-    public GameObject GetRaptor() {
-        return raptor;
-    }
-
-    public GameObject GetPrey() {
-        return prey;
     }
 }

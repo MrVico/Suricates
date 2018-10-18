@@ -12,22 +12,26 @@ public class Dive : RaptorBaseSM {
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         base.OnStateEnter(animator, stateInfo, layerIndex);
         prey = animator.GetComponent<Raptor>().GetPrey();
-        Debug.Log("Diving towards " + prey.name);
         caught = false;
-        // We dive fast
         moveSpeed = 5f;
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-        if (!caught) {
+        base.OnStateUpdate(animator, stateInfo, layerIndex);
+        // The suricate got to safety
+        if(prey.GetComponent<Suricate>().IsSafe()) {
+            // We didn't catch anything we go back to flying 'cause we are hungry
+            animator.ResetTrigger(Raptor.diveHash);
+            animator.SetTrigger(Raptor.flyHash);
+        }
+        else if (!caught) {
             float distance = Vector3.Distance(obj.transform.position, prey.transform.position);
             if (distance > 1.0f) {
-                Move(MovementController.CHASE, prey.transform.position);
+                Move(prey.transform.position);
             }
             else {
-                prey.SendMessage("CatchedBy", obj);
-                Debug.Log("Caught " + prey.gameObject.name);
+                prey.SendMessage("CaughtBy", obj);
                 caught = true;
             }
         }

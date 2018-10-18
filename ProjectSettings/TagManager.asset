@@ -9,6 +9,7 @@ TagManager:
   - Ground
   - Predator
   - Suricate
+  - Hole
   layers:
   - Default
   - TransparentFX

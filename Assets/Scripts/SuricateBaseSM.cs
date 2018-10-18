@@ -30,15 +30,17 @@ public class SuricateBaseSM : StateMachineBehaviour {
         raptor = animator.GetComponent<Suricate>().GetRaptor();
     }
 
-    protected void Move(string mode, Vector3 destination) {
-        MovementController.Move(obj.transform, mode, destination, rotationSpeed, moveSpeed);
+    protected void Move(Vector3 destination) {
+        MovementController.Move(obj.transform, destination, rotationSpeed, moveSpeed);
     }
 
     protected void ThisIsTheEnd() {
+        Debug.Log("RIP " + animator.name);
         // The eagle is taking it with him
         obj.transform.parent = raptor.transform;
         animator.ResetTrigger(Suricate.wanderHash);
         animator.ResetTrigger(Suricate.chaseHash);
+        animator.ResetTrigger(Suricate.herdHash);
         animator.SetTrigger(Suricate.deadHash);
     }
 }

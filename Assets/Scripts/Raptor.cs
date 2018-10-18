@@ -24,10 +24,9 @@ public class Raptor : MonoBehaviour {
 		
 	}
     
-    private void OnCollisionStay(Collision collision) {
-        //Debug.Log("Raptor collision with "+collision.gameObject.name+" of type "+collision.gameObject.tag);
-        // If we are already chasing a prey we focus on that :)
-        if (prey == null && collision.gameObject.CompareTag("Suricate")) {
+    private void OnCollisionEnter(Collision collision) {
+        // If we aren't busy and see a vulnerable suricate
+        if (prey == null && collision.gameObject.CompareTag("Suricate") && !collision.gameObject.GetComponent<Suricate>().IsSafe()) {
             prey = collision.gameObject;
             animator.ResetTrigger(flyHash);
             animator.SetTrigger(diveHash);
