@@ -53,7 +53,7 @@ public class MovementController : MonoBehaviour{
             angle += 10f*angleDirection;
             destination = GetDirectionWithinAngle(direction, rotationAngle, true, angle) * distance;
         }
-        //Debug.DrawRay(position, (destination-position), Color.red, 3f);
+        Debug.DrawRay(position, (destination-position), Color.red, 3f);
         return destination;
     }
 
