@@ -5,9 +5,11 @@ using UnityEngine;
 public class SuricateBaseSM : StateMachineBehaviour {
 
     protected float wanderingRadius = 10f;
+    // If we change this we need to change the moveDistance
     protected float wanderingTime = 3f;
+    // Same thing here
     protected float moveSpeed = 1.5f;
-    protected float moveDistance = 15f;
+    protected float moveDistance = 7f;
     protected float rotationSpeed = 5f;
     protected float rotationAngle = 70f;
     protected float eatingTime = 1.5f;

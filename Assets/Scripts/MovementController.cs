@@ -12,6 +12,8 @@ public class MovementController : MonoBehaviour{
    
     void Start() {
         render = GetComponent<Renderer>();
+
+        Debug.Log("Min: " + render.bounds.min + " Max: " + render.bounds.max);
     }
 
     public static void Move(Transform objTransform, Vector3 destination, float rotationSpeed, float moveSpeed) {
@@ -33,10 +35,10 @@ public class MovementController : MonoBehaviour{
         return rotation;
     }
 
-    public static Vector3 GetNewDestination(Vector3 position, Vector3 direction, float rotationAngle, float distance, bool raptorReset=false) {
-        Vector3 destination = GetDirectionWithinAngle(direction, rotationAngle) * distance;
-        if (raptorReset)
-            destination.y = 10;
+    public static Vector3 GetNewDestination(Vector3 position, Vector3 forward, float rotationAngle, float distance, bool raptorReset=false) {
+        Vector3 direction = GetDirectionWithinAngle(forward, rotationAngle);
+        /*if (raptorReset)
+            destination.y = 10;*/
         float angle = 0f;
         int angleDirection;
         // This way we don't always turn in the same direction
@@ -46,33 +48,29 @@ public class MovementController : MonoBehaviour{
         else {
             angleDirection = -1;
         }
-        // We sum the two vectors to get the destination relative to the origin (0,0,0) 
-        destination = position + destination;
+        Vector3 destination = position + direction * distance;
         // We need to get a destination inside the ground zone
-        while (!IsDestinationInsideGroundZone(position + destination)) {
-            angle += 10f*angleDirection;
-            destination = GetDirectionWithinAngle(direction, rotationAngle, true, angle) * distance;
+        while (!IsDestinationInsideGroundZone(destination)) {
+            angle += 5f*angleDirection;
+            direction = GetDirectionWithinAngle(forward, angle, false);
+            destination = position + direction * distance;
+            //Debug.DrawRay(position, (position + direction * distance) - position, Color.red, 10f);
         }
-        Debug.DrawRay(position, (destination-position), Color.red, 3f);
+        Debug.DrawRay(position, (destination - position), Color.red, 3f);
         return destination;
     }
 
-    // The lost parameter is true if we are going outside the ground zone
-    // In which case we rotate degree by degree so we get a destination inside the ground zone
-    private static Vector3 GetDirectionWithinAngle(Vector3 targetDirection, float maxAngle, bool lost=false, float angle=0f) {
-        float angleInRad;
-        if (!lost)
-            angleInRad = Random.Range(0.0f, maxAngle) * Mathf.Deg2Rad;
-        else
-            angleInRad = angle * Mathf.Deg2Rad;
-        Vector2 pointOnCircle = (Random.insideUnitCircle.normalized) * Mathf.Sin(angleInRad);
-        Vector3 directionModifier = new Vector3(pointOnCircle.x, 0, Mathf.Cos(angleInRad));
-        return Quaternion.LookRotation(targetDirection) * directionModifier;
+    private static Vector3 GetDirectionWithinAngle(Vector3 targetForward, float angle, bool random = true) {
+        // We want to get a random angle direction
+        if (random)
+            angle = Random.Range(-angle, angle);
+        return Quaternion.AngleAxis(angle, Vector3.up) * targetForward;
     }
 
     private static bool IsDestinationInsideGroundZone(Vector3 destination) {
+        //Debug.Log("Destination: " + destination);
         // -1 to let a little bit of space between the destination and the border
-        if (destination.x >= render.bounds.min.x - 1 && destination.x <= render.bounds.max.x - 1 && destination.z >= render.bounds.min.z - 1 && destination.z <= render.bounds.max.z - 1)
+        if (destination.x >= render.bounds.min.x + 1 && destination.x <= render.bounds.max.x - 1 && destination.z >= render.bounds.min.z + 1 && destination.z <= render.bounds.max.z - 1)
             return true;
         return false;
     }

@@ -13,6 +13,7 @@ public class Wander : SuricateBaseSM {
         moveSpeed = 1.5f;
         timer = 0;
         destination = MovementController.GetNewDestination(obj.transform.position, obj.transform.forward, rotationAngle, moveDistance);
+        //Debug.DrawRay(obj.transform.position, destination, Color.red, wanderingTime);
     }
 
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -22,6 +23,7 @@ public class Wander : SuricateBaseSM {
             timer += Time.deltaTime;
             if (timer >= wanderingTime) {
                 destination = MovementController.GetNewDestination(obj.transform.position, obj.transform.forward, rotationAngle, moveDistance);
+                //Debug.DrawRay(obj.transform.position, destination, Color.red, wanderingTime);
                 timer = 0;
             }
             Move(destination);

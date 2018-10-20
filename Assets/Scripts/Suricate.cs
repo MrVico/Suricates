@@ -26,8 +26,7 @@ public class Suricate : MonoBehaviour {
     private GameObject[] holes;
     private bool safe;
 
-    private GameObject FoV;
-    private MeshFilter FoVMesh;    
+    private GameObject FoV;  
 
     // Use this for initialization
     void Start() {
@@ -47,7 +46,7 @@ public class Suricate : MonoBehaviour {
     // Update is called once per frame
     void Update() {
         // We only want to scan for a prey if we haven't already got one
-        if(prey == null)
+        if(prey == null && suricateType == Type.Hunter /*For now*/)
             detectCollision();
     }
 
@@ -106,7 +105,6 @@ public class Suricate : MonoBehaviour {
         visionCone.AddComponent<MeshRenderer>();
         visionCone.AddComponent<MeshFilter>();
         visionCone.AddComponent<MeshCollider>();
-        FoVMesh = visionCone.GetComponent<MeshFilter>();
         Mesh mesh = new Mesh();
         visionCone.GetComponent<MeshFilter>().mesh = mesh;
         visionCone.GetComponent<MeshRenderer>().material = material;
