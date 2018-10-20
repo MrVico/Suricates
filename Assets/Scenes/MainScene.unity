@@ -212,29 +212,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 151842351f2855a479fc6eb93cae20d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &470905549
+--- !u!1 &368758547
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 470905550}
+  - component: {fileID: 368758548}
   m_Layer: 0
-  m_Name: 'TODO: Fix the flying of the raptor (y=10)'
+  m_Name: 'TODO: Make the suricates come out of their holes'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &470905550
+--- !u!4 &368758548
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 470905549}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -15.875793, y: -5.0828533, z: -4.8368435}
+  m_GameObject: {fileID: 368758547}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -4.168789, y: 14.340967, z: 6.9324737}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -633,7 +633,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4880065695064072, guid: 37bc2de671ee5774397a785e0f29e841, type: 2}
       propertyPath: m_LocalPosition.x
-      value: -18.4
+      value: -17.24
       objectReference: {fileID: 0}
     - target: {fileID: 4880065695064072, guid: 37bc2de671ee5774397a785e0f29e841, type: 2}
       propertyPath: m_LocalPosition.y
@@ -662,10 +662,6 @@ Prefab:
     - target: {fileID: 4880065695064072, guid: 37bc2de671ee5774397a785e0f29e841, type: 2}
       propertyPath: m_RootOrder
       value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1000844380459578, guid: 37bc2de671ee5774397a785e0f29e841, type: 2}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 37bc2de671ee5774397a785e0f29e841, type: 2}

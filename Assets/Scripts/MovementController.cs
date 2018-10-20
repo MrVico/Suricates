@@ -37,8 +37,8 @@ public class MovementController : MonoBehaviour{
 
     public static Vector3 GetNewDestination(Vector3 position, Vector3 forward, float rotationAngle, float distance, bool raptorReset=false) {
         Vector3 direction = GetDirectionWithinAngle(forward, rotationAngle);
-        /*if (raptorReset)
-            destination.y = 10;*/
+        if (raptorReset)
+            direction.y = 0.5f;
         float angle = 0f;
         int angleDirection;
         // This way we don't always turn in the same direction
@@ -53,6 +53,8 @@ public class MovementController : MonoBehaviour{
         while (!IsDestinationInsideGroundZone(destination)) {
             angle += 5f*angleDirection;
             direction = GetDirectionWithinAngle(forward, angle, false);
+            if (raptorReset)
+                direction.y = 0.5f;
             destination = position + direction * distance;
             //Debug.DrawRay(position, (position + direction * distance) - position, Color.red, 10f);
         }

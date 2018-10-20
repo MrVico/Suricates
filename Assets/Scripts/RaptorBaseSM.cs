@@ -10,6 +10,7 @@ public class RaptorBaseSM : StateMachineBehaviour {
     protected float rotationAngle = 180f;
     protected float moveDistance = 20f;
     protected float moveSpeed = 3f;
+    protected float flyHeight = 10f;
 
     protected GameObject obj;
       
