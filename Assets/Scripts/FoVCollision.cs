@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// UNUSED was for my attempt at the field of vision cone
 public class FOVCollision : MonoBehaviour {
 
     Suricate parent;
@@ -12,6 +13,7 @@ public class FOVCollision : MonoBehaviour {
 
     // Calls the collision method on the parent
     private void OnCollisionStay(Collision collision) {
+        Debug.Log("New FOV collision");
         parent.SendMessage("OnCollisionStay", collision);
     }
 }

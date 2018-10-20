@@ -29,7 +29,7 @@ public class PreySpawner : MonoBehaviour {
 
     // TODO: Don't spawn near a Suricate!
     private void SpawnPrey() {
-        Vector3 position = new Vector3(Random.Range(-20.0f, 20.0f), 0.1f, Random.Range(-20.0f, 20.0f));
+        Vector3 position = new Vector3(Random.Range(-20.0f, 20.0f), prefab.transform.localScale.y/2, Random.Range(-20.0f, 20.0f));
         GameObject prey = Instantiate(prefab, position, Quaternion.identity);
         preys.Add(prey);
         totalPreys++;
