@@ -14,15 +14,18 @@ public class Herd : SuricateBaseSM {
     private float depth = 100f;
     private float angle = 20f;
     private float maxLookRotation = 30f;
-    private float lookRotationSpeed = 0.1f;
+    // Degrees per second
+    private float lookRotationSpeed = 10f;
     private int lookDirection;
     private Physics physics;
 
     private float timer;
+    private float initialRotation;
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         base.OnStateEnter(animator, stateInfo, layerIndex);
+        initialRotation = obj.transform.rotation.eulerAngles.y;
         // Starts looking left
         if (Random.value < 0.5f)
             lookDirection = -1;
@@ -62,6 +65,9 @@ public class Herd : SuricateBaseSM {
         RaycastHit[] coneHits = MyPhysics.ConeCastAll(obj.transform.position, radius, obj.transform.forward, depth, angle);
         if (coneHits.Length > 0) {
             for (int i = 0; i < coneHits.Length; i++) {
+                if (coneHits[i].collider.CompareTag("Predator")) {
+                    coneHits[i].collider.gameObject.GetComponent<Renderer>().material.color = new Color(0, 0, 1f);
+                }
                 coneHits[i].collider.gameObject.GetComponent<Renderer>().material.color = new Color(0, 0, 1f);
             }
         }
@@ -69,19 +75,19 @@ public class Herd : SuricateBaseSM {
 
     private void rotateLook() {
         // Range = [0,360]
-        float y = obj.transform.rotation.eulerAngles.y;
-
-        // Looking right                                    we finished looking left at an angle of ~ 360-maxLookRotation
-        if (lookDirection == 1 && (y < maxLookRotation || y > 360 - maxLookRotation - 1)) {
-            obj.transform.rotation = Quaternion.Slerp(obj.transform.rotation, Quaternion.LookRotation(new Vector3(maxLookRotation, 0, 0)), lookRotationSpeed * Time.deltaTime);
-        }
-        // Looking left                     The angle is > 0        we finished looking right at an angle of ~ maxLookRotation
-        else if (lookDirection == -1 && (y > 360 - maxLookRotation || y < maxLookRotation + 1)) {
-            obj.transform.rotation = Quaternion.Slerp(obj.transform.rotation, Quaternion.LookRotation(new Vector3(-maxLookRotation, 0, 0)), lookRotationSpeed * Time.deltaTime);
-        }
-        else if ((lookDirection == 1 && y >= maxLookRotation) || (lookDirection == -1 && y >= 360 - maxLookRotation - 1)) {
-            // We look in the other direction
+        int y = (int) obj.transform.rotation.eulerAngles.y;
+        
+        // We look all the way, we now need to look in the other direction
+        if ((lookDirection == 1 && y >= initialRotation + maxLookRotation) || (lookDirection == -1 && y <= initialRotation - maxLookRotation)) {
             lookDirection *= -1;
+        }
+        else if (y >= initialRotation - maxLookRotation && y <= initialRotation + maxLookRotation) {
+            //obj.transform.eulerAngles = Vector3.Lerp(obj.transform.eulerAngles, new Vector3(0, (initialRotation + maxLookRotation * lookDirection), 0), lookRotationSpeed * Time.deltaTime);
+            Quaternion rotation = new Quaternion(0F, 0F, 0F, 0F);
+            // We only rotate around the Y axis
+            rotation.eulerAngles = new Vector3(0, (initialRotation + maxLookRotation * lookDirection), 0);
+            // This way the rotation is smooth by always having the same speed
+            obj.transform.rotation = Quaternion.RotateTowards(obj.transform.rotation, rotation, lookRotationSpeed * Time.deltaTime);
         }
     }
 }
