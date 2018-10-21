@@ -23,7 +23,6 @@ public class Fly : RaptorBaseSM {
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         timer += Time.deltaTime;
-        Debug.Log("Destination: " + destination);
         // If we reset we don't need to wait for the timer
         if ((timer >= flyTime || reset) && obj.transform.position.y >= flyHeight) {
             // Reset done

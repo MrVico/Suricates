@@ -12,8 +12,6 @@ public class MovementController : MonoBehaviour{
    
     void Start() {
         render = GetComponent<Renderer>();
-
-        Debug.Log("Min: " + render.bounds.min + " Max: " + render.bounds.max);
     }
 
     public static void Move(Transform objTransform, Vector3 destination, float rotationSpeed, float moveSpeed) {

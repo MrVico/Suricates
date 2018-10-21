@@ -19,12 +19,14 @@ public class Suricate : MonoBehaviour {
     public float alpha;
     public int visionAngle = 90;
     public int visionRange = 5;
+    public int hideTime = 5;
 
     private Animator animator;
     private GameObject prey;
     private GameObject raptor;
     private GameObject[] holes;
     private bool safe;
+    private float timer;
 
     private GameObject FoV;  
 
@@ -48,6 +50,17 @@ public class Suricate : MonoBehaviour {
         // We only want to scan for a prey if we haven't already got one
         if(prey == null && suricateType == Type.Hunter /*For now*/)
             detectCollision();
+        // We want to stay safe
+        if (safe)
+            timer += Time.deltaTime;
+        // After a certain time we come back out
+        if(timer >= hideTime) {
+            animator.ResetTrigger(runHash);
+            if(suricateType == Type.Hunter)
+                animator.SetTrigger(wanderHash);
+            else if (suricateType == Type.Sentinel)
+                animator.SetTrigger(herdHash);
+        }
     }
 
     private void OnTriggerEnter(Collider other) {
@@ -165,7 +178,7 @@ public class Suricate : MonoBehaviour {
         while (rotAngle < visionAngle/2) {
             //Debug.DrawRay(FoV.transform.position, scanVector * range, Color.red, 0.16f);
             if (Physics.Raycast(FoV.transform.position, scanVector, out hit, visionRange)) {
-                Debug.Log("Hit: " + hit.collider.name);
+                //Debug.Log("Hit: " + hit.collider.name);
                 // If we are a hunter and already chasing a prey we focus on that :)
                 if (suricateType == Type.Hunter && prey == null && hit.collider.gameObject.CompareTag("Prey")) {
                     prey = hit.collider.gameObject;

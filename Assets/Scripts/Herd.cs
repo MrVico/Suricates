@@ -29,14 +29,15 @@ public class Herd : SuricateBaseSM {
         base.OnStateUpdate(animator, stateInfo, layerIndex);
 
         timer += Time.deltaTime;
-
+        /*
         // Testing run away to holes
         if(timer > 5.0f) {
+            timer = 0;
             foreach(GameObject suricate in GameObject.FindGameObjectsWithTag("Suricate")) {
                 suricate.SendMessage("ToSafety");
             }
         }
-
+        */
         // A raptor caught us
         if (raptor != null) {
             ThisIsTheEnd();
