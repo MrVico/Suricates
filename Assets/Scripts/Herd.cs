@@ -10,21 +10,33 @@ public class Herd : SuricateBaseSM {
      * If it's hungry another takes its place.
      * We could make the sentinel watch the sky for 3s, than the ground for 3s, repeat... 
      * */
+    private static int nbOfSentinels = 0;
+    
     private float radius = 10f;
     private float depth = 100f;
     private float angle = 20f;
     private float maxLookRotation = 30f;
     // Degrees per second
     private float lookRotationSpeed = 10f;
+    private float postTime = 10f;
     private int lookDirection;
     private Physics physics;
 
-    private float timer;
+    private float postTimer;
     private float initialRotation;
+
+    private Vector3[] posts = { new Vector3(0, 0.5f, -24), new Vector3(34, 0.5f, 0), new Vector3(0, 0.5f, 24), new Vector3(-34, 0.5f, 0) };
+    private int postIndex = 0;
+    private bool onPost = false;
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         base.OnStateEnter(animator, stateInfo, layerIndex);
+        // TODO: Change that, only works for 1 or 2 sentinels!!!
+        postIndex = nbOfSentinels*2;
+        nbOfSentinels++;
+        moveSpeed = 5f;
+        /*
         initialRotation = obj.transform.rotation.eulerAngles.y;
         // Starts looking left
         if (Random.value < 0.5f)
@@ -32,14 +44,55 @@ public class Herd : SuricateBaseSM {
         // Starts looking right
         else
             lookDirection = 1;
+        */
     }
 
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
 	override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         base.OnStateUpdate(animator, stateInfo, layerIndex);
-        rotateLook();
-        detectEnemies();
-        timer += Time.deltaTime;
+        Debug.DrawRay(obj.transform.position, obj.transform.forward*5, Color.red, 0.16f);
+        // A raptor caught us
+        if (raptor != null) {
+            ThisIsTheEnd();
+        }
+        else if (!onPost) {
+            Move(posts[postIndex]);
+            if (Vector3.Distance(obj.transform.position, posts[postIndex]) < 0.1f) {
+                Debug.Log("Arrived on post");
+                onPost = true;
+            }
+        }
+        else if (onPost) {
+            // We always want to look at the center (0,0,0) of the zone before we look around
+            //Debug.Log("Rotation towards the center, angle: " + Vector3.Angle(obj.transform.forward, (Vector3.zero - obj.transform.position)));
+            if (postTimer == 0 && Vector3.Angle(obj.transform.forward, (Vector3.zero - obj.transform.position)) >= 0.2f) {
+                obj.transform.rotation = Quaternion.RotateTowards(obj.transform.rotation, Quaternion.LookRotation(Vector3.zero - obj.transform.position), 200f * Time.deltaTime);
+            }
+            else {
+                //Debug.Log("Looking around...");
+                // Look rotation setup once
+                if (postTimer == 0) {
+                    initialRotation = obj.transform.rotation.eulerAngles.y;
+                    // Starts looking left
+                    if (Random.value < 0.5f)
+                        lookDirection = -1;
+                    // Starts looking right
+                    else
+                        lookDirection = 1;
+                }
+                postTimer += Time.deltaTime;
+                //Debug.Log("On post: " + postTimer);
+                // We were on this post long enough, off to the next one
+                if (postTimer > postTime) {
+                    postIndex = (postIndex + 1) % 4;
+                    onPost = false;
+                    postTimer = 0;
+                }
+                // We look around
+                rotateLook();
+                detectEnemies();
+            }
+        }
 
         /*
         // Testing run away to holes
@@ -50,10 +103,6 @@ public class Herd : SuricateBaseSM {
             }
         }
         */
-        // A raptor caught us
-        if (raptor != null) {
-            ThisIsTheEnd();
-        }
     }
 
 	// OnStateExit is called when a transition ends and the state machine finishes evaluating this state
@@ -76,6 +125,9 @@ public class Herd : SuricateBaseSM {
     private void rotateLook() {
         // Range = [0,360]
         int y = (int) obj.transform.rotation.eulerAngles.y;
+
+        Debug.Log("initialRotation: " + initialRotation);
+        Debug.Log("Direction: " + lookDirection + " y: " + y);
         
         // We look all the way, we now need to look in the other direction
         if ((lookDirection == 1 && y >= initialRotation + maxLookRotation) || (lookDirection == -1 && y <= initialRotation - maxLookRotation)) {

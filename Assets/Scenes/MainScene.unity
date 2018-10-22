@@ -649,7 +649,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1272221097}
   m_Layer: 0
-  m_Name: 'TODO: Code the Herd.cs for the Sentinel'
+  m_Name: 'TODO: Code the Herd.cs for the Sentinel | FIX LOOK ROTATION'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -911,7 +911,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4900386237398820, guid: bf558c75898905143a487570a282991e, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 33.7
+      value: 34
       objectReference: {fileID: 0}
     - target: {fileID: 4900386237398820, guid: bf558c75898905143a487570a282991e, type: 2}
       propertyPath: m_LocalPosition.y
@@ -919,7 +919,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4900386237398820, guid: bf558c75898905143a487570a282991e, type: 2}
       propertyPath: m_LocalPosition.z
-      value: -0.4
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4900386237398820, guid: bf558c75898905143a487570a282991e, type: 2}
       propertyPath: m_LocalRotation.x
