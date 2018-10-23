@@ -10,6 +10,7 @@ TagManager:
   - Predator
   - Suricate
   - Hole
+  - Wall
   layers:
   - Default
   - TransparentFX

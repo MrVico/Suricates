@@ -9,6 +9,7 @@ public class WallSpawner : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        cube.tag = "Wall";
         // TOP & BOT walls
         for(int x=-35; x<35; x++) {
             for(int y=0; y<25; y++) {

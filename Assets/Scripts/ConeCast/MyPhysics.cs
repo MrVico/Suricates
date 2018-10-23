@@ -9,7 +9,10 @@ public static class MyPhysics {
 
         if (sphereCastHits.Length > 0) {
             for (int i = 0; i < sphereCastHits.Length; i++) {
-                sphereCastHits[i].collider.gameObject.GetComponent<Renderer>().material.color = Color.white;
+                /*
+                if(sphereCastHits[i].collider.CompareTag("Wall"))
+                    sphereCastHits[i].collider.gameObject.GetComponent<Renderer>().material.color = Color.white;
+                */
                 float angleToPosition = Vector3.Angle(direction, sphereCastHits[i].collider.gameObject.transform.position - origin);
                 if (angleToPosition < coneAngle) {
                     coneCastHitList.Add(sphereCastHits[i]);

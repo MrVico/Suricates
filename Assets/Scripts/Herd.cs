@@ -25,6 +25,8 @@ public class Herd : SuricateBaseSM {
     private float postTimer;
     private float initialRotation;
 
+    private Vector3 initialForward;
+
     private Vector3[] posts = { new Vector3(0, 0.5f, -24), new Vector3(34, 0.5f, 0), new Vector3(0, 0.5f, 24), new Vector3(-34, 0.5f, 0) };
     private int postIndex = 0;
     private bool onPost = false;
@@ -36,15 +38,6 @@ public class Herd : SuricateBaseSM {
         postIndex = nbOfSentinels*2;
         nbOfSentinels++;
         moveSpeed = 5f;
-        /*
-        initialRotation = obj.transform.rotation.eulerAngles.y;
-        // Starts looking left
-        if (Random.value < 0.5f)
-            lookDirection = -1;
-        // Starts looking right
-        else
-            lookDirection = 1;
-        */
     }
 
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -59,6 +52,8 @@ public class Herd : SuricateBaseSM {
             Move(posts[postIndex]);
             if (Vector3.Distance(obj.transform.position, posts[postIndex]) < 0.1f) {
                 Debug.Log("Arrived on post");
+                // This way it's perfect
+                obj.transform.position = posts[postIndex];
                 onPost = true;
             }
         }
@@ -72,8 +67,11 @@ public class Herd : SuricateBaseSM {
                 //Debug.Log("Looking around...");
                 // Look rotation setup once
                 if (postTimer == 0) {
+                    // This way it's perfect
+                    obj.transform.rotation = Quaternion.LookRotation(Vector3.zero - obj.transform.position);
+                    initialForward = obj.transform.forward;
                     initialRotation = obj.transform.rotation.eulerAngles.y;
-                    // Starts looking left
+                    // Starts looking left                    
                     if (Random.value < 0.5f)
                         lookDirection = -1;
                     // Starts looking right
@@ -114,20 +112,25 @@ public class Herd : SuricateBaseSM {
         RaycastHit[] coneHits = MyPhysics.ConeCastAll(obj.transform.position, radius, obj.transform.forward, depth, angle);
         if (coneHits.Length > 0) {
             for (int i = 0; i < coneHits.Length; i++) {
-                if (coneHits[i].collider.CompareTag("Predator")) {
+                if (coneHits[i].collider.CompareTag("Predator"))
                     coneHits[i].collider.gameObject.GetComponent<Renderer>().material.color = new Color(0, 0, 1f);
-                }
-                coneHits[i].collider.gameObject.GetComponent<Renderer>().material.color = new Color(0, 0, 1f);
+                if (coneHits[i].collider.CompareTag("Wall"))
+                    coneHits[i].collider.gameObject.GetComponent<Renderer>().material.color = new Color(0, 0, 1f);
             }
         }
     }
-
+        
     private void rotateLook() {
         // Range = [0,360]
         int y = (int) obj.transform.rotation.eulerAngles.y;
+        //float y = obj.transform.rotation.eulerAngles.y;
 
-        Debug.Log("initialRotation: " + initialRotation);
-        Debug.Log("Direction: " + lookDirection + " y: " + y);
+        // Quick fix
+        if (postIndex == 0 && y > 270)
+            y = y - 360;
+
+        Debug.Log(obj.transform.name+" initialRotation: " + initialRotation);
+        Debug.Log(obj.transform.name + " Direction: " + lookDirection + " y: " + y);
         
         // We look all the way, we now need to look in the other direction
         if ((lookDirection == 1 && y >= initialRotation + maxLookRotation) || (lookDirection == -1 && y <= initialRotation - maxLookRotation)) {
