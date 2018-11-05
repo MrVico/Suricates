@@ -43,7 +43,7 @@ public class Herd : SuricateBaseSM {
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
 	override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         base.OnStateUpdate(animator, stateInfo, layerIndex);
-        Debug.DrawRay(obj.transform.position, obj.transform.forward*5, Color.red, 0.16f);
+        //Debug.DrawRay(obj.transform.position, obj.transform.forward*5, Color.red, 0.16f);
         // A raptor caught us
         if (raptor != null) {
             ThisIsTheEnd();
@@ -129,8 +129,8 @@ public class Herd : SuricateBaseSM {
         if (postIndex == 0 && y > 270)
             y = y - 360;
 
-        Debug.Log(obj.transform.name+" initialRotation: " + initialRotation);
-        Debug.Log(obj.transform.name + " Direction: " + lookDirection + " y: " + y);
+        //Debug.Log(obj.transform.name+" initialRotation: " + initialRotation);
+        //Debug.Log(obj.transform.name + " Direction: " + lookDirection + " y: " + y);
         
         // We look all the way, we now need to look in the other direction
         if ((lookDirection == 1 && y >= initialRotation + maxLookRotation) || (lookDirection == -1 && y <= initialRotation - maxLookRotation)) {

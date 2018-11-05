@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Suricate : MonoBehaviour {
 
@@ -20,7 +21,7 @@ public class Suricate : MonoBehaviour {
     public int visionAngle = 90;
     public int visionRange = 5;
     public int hideTime = 5;
-
+    
     private Animator animator;
     private GameObject prey;
     private GameObject raptor;
@@ -28,8 +29,12 @@ public class Suricate : MonoBehaviour {
     private bool safe;
     private float timer;
 
-    private GameObject FoV;  
+    private GameObject FoV;
 
+    private Slider infoBar;
+    private float maxBarValue;
+    private float currentBarValue;
+    
     // Use this for initialization
     void Start() {
         animator = GetComponent<Animator>();
@@ -43,6 +48,7 @@ public class Suricate : MonoBehaviour {
         }
         safe = false;
         MemoriseHoles();
+        InitInfoBar();
     }
 
     // Update is called once per frame
@@ -61,12 +67,30 @@ public class Suricate : MonoBehaviour {
             else if (suricateType == Type.Sentinel)
                 animator.SetTrigger(herdHash);
         }
+        UpdateInfoBar();
     }
 
     private void OnTriggerEnter(Collider other) {
         if (other.CompareTag("Hole")) {
             Debug.Log(name + " is safe!");
             safe = true;
+        }
+    }
+
+    private void InitInfoBar() {
+        infoBar = transform.GetComponentInChildren<Slider>();
+        maxBarValue = 100f;
+        currentBarValue = maxBarValue;
+    }
+
+    private void UpdateInfoBar() {
+        Vector2 screenPosition = Camera.main.WorldToScreenPoint(new Vector3(transform.position.x, transform.position.y, transform.position.z + 1.5f));
+        infoBar.transform.position = screenPosition;
+        currentBarValue -= 0.1f;
+        infoBar.value = currentBarValue / maxBarValue;
+        // Dead
+        if(currentBarValue <= 0) {
+            GetComponent<MeshRenderer>().material.color = Color.red;
         }
     }
 
@@ -80,6 +104,13 @@ public class Suricate : MonoBehaviour {
 
     public GameObject GetPrey() {
         return prey;
+    }
+
+    // Called from Chase.cs when a prey was eaten
+    public void Ate() {
+        currentBarValue += 50f;
+        if (currentBarValue > 100)
+            currentBarValue = 100;
     }
 
     // Every suricate knows all the holes made as homes

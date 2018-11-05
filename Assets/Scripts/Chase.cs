@@ -34,7 +34,7 @@ public class Chase : SuricateBaseSM {
             }
             else {
                 prey.SendMessage("Catched");
-                Debug.Log("eating " + prey.gameObject.name+"...");
+                Debug.Log(obj.name+" is eating " + prey.gameObject.name+"...");
                 // For the next "eatingTime" we are eating
                 eatingTimer += Time.deltaTime;
             }
@@ -43,7 +43,11 @@ public class Chase : SuricateBaseSM {
         else if (eatingTimer > 0) {
             eatingTimer += Time.deltaTime;
             if (eatingTimer >= eatingTime) {
+                // The prey is dead
                 prey.SendMessage("Dead");
+                // The suricate ate
+                animator.SendMessage("Ate");
+                eatingTimer = 0;
                 animator.ResetTrigger(Suricate.chaseHash);
                 animator.SetTrigger(Suricate.wanderHash);
             }

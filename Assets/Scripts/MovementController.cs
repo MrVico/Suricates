@@ -56,7 +56,7 @@ public class MovementController : MonoBehaviour{
             destination = position + direction * distance;
             //Debug.DrawRay(position, (position + direction * distance) - position, Color.red, 10f);
         }
-        Debug.DrawRay(position, (destination - position), Color.red, 3f);
+        //Debug.DrawRay(position, (destination - position), Color.red, 3f);
         return destination;
     }
 
