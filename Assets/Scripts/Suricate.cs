@@ -11,7 +11,7 @@ public class Suricate : MonoBehaviour {
     public static int herdHash = Animator.StringToHash("herd");
     public static int runHash = Animator.StringToHash("run");
     public static int deadHash = Animator.StringToHash("dead");
-
+    
     public enum Type { Hunter, Sentinel };
 
     public Type suricateType;
@@ -34,6 +34,8 @@ public class Suricate : MonoBehaviour {
     private Slider infoBar;
     private float maxBarValue;
     private float currentBarValue;
+
+    private bool dead;
     
     // Use this for initialization
     void Start() {
@@ -45,7 +47,9 @@ public class Suricate : MonoBehaviour {
         }
         else if (suricateType == Type.Sentinel) {
             GetComponent<Animator>().SetBool("sentinel", true);
+            FoV = null;
         }
+        dead = false;
         safe = false;
         MemoriseHoles();
         InitInfoBar();
@@ -53,21 +57,29 @@ public class Suricate : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        // We only want to scan for a prey if we haven't already got one
-        if(prey == null && suricateType == Type.Hunter /*For now*/)
-            detectCollision();
-        // We want to stay safe
-        if (safe)
-            timer += Time.deltaTime;
-        // After a certain time we come back out
-        if(timer >= hideTime) {
-            animator.ResetTrigger(runHash);
-            if(suricateType == Type.Hunter)
-                animator.SetTrigger(wanderHash);
-            else if (suricateType == Type.Sentinel)
-                animator.SetTrigger(herdHash);
+        if (!dead) {
+            // We only want to scan for a prey if we haven't already got one
+            if (prey == null && suricateType == Type.Hunter /*For now*/)
+                detectCollision();
+            // We want to stay safe
+            if (safe)
+                timer += Time.deltaTime;
+            // After a certain time we come back out
+            if (timer >= hideTime) {
+                animator.ResetTrigger(runHash);
+                if (suricateType == Type.Hunter)
+                    animator.SetTrigger(wanderHash);
+                else if (suricateType == Type.Sentinel)
+                    animator.SetTrigger(herdHash);
+            }
+            UpdateInfoBar();
+            // We update the alpha of the vision field in case the user changed it
+            if (suricateType == Type.Hunter) {
+                Color materialColor = FoV.GetComponent<MeshRenderer>().material.GetColor("_Color");
+                materialColor.a = alpha;
+                FoV.GetComponent<MeshRenderer>().material.color = materialColor;
+            }
         }
-        UpdateInfoBar();
     }
 
     private void OnTriggerEnter(Collider other) {
@@ -90,10 +102,10 @@ public class Suricate : MonoBehaviour {
         infoBar.value = currentBarValue / maxBarValue;
         // Dead
         if(currentBarValue <= 0) {
-            GetComponent<MeshRenderer>().material.color = Color.red;
+            Die();
         }
     }
-
+   
     private void CaughtBy(GameObject raptor) {
         this.raptor = raptor;
     }
@@ -113,6 +125,34 @@ public class Suricate : MonoBehaviour {
             currentBarValue = 100;
     }
 
+    // The suricate died
+    private void Die() {
+        GetComponent<MeshRenderer>().material.color = Color.red;
+        // We "disable" the vision field
+        alpha = 0;
+        animator.ResetTrigger(Suricate.wanderHash);
+        animator.ResetTrigger(Suricate.chaseHash);
+        animator.ResetTrigger(Suricate.herdHash);        
+        animator.SetTrigger(Suricate.deadHash);
+        Debug.Log("Die");
+        dead = true;
+        // We hide the infobar
+        transform.GetComponentInChildren<Canvas>().enabled = false;
+    }
+
+    // A raptor was spotted, run away!
+    private void ToSafety() {
+        Debug.Log("RUUUUUUUN");
+        animator.ResetTrigger(wanderHash);
+        animator.ResetTrigger(chaseHash);
+        animator.ResetTrigger(herdHash);
+        animator.SetTrigger(runHash);
+    } 
+
+    public bool IsSafe() {
+        return safe;
+    }
+
     // Every suricate knows all the holes made as homes
     private void MemoriseHoles() {
         holes = GameObject.FindGameObjectsWithTag("Hole");
@@ -129,19 +169,6 @@ public class Suricate : MonoBehaviour {
         return nearest;
     }
 
-    // A raptor was spotted, run away!
-    private void ToSafety() {
-        Debug.Log("RUUUUUUUN");
-        animator.ResetTrigger(wanderHash);
-        animator.ResetTrigger(chaseHash);
-        animator.ResetTrigger(herdHash);
-        animator.SetTrigger(runHash);
-    } 
-
-    public bool IsSafe() {
-        return safe;
-    }
-
     // Source : https://www.youtube.com/watch?v=FShHFmEFFkg
     private GameObject CreateVisionField() {
         GameObject visionCone = new GameObject("Vision Cone");
@@ -153,8 +180,9 @@ public class Suricate : MonoBehaviour {
         visionCone.GetComponent<MeshFilter>().mesh = mesh;
         visionCone.GetComponent<MeshRenderer>().material = material;
         // Set the alpha component of the material's color to 0 so the FoV is transparent
-        Color materialColor = GetComponent<MeshRenderer>().material.GetColor("_Color");
+        Color materialColor = visionCone.GetComponent<MeshRenderer>().material.GetColor("_Color");
         materialColor.a = alpha;
+        visionCone.GetComponent<MeshRenderer>().material.color = materialColor;
 
         List<Vector3> vertices = new List<Vector3>();
         List<Vector3> normals = new List<Vector3>();

@@ -28,15 +28,20 @@ public class Herd : SuricateBaseSM {
     private Vector3 initialForward;
 
     private Vector3[] posts = { new Vector3(0, 0.5f, -24), new Vector3(34, 0.5f, 0), new Vector3(0, 0.5f, 24), new Vector3(-34, 0.5f, 0) };
-    private int postIndex = 0;
+    private int postIndex;
     private bool onPost = false;
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         base.OnStateEnter(animator, stateInfo, layerIndex);
-        // TODO: Change that, only works for 1 or 2 sentinels!!!
-        postIndex = nbOfSentinels*2;
+        // TODO: Change that cause it's ugly
+        // This means that the suricate just ran and came back to its post
+        if (!onPost) {
+            // TODO: Change that, only works for 1 or 2 sentinels!!!
+            postIndex = nbOfSentinels * 2;
+        }
         nbOfSentinels++;
+        onPost = false;
         moveSpeed = 5f;
     }
 
@@ -79,13 +84,15 @@ public class Herd : SuricateBaseSM {
                         lookDirection = 1;
                 }
                 postTimer += Time.deltaTime;
-                //Debug.Log("On post: " + postTimer);
                 // We were on this post long enough, off to the next one
+                // Not useful I think, IRL the suricates don't rotate positions
+                /*
                 if (postTimer > postTime) {
                     postIndex = (postIndex + 1) % 4;
                     onPost = false;
                     postTimer = 0;
                 }
+                */
                 // We look around
                 rotateLook();
                 detectEnemies();
@@ -112,8 +119,13 @@ public class Herd : SuricateBaseSM {
         RaycastHit[] coneHits = MyPhysics.ConeCastAll(obj.transform.position, radius, obj.transform.forward, depth, angle);
         if (coneHits.Length > 0) {
             for (int i = 0; i < coneHits.Length; i++) {
-                if (coneHits[i].collider.CompareTag("Predator"))
+                if (coneHits[i].collider.CompareTag("Predator")) {
                     coneHits[i].collider.gameObject.GetComponent<Renderer>().material.color = new Color(0, 0, 1f);
+                    // Notify everyone of the danger!
+                    foreach (GameObject suricate in GameObject.FindGameObjectsWithTag("Suricate")) {
+                        suricate.SendMessage("ToSafety");
+                    }
+                }
                 if (coneHits[i].collider.CompareTag("Wall"))
                     coneHits[i].collider.gameObject.GetComponent<Renderer>().material.color = new Color(0, 0, 1f);
             }

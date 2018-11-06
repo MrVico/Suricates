@@ -36,13 +36,11 @@ public class SuricateBaseSM : StateMachineBehaviour {
         MovementController.Move(obj.transform, destination, rotationSpeed, moveSpeed);
     }
 
+    // The suricate is dead
     protected void ThisIsTheEnd() {
         Debug.Log("RIP " + animator.name);
         // The eagle is taking it with him
         obj.transform.parent = raptor.transform;
-        animator.ResetTrigger(Suricate.wanderHash);
-        animator.ResetTrigger(Suricate.chaseHash);
-        animator.ResetTrigger(Suricate.herdHash);
-        animator.SetTrigger(Suricate.deadHash);
+        animator.gameObject.SendMessage("Die");
     }
 }
