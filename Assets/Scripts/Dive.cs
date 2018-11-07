@@ -13,7 +13,7 @@ public class Dive : RaptorBaseSM {
         base.OnStateEnter(animator, stateInfo, layerIndex);
         prey = animator.GetComponent<Raptor>().GetPrey();
         caught = false;
-        moveSpeed = 5f;
+        moveSpeed = 7f;
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks

@@ -105,6 +105,10 @@ public class Suricate : MonoBehaviour {
             Die();
         }
     }
+
+    public void SetType(Suricate.Type type){
+        suricateType = type;
+    }
    
     private void CaughtBy(GameObject raptor) {
         this.raptor = raptor;
@@ -142,11 +146,14 @@ public class Suricate : MonoBehaviour {
 
     // A raptor was spotted, run away!
     private void ToSafety() {
-        Debug.Log("RUUUUUUUN");
-        animator.ResetTrigger(wanderHash);
-        animator.ResetTrigger(chaseHash);
-        animator.ResetTrigger(herdHash);
-        animator.SetTrigger(runHash);
+        // We can't run if we are dead!
+        if(!dead){
+            Debug.Log("RUUUUUUUN");
+            animator.ResetTrigger(wanderHash);
+            animator.ResetTrigger(chaseHash);
+            animator.ResetTrigger(herdHash);
+            animator.SetTrigger(runHash);
+        }
     } 
 
     public bool IsSafe() {

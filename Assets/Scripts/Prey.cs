@@ -34,8 +34,8 @@ public class Prey : MonoBehaviour {
     }
 
     private void Dead() {
-        // call method on PreySpawner...
-        FindObjectOfType<PreySpawner>().SendMessage("PreyDied", gameObject);
+        // call method on Spawner...
+        FindObjectOfType<Spawner>().SendMessage("PreyDied", gameObject);
     }
 
     private void OnCollisionEnter(Collision collision) {

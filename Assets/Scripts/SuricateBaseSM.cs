@@ -30,9 +30,13 @@ public class SuricateBaseSM : StateMachineBehaviour {
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         // Each frame we check if an eagle didn't catch us
         raptor = animator.GetComponent<Suricate>().GetRaptor();
+        if(raptor != null)
+            Debug.Log("POSITION: "+obj.transform.position);
     }
 
     protected void Move(Vector3 destination) {
+        if(raptor != null)
+            Debug.Log("MOVING");
         MovementController.Move(obj.transform, destination, rotationSpeed, moveSpeed);
     }
 
@@ -41,6 +45,7 @@ public class SuricateBaseSM : StateMachineBehaviour {
         Debug.Log("RIP " + animator.name);
         // The eagle is taking it with him
         obj.transform.parent = raptor.transform;
+        //obj.transform.position = new Vector3(0, -0.6f, 0.8f);
         animator.gameObject.SendMessage("Die");
     }
 }

@@ -98,16 +98,6 @@ public class Herd : SuricateBaseSM {
                 detectEnemies();
             }
         }
-
-        /*
-        // Testing run away to holes
-        if(timer > 5.0f) {
-            timer = 0;
-            foreach(GameObject suricate in GameObject.FindGameObjectsWithTag("Suricate")) {
-                suricate.SendMessage("ToSafety");
-            }
-        }
-        */
     }
 
 	// OnStateExit is called when a transition ends and the state machine finishes evaluating this state
