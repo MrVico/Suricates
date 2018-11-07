@@ -34,7 +34,7 @@ public class Chase : SuricateBaseSM {
             }
             else {
                 prey.SendMessage("Catched");
-                Debug.Log(obj.name+" is eating " + prey.gameObject.name+"...");
+                //Debug.Log(obj.name+" is eating " + prey.gameObject.name+"...");
                 // For the next "eatingTime" we are eating
                 eatingTimer += Time.deltaTime;
             }

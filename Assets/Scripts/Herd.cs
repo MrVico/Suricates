@@ -25,8 +25,6 @@ public class Herd : SuricateBaseSM {
     private float postTimer;
     private float initialRotation;
 
-    private Vector3 initialForward;
-
     private Vector3[] posts = { new Vector3(0, 0.5f, -24), new Vector3(34, 0.5f, 0), new Vector3(0, 0.5f, 24), new Vector3(-34, 0.5f, 0) };
     private int postIndex;
     private bool onPost = false;
@@ -35,7 +33,7 @@ public class Herd : SuricateBaseSM {
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         base.OnStateEnter(animator, stateInfo, layerIndex);
         // TODO: Change that cause it's ugly
-        // This means that the suricate just ran and came back to its post
+        // Only called once per suricate
         if (!onPost) {
             // TODO: Change that, only works for 1 or 2 sentinels!!!
             postIndex = nbOfSentinels * 2;
@@ -43,6 +41,7 @@ public class Herd : SuricateBaseSM {
         nbOfSentinels++;
         onPost = false;
         moveSpeed = 5f;
+        postTimer = 0;
     }
 
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -56,25 +55,22 @@ public class Herd : SuricateBaseSM {
         else if (!onPost) {
             Move(posts[postIndex]);
             if (Vector3.Distance(obj.transform.position, posts[postIndex]) < 0.1f) {
-                Debug.Log("Arrived on post");
                 // This way it's perfect
                 obj.transform.position = posts[postIndex];
                 onPost = true;
             }
         }
         else if (onPost) {
-            // We always want to look at the center (0,0,0) of the zone before we look around
             //Debug.Log("Rotation towards the center, angle: " + Vector3.Angle(obj.transform.forward, (Vector3.zero - obj.transform.position)));
+            // We always want to look at the center (0,0,0) of the zone before we look around
             if (postTimer == 0 && Vector3.Angle(obj.transform.forward, (Vector3.zero - obj.transform.position)) >= 0.2f) {
                 obj.transform.rotation = Quaternion.RotateTowards(obj.transform.rotation, Quaternion.LookRotation(Vector3.zero - obj.transform.position), 200f * Time.deltaTime);
             }
             else {
-                //Debug.Log("Looking around...");
                 // Look rotation setup once
                 if (postTimer == 0) {
                     // This way it's perfect
-                    obj.transform.rotation = Quaternion.LookRotation(Vector3.zero - obj.transform.position);
-                    initialForward = obj.transform.forward;
+                    obj.transform.rotation = Quaternion.LookRotation(Vector3.zero - obj.transform.position);                    
                     initialRotation = obj.transform.rotation.eulerAngles.y;
                     // Starts looking left                    
                     if (Random.value < 0.5f)
@@ -96,6 +92,14 @@ public class Herd : SuricateBaseSM {
                 // We look around
                 rotateLook();
                 detectEnemies();
+                
+                // TEST
+                if(postTimer > 3f){
+                    Debug.Log("Time over");
+                    foreach (GameObject suricate in GameObject.FindGameObjectsWithTag("Suricate")) {
+                        suricate.SendMessage("ToSafety");
+                    }
+                }
             }
         }
     }

@@ -5,9 +5,11 @@ using UnityEngine;
 public class Spawner : MonoBehaviour {
 
     public GameObject suricatePrefab;
+    public GameObject raptorPrefab;
     public GameObject preyPrefab;
     public int nbOfPreys;
     public int initialColonySize;
+    public float raptorSpawnTime;
 
     // For testing purposes only
     public bool spawnSuricates;
@@ -18,9 +20,12 @@ public class Spawner : MonoBehaviour {
     // Just for testing purposes
     private int totalPreys;
 
+    private float timer;
+
 	// Use this for initialization
 	void Start () {
         totalPreys = 0;
+        timer = 0;
         preys = new List<GameObject>();
         suricates = new List<GameObject>();
         if(spawnSuricates)
@@ -32,15 +37,20 @@ public class Spawner : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        // We always want to have a certain amount of preys alive
+        timer += Time.deltaTime;
+        // We always want to have a certain amount of preys alive, or do we?
         if(preys.Count < nbOfPreys) {
             SpawnPrey();
+        }
+        if(timer >= raptorSpawnTime){
+            SpawnRaptor();
+            timer = 0;
         }
 	}
 
     // TODO: Don't spawn near a Suricate!
     private void SpawnPrey() {
-        Vector3 position = new Vector3(Random.Range(-20.0f, 20.0f), preyPrefab.transform.localScale.y/2, Random.Range(-20.0f, 20.0f));
+        Vector3 position = new Vector3(Random.Range(-20f, 20f), preyPrefab.transform.localScale.y/2, Random.Range(-20f, 20f));
         GameObject prey = Instantiate(preyPrefab, position, Quaternion.identity);
         preys.Add(prey);
         totalPreys++;
@@ -71,5 +81,18 @@ public class Spawner : MonoBehaviour {
             }
             suricates.Add(suricate);
         }
+    }
+
+    // For the sake of simplicty we only spawn raptors on the left or on the right...
+    private void SpawnRaptor(){
+        Vector3 position = new Vector3(0, 10f, Random.Range(-20f, 20f));
+        // On the left
+        if(Random.value < 0.5f)
+            position.x = -50f;
+        // On the right
+        else
+            position.x = 50f;
+        GameObject raptor = Instantiate(raptorPrefab, position, Quaternion.identity);
+        raptor.name = "Raptor";
     }
 }

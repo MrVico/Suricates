@@ -27,7 +27,7 @@ public class Suricate : MonoBehaviour {
     private GameObject raptor;
     private GameObject[] holes;
     private bool safe;
-    private float timer;
+    private float hideTimer;
 
     private GameObject FoV;
 
@@ -61,30 +61,33 @@ public class Suricate : MonoBehaviour {
             // We only want to scan for a prey if we haven't already got one
             if (prey == null && suricateType == Type.Hunter /*For now*/)
                 detectCollision();
-            // We want to stay safe
+            // We want to stay safe for a while
             if (safe)
-                timer += Time.deltaTime;
+                hideTimer += Time.deltaTime;
             // After a certain time we come back out
-            if (timer >= hideTime) {
+            if (hideTimer >= hideTime) {
                 animator.ResetTrigger(runHash);
                 if (suricateType == Type.Hunter)
                     animator.SetTrigger(wanderHash);
                 else if (suricateType == Type.Sentinel)
                     animator.SetTrigger(herdHash);
+                safe = false;
+                hideTimer = 0;
             }
             UpdateInfoBar();
-            // We update the alpha of the vision field in case the user changed it
-            if (suricateType == Type.Hunter) {
-                Color materialColor = FoV.GetComponent<MeshRenderer>().material.GetColor("_Color");
-                materialColor.a = alpha;
-                FoV.GetComponent<MeshRenderer>().material.color = materialColor;
-            }
+        }
+        // TODO: This can be moved into Die()
+        // We update the alpha of the vision field in case the user changed it
+        if (suricateType == Type.Hunter) {
+            Color materialColor = FoV.GetComponent<MeshRenderer>().material.GetColor("_Color");
+            materialColor.a = alpha;
+            FoV.GetComponent<MeshRenderer>().material.color = materialColor;
         }
     }
 
     private void OnTriggerEnter(Collider other) {
         if (other.CompareTag("Hole")) {
-            Debug.Log(name + " is safe!");
+            //Debug.Log(name + " is safe!");
             safe = true;
         }
     }

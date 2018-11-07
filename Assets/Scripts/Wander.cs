@@ -12,7 +12,8 @@ public class Wander : SuricateBaseSM {
         base.OnStateEnter(animator, stateInfo, layerIndex);
         moveSpeed = 1.5f;
         timer = 0;
-        destination = MovementController.GetNewDestination(obj.transform.position, obj.transform.forward, rotationAngle, moveDistance);
+        // The first time we can wander in any direction (to fix the out of home issue)
+        destination = MovementController.GetNewDestination(obj.transform.position, obj.transform.forward, 180f/*rotationAngle*/, moveDistance);
         //Debug.DrawRay(obj.transform.position, destination, Color.red, wanderingTime);
     }
 
