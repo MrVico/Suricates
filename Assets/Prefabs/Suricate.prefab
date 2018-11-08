@@ -217,7 +217,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   suricateType: 1
   material: {fileID: 2100000, guid: 6685955daa0b0d945ae85d179088e61a, type: 2}
-  alpha: 1
+  visionAlpha: 1
   visionAngle: 90
   visionRange: 5
   hideTime: 5

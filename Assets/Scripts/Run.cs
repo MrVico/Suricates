@@ -20,10 +20,6 @@ public class Run : SuricateBaseSM {
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
 	override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         base.OnStateUpdate(animator, stateInfo, layerIndex);
-        // A raptor caught us
-        if (raptor != null) {
-            ThisIsTheEnd();
-        }
         Move(destination);
     }
 

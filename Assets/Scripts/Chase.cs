@@ -18,12 +18,8 @@ public class Chase : SuricateBaseSM {
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
 	override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         base.OnStateUpdate(animator, stateInfo, layerIndex);
-        // A raptor caught us
-        if (raptor != null) {
-            ThisIsTheEnd();
-        }
         // It is possible that the prey already got dealt with by another suricate
-        else if (prey == null) {
+        if (prey == null) {
             animator.ResetTrigger(Suricate.chaseHash);
             animator.SetTrigger(Suricate.wanderHash);
         }

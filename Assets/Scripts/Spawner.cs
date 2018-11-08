@@ -61,6 +61,20 @@ public class Spawner : MonoBehaviour {
         preys.Remove(prey);
     }
 
+    private void SuricateDied(Suricate suricate){
+        if(suricate.IsAlpha()){
+            foreach(GameObject candidat in GameObject.FindGameObjectsWithTag("Suricate")){
+                // The first suricate of the same gender becomes the new alpha
+                if(candidat.GetComponent<Suricate>().GetGender().Equals(suricate.GetGender())){
+                    candidat.GetComponent<Suricate>().IsAlpha(true);
+                    candidat.name += " Alpha";
+                    return;
+                }
+            }
+        }
+    }
+
+    // IRL there are about 20 members per family, always an alpha male & female
     private void InitialSuricateSpawn(){
         // All the initial suricates start inside their home
         Vector3 position = GameObject.FindGameObjectWithTag("Hole").transform.position;
@@ -73,11 +87,22 @@ public class Spawner : MonoBehaviour {
             // The colony has always 2 sentinels watching over it
             if(i < 2){
                 suricate.GetComponent<Suricate>().SetType(Suricate.Type.Sentinel);
-                suricate.name = "Sentinel Suricate "+(i+1);
+                // Actual name will be set in the Start method of Suricate.cs
+                suricate.name = ""+(i+1);
             }
             else{
+                // Create the two alphas
+                if(i < 4){
+                    suricate.GetComponent<Suricate>().IsAlpha(true);
+                    // One male
+                    if(i == 2)
+                        suricate.GetComponent<Suricate>().SetGender(Suricate.Gender.Male);
+                    // One female
+                    else if(i == 3)
+                        suricate.GetComponent<Suricate>().SetGender(Suricate.Gender.Female);
+                }
                 suricate.GetComponent<Suricate>().SetType(Suricate.Type.Hunter);
-                suricate.name = "Hunter Suricate "+(i-1);
+                suricate.name = ""+(i-1);
             }
             suricates.Add(suricate);
         }
@@ -94,5 +119,11 @@ public class Spawner : MonoBehaviour {
             position.x = 50f;
         GameObject raptor = Instantiate(raptorPrefab, position, Quaternion.identity);
         raptor.name = "Raptor";
+    }
+
+    // Between 2 and 4 suricates per brood
+    private void BabySpawner(){
+        // Should the mother always be in their home when giving birth???
+        // We should add a general day time so we know how many days passed etc...
     }
 }

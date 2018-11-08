@@ -38,7 +38,7 @@ public class SuricateBaseSM : StateMachineBehaviour {
 
     // The suricate is dead
     protected void ThisIsTheEnd() {
-        Debug.Log("RIP " + animator.name);
+        Debug.Log("BASESM");
         // The eagle is taking it with him
         obj.transform.parent = raptor.transform;
         //obj.transform.position = new Vector3(0, -0.6f, 0.8f);

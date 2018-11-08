@@ -13,14 +13,17 @@ public class Suricate : MonoBehaviour {
     public static int deadHash = Animator.StringToHash("dead");
     
     public enum Type { Hunter, Sentinel };
+    public enum Gender { Male, Female };
 
-    public Type suricateType;
+    private Type suricateType;
+    private Gender suricateGender;
+    private bool alpha;
     public Material material;
     [Range(0, 1)]
-    public float alpha;
-    public int visionAngle = 90;
-    public int visionRange = 5;
-    public int hideTime = 5;
+    private float visionAlpha = 1f;
+    private int visionAngle = 90;
+    private int visionRange = 5;
+    private int hideTime = 5;
     
     private Animator animator;
     private GameObject prey;
@@ -49,6 +52,19 @@ public class Suricate : MonoBehaviour {
             GetComponent<Animator>().SetBool("sentinel", true);
             FoV = null;
         }
+        // The two alphas are already handled in the Spawner
+        if(suricateGender == null){
+            // I guess it's 1/2 male/female
+            if(Random.value < 0.5){
+                suricateGender = Gender.Male;
+            }
+            else{
+                suricateGender = Gender.Female;
+            }
+        }
+        gameObject.name = "Suricate "+suricateType+" "+gameObject.name+" "+suricateGender;
+        if(alpha)
+            gameObject.name += " Alpha";
         dead = false;
         safe = false;
         MemoriseHoles();
@@ -77,10 +93,10 @@ public class Suricate : MonoBehaviour {
             UpdateInfoBar();
         }
         // TODO: This can be moved into Die()
-        // We update the alpha of the vision field in case the user changed it
+        // We update the visionAlpha of the vision field in case the user changed it
         if (suricateType == Type.Hunter) {
             Color materialColor = FoV.GetComponent<MeshRenderer>().material.GetColor("_Color");
-            materialColor.a = alpha;
+            materialColor.a = visionAlpha;
             FoV.GetComponent<MeshRenderer>().material.color = materialColor;
         }
     }
@@ -109,12 +125,38 @@ public class Suricate : MonoBehaviour {
         }
     }
 
+    public bool IsDead(){
+        return dead;
+    }
+
+    public void SetGender(Suricate.Gender gender){
+        suricateGender = gender;
+    }
+
+    public Suricate.Gender GetGender(){
+        return suricateGender;
+    }
+
+    public void IsAlpha(bool value){
+        alpha = value;
+    }
+
+    public bool IsAlpha(){
+        return alpha;
+    }
+
     public void SetType(Suricate.Type type){
         suricateType = type;
     }
    
+   // We are dead
     private void CaughtBy(GameObject raptor) {
         this.raptor = raptor;
+        Debug.Log("RIP " + gameObject.name);
+        // The eagle is taking it with him
+        gameObject.transform.parent = raptor.transform;
+        //obj.transform.position = new Vector3(0, -0.6f, 0.8f);
+        Die();
     }
 
     public GameObject GetRaptor() {
@@ -136,7 +178,7 @@ public class Suricate : MonoBehaviour {
     private void Die() {
         GetComponent<MeshRenderer>().material.color = Color.red;
         // We "disable" the vision field
-        alpha = 0;
+        visionAlpha = 0;
         animator.ResetTrigger(Suricate.wanderHash);
         animator.ResetTrigger(Suricate.chaseHash);
         animator.ResetTrigger(Suricate.herdHash);        
@@ -145,6 +187,9 @@ public class Suricate : MonoBehaviour {
         dead = true;
         // We hide the infobar
         transform.GetComponentInChildren<Canvas>().enabled = false;
+        // Notify the spawner
+        FindObjectOfType<Spawner>().SendMessage("SuricateDied", this);
+        gameObject.name = "Dead Suricate";
     }
 
     // A raptor was spotted, run away!
@@ -189,9 +234,9 @@ public class Suricate : MonoBehaviour {
         Mesh mesh = new Mesh();
         visionCone.GetComponent<MeshFilter>().mesh = mesh;
         visionCone.GetComponent<MeshRenderer>().material = material;
-        // Set the alpha component of the material's color to 0 so the FoV is transparent
+        // Set the visionAlpha component of the material's color to 0 so the FoV is transparent
         Color materialColor = visionCone.GetComponent<MeshRenderer>().material.GetColor("_Color");
-        materialColor.a = alpha;
+        materialColor.a = visionAlpha;
         visionCone.GetComponent<MeshRenderer>().material.color = materialColor;
 
         List<Vector3> vertices = new List<Vector3>();
