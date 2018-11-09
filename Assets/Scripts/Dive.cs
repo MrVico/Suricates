@@ -21,6 +21,7 @@ public class Dive : RaptorBaseSM {
         base.OnStateUpdate(animator, stateInfo, layerIndex);
         // The suricate got to safety
         if(prey.GetComponent<Suricate>().IsSafe()) {
+            animator.GetComponent<Raptor>().SendMessage("LostPrey");
             // We didn't catch anything we go back to flying 'cause we are hungry
             animator.ResetTrigger(Raptor.diveHash);
             animator.SetTrigger(Raptor.flyHash);

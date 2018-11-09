@@ -272,7 +272,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &488610985
 Prefab:
@@ -311,7 +311,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4900386237398820, guid: bf558c75898905143a487570a282991e, type: 2}
       propertyPath: m_RootOrder
-      value: 11
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 1981733208715542, guid: bf558c75898905143a487570a282991e, type: 2}
       propertyPath: m_Name
@@ -338,6 +338,34 @@ Prefab:
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bf558c75898905143a487570a282991e, type: 2}
   m_IsPrefabAsset: 0
+--- !u!1 &598672028
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 598672029}
+  m_Layer: 0
+  m_Name: 'TODO: Correct the birthing when running/hiding'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &598672029
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 598672028}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.8835008, y: -3.4963746, z: 19.691065}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &659511206
 Prefab:
   m_ObjectHideFlags: 0
@@ -483,7 +511,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4880065695064072, guid: 37bc2de671ee5774397a785e0f29e841, type: 2}
       propertyPath: m_RootOrder
-      value: 13
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 1000844380459578, guid: 37bc2de671ee5774397a785e0f29e841, type: 2}
       propertyPath: m_IsActive
@@ -557,7 +585,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4900386237398820, guid: bf558c75898905143a487570a282991e, type: 2}
       propertyPath: m_RootOrder
-      value: 10
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 1981733208715542, guid: bf558c75898905143a487570a282991e, type: 2}
       propertyPath: m_Name
@@ -643,7 +671,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1721412757
 GameObject:
@@ -671,7 +699,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1745029995
 GameObject:
@@ -770,7 +798,7 @@ MonoBehaviour:
   preyPrefab: {fileID: 1873624272913930, guid: 8a845f93e96a6c04a91e3f59a4d2d7bd, type: 2}
   nbOfPreys: 10
   initialColonySize: 5
-  raptorSpawnTime: 60
+  raptorSpawnTime: 5
   spawnSuricates: 1
 --- !u!114 &1745030000
 MonoBehaviour:
@@ -820,7 +848,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4900386237398820, guid: bf558c75898905143a487570a282991e, type: 2}
       propertyPath: m_RootOrder
-      value: 12
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 1981733208715542, guid: bf558c75898905143a487570a282991e, type: 2}
       propertyPath: m_Name
@@ -902,7 +930,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4900386237398820, guid: bf558c75898905143a487570a282991e, type: 2}
       propertyPath: m_RootOrder
-      value: 9
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1981733208715542, guid: bf558c75898905143a487570a282991e, type: 2}
       propertyPath: m_Name

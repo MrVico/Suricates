@@ -50,7 +50,7 @@ public class Herd : SuricateBaseSM {
         //Debug.DrawRay(obj.transform.position, obj.transform.forward*5, Color.red, 0.16f);
         if (!onPost) {
             Move(posts[postIndex]);
-            if (Vector3.Distance(obj.transform.position, posts[postIndex]) < 0.1f) {
+            if (Vector3.Distance(obj.transform.position, posts[postIndex]) < 0.2f) {
                 // This way it's perfect
                 obj.transform.position = posts[postIndex];
                 onPost = true;

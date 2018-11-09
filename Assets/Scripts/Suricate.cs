@@ -105,6 +105,8 @@ public class Suricate : MonoBehaviour {
                     animator.SetTrigger(wanderHash);
                 else if (suricateType == Type.Sentinel)
                     animator.SetTrigger(herdHash);
+                else if (suricateType == Type.Baby)
+                    animator.SetBool("baby", true);
                 safe = false;
                 hideTimer = 0;
             }
@@ -131,7 +133,7 @@ public class Suricate : MonoBehaviour {
                 //Debug.Log("PREGNANT");
                 pregnancyTime += Time.deltaTime;
                 // After 15s we deliver the brats
-                if (pregnancyTime >= /*15f*/3f) {
+                if (pregnancyTime >= 3/*15f*/) {
                     pregnancyTime = 0;
                     timeSinceLastPregnancy = 0;
                     Debug.Log("BABIES");
@@ -245,6 +247,7 @@ public class Suricate : MonoBehaviour {
             animator.ResetTrigger(wanderHash);
             animator.ResetTrigger(chaseHash);
             animator.ResetTrigger(herdHash);
+            animator.SetBool("baby", false);
             animator.SetTrigger(runHash);
         }
     } 
