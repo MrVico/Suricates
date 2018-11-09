@@ -12,8 +12,8 @@ public class Suricate : MonoBehaviour {
     public static int runHash = Animator.StringToHash("run");
     public static int deadHash = Animator.StringToHash("dead");
     
-    public enum Type { Hunter, Sentinel };
-    public enum Gender { Male, Female };
+    public enum Type { Hunter, Sentinel, Baby };
+    public enum Gender { Null, Male, Female };
 
     private Type suricateType;
     private Gender suricateGender;
@@ -39,6 +39,22 @@ public class Suricate : MonoBehaviour {
     private float currentBarValue;
 
     private bool dead;
+
+    /*
+        Gestation 11 semaines
+        4 portées par an
+        2-4 petits
+        Les petits ne sortent du terrier qu'au bout de 21 jours
+    */
+
+    // 11 weeks
+    private float pregnancyTime;
+    private float timeSinceLastPregnancy;
+    // Get pregnant after 3-4 months if there's an alpha male
+    private float seedPlantingTime;
+
+    // When you are the tutor of babies, you wait for them
+    private bool wait;
     
     // Use this for initialization
     void Start() {
@@ -52,19 +68,21 @@ public class Suricate : MonoBehaviour {
             GetComponent<Animator>().SetBool("sentinel", true);
             FoV = null;
         }
-        // The two alphas are already handled in the Spawner
-        if(suricateGender == null){
-            // I guess it's 1/2 male/female
-            if(Random.value < 0.5){
-                suricateGender = Gender.Male;
-            }
-            else{
-                suricateGender = Gender.Female;
+        else if (suricateType == Type.Baby) {
+            GetComponent<Animator>().SetBool("baby", true);
+            visionRange /= 2;
+            FoV = CreateVisionField();
+        }
+        gameObject.name = "Suricate "+gameObject.name+" "+suricateType +" "+suricateGender;
+        if (alpha) {
+            gameObject.name += " Alpha";
+            if (suricateGender == Gender.Female) {
+                pregnancyTime = 0;
+                timeSinceLastPregnancy = 0;
+                // For now this is between 10s & 30s
+                seedPlantingTime = 2/*Random.Range(10, 30)*/;
             }
         }
-        gameObject.name = "Suricate "+suricateType+" "+gameObject.name+" "+suricateGender;
-        if(alpha)
-            gameObject.name += " Alpha";
         dead = false;
         safe = false;
         MemoriseHoles();
@@ -80,7 +98,7 @@ public class Suricate : MonoBehaviour {
             // We want to stay safe for a while
             if (safe)
                 hideTimer += Time.deltaTime;
-            // After a certain time we come back out
+            // After a certain time we come back out, should be the same for everyone!
             if (hideTimer >= hideTime) {
                 animator.ResetTrigger(runHash);
                 if (suricateType == Type.Hunter)
@@ -98,6 +116,28 @@ public class Suricate : MonoBehaviour {
             Color materialColor = FoV.GetComponent<MeshRenderer>().material.GetColor("_Color");
             materialColor.a = visionAlpha;
             FoV.GetComponent<MeshRenderer>().material.color = materialColor;
+        }
+        if (alpha && suricateGender == Gender.Female) {
+            // We are not yet pregnant
+            if (pregnancyTime == 0) {
+                timeSinceLastPregnancy += Time.deltaTime;
+                if (timeSinceLastPregnancy >= seedPlantingTime) {
+                    // Congratulations! You are pregnant!
+                    pregnancyTime = Time.deltaTime;
+                }
+            }
+            // We are now pregnant
+            else {
+                //Debug.Log("PREGNANT");
+                pregnancyTime += Time.deltaTime;
+                // After 15s we deliver the brats
+                if (pregnancyTime >= /*15f*/3f) {
+                    pregnancyTime = 0;
+                    timeSinceLastPregnancy = 0;
+                    Debug.Log("BABIES");
+                    FindObjectOfType<Spawner>().SendMessage("SpawnBabies", transform);
+                }
+            }
         }
     }
 
@@ -148,6 +188,10 @@ public class Suricate : MonoBehaviour {
     public void SetType(Suricate.Type type){
         suricateType = type;
     }
+
+    public Suricate.Type GetSuricateType() {
+        return suricateType;
+    }
    
    // We are dead
     private void CaughtBy(GameObject raptor) {
@@ -167,10 +211,11 @@ public class Suricate : MonoBehaviour {
         return prey;
     }
 
-    // Called from Chase.cs when a prey was eaten
+    // Called from Chase.cs when a prey was eaten or from the alpha female
     public void Ate() {
         currentBarValue += 50f;
-        if (currentBarValue > 100)
+        // A baby doesn't need to eat that much
+        if (currentBarValue > 100 || suricateType == Suricate.Type.Baby)
             currentBarValue = 100;
     }
 

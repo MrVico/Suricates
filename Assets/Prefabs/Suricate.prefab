@@ -215,12 +215,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 096abded2d517044aa5af451fb7da862, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  suricateType: 1
   material: {fileID: 2100000, guid: 6685955daa0b0d945ae85d179088e61a, type: 2}
-  visionAlpha: 1
-  visionAngle: 90
-  visionRange: 5
-  hideTime: 5
 --- !u!114 &114422853674852734
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -43,6 +43,14 @@ public class Chase : SuricateBaseSM {
                 prey.SendMessage("Dead");
                 // The suricate ate
                 animator.SendMessage("Ate");
+                // If we are the alpha female we need to give some to the babies
+                if(obj.GetComponent<Suricate>().IsAlpha() && obj.GetComponent<Suricate>().GetGender().Equals(Suricate.Gender.Female)) {
+                    foreach (GameObject baby in GameObject.FindGameObjectsWithTag("Suricate")) {
+                        if (baby.GetComponent<Suricate>().GetSuricateType().Equals(Suricate.Type.Baby)) {
+                            baby.SendMessage("Ate");
+                        }
+                    }
+                }
                 eatingTimer = 0;
                 animator.ResetTrigger(Suricate.chaseHash);
                 animator.SetTrigger(Suricate.wanderHash);
