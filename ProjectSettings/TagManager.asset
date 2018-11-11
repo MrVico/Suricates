@@ -11,6 +11,7 @@ TagManager:
   - Suricate
   - Hole
   - Wall
+  - SuricateFoV
   layers:
   - Default
   - TransparentFX

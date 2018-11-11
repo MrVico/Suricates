@@ -59,6 +59,7 @@ public class Spawner : MonoBehaviour {
 
     private void PreyDied(GameObject prey) {
         preys.Remove(prey);
+        Destroy(prey);
     }
 
     private void InitialSuricateSpawn(){

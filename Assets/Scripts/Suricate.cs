@@ -58,8 +58,7 @@ public class Suricate : MonoBehaviour {
     // Update is called once per frame
     void Update() {
         if (!dead) {
-            // We only want to scan for a prey if we haven't already got one
-            if (prey == null && suricateType == Type.Hunter /*For now*/)
+            if (suricateType == Type.Hunter)
                 detectCollision();
             // We want to stay safe for a while
             if (safe)
@@ -125,9 +124,10 @@ public class Suricate : MonoBehaviour {
         return prey;
     }
 
-    // Called from Chase.cs when a prey was eaten
-    public void Ate() {
-        currentBarValue += 50f;
+    // Called from Chase.cs is being eaten
+    public void TakeABite(GameObject prey) {
+        prey.SendMessage("Aww");
+        currentBarValue += 0.5f;
         if (currentBarValue > 100)
             currentBarValue = 100;
     }
@@ -247,13 +247,19 @@ public class Suricate : MonoBehaviour {
         while (rotAngle < visionAngle/2) {
             //Debug.DrawRay(FoV.transform.position, scanVector * range, Color.red, 0.16f);
             if (Physics.Raycast(FoV.transform.position, scanVector, out hit, visionRange)) {
-                //Debug.Log("Hit: " + hit.collider.name);
                 // If we are a hunter and already chasing a prey we focus on that :)
                 if (suricateType == Type.Hunter && prey == null && hit.collider.gameObject.CompareTag("Prey")) {
                     prey = hit.collider.gameObject;
+                    prey.SendMessage("SetEnemy", gameObject);
                     animator.ResetTrigger(wanderHash);
                     animator.SetTrigger(chaseHash);
                     return;
+                }
+                // If we see another prey we notify it so it can run
+                else if(suricateType == Type.Hunter && prey != null && hit.collider.gameObject.CompareTag("Prey")) {
+                    if(hit.collider.gameObject != prey) {
+                        hit.collider.gameObject.SendMessage("SetEnemy", gameObject);
+                    }
                 }
             }
             scanVector = Quaternion.Euler(0, rotAngle, 0) * direction;

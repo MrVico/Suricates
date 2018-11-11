@@ -5,14 +5,16 @@ using UnityEngine;
 public class Prey : MonoBehaviour {
 
     public float runSpeed = 1f;
-    public float safeDistance = 15f;
+    public float safeDistance = 10f;
 
     private bool catched;
     private GameObject enemy;
+    private float life;
 
 	// Use this for initialization
 	void Start () {
         catched = false;
+        life = Random.Range(50f, 200f);
     }
 	
 	// Update is called once per frame
@@ -29,17 +31,36 @@ public class Prey : MonoBehaviour {
         }
     }
 
+    // Since the suricate FoV doesn't have a collider it's a quick fix
+    private void SetEnemy(GameObject suricate) {
+        enemy = suricate;
+    }
+
     private void Catched() {
         catched = true;
     }
 
+    public float GetLife() {
+        return life;
+    }
+
+    // Someone bit us
+    private void Aww() {
+        life--;
+        if (life <= 0)
+            Dead();
+    }
+
     private void Dead() {
+        Debug.Log("The prey died!");
         // call method on Spawner...
         FindObjectOfType<Spawner>().SendMessage("PreyDied", gameObject);
     }
 
     private void OnCollisionEnter(Collision collision) {
-        if (collision.gameObject.tag == "Suricate") {
+        Debug.Log("Collider: " + collision.gameObject.name+" Tag: "+collision.gameObject.tag);
+        if (collision.gameObject.tag == "SuricateFoV") {
+            Debug.Log("run");
             enemy = collision.gameObject;
         }
     }
