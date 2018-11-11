@@ -113,13 +113,13 @@ public class Spawner : MonoBehaviour {
                 }
                 suricate.GetComponent<Suricate>().SetType(Suricate.Type.Hunter);
             }
-            suricate.name = "" + totalSuricates;
             suricates.Add(suricate);
         }
     }
 
     // Between 2 and 4 suricates per brood
     private void SpawnBabies(Transform transform) {
+        Debug.Log("Mother: " + transform.name);
         // Should the mother always be in their home when giving birth???
         // We should add a general day time so we know how many days passed etc...
         GameObject suricate;
@@ -128,10 +128,10 @@ public class Spawner : MonoBehaviour {
         // The suricate shouldn't be flying!
         position.y /= 2;
         for(int i=0; i<Random.Range(2, 4); i++) {
+            totalSuricates++;
             // We want to spawn the baby a bit behind it's mother
             Vector3 direction = Quaternion.AngleAxis(Random.Range(-70, 70), Vector3.up) * -transform.forward;
             position += direction * 1.5f;
-            totalSuricates++;
             suricate = Instantiate(suricatePrefab, position, Quaternion.identity);
             // A baby is half as big as an adult
             suricate.transform.localScale /= 2;

@@ -5,16 +5,19 @@ using UnityEngine.UI;
 
 public class Suricate : MonoBehaviour {
 
+    public enum Type { Hunter, Sentinel, Baby };
+    public enum Gender { Null, Male, Female };
+
     // All the possible suricate state's
     public static int chaseHash = Animator.StringToHash("chase");
     public static int wanderHash = Animator.StringToHash("wander");
     public static int herdHash = Animator.StringToHash("herd");
     public static int runHash = Animator.StringToHash("run");
     public static int deadHash = Animator.StringToHash("dead");
-    
-    public enum Type { Hunter, Sentinel, Baby };
-    public enum Gender { Null, Male, Female };
 
+    private static int nbOfSuricates = 0;
+
+    private int suricateID;
     private Type suricateType;
     private Gender suricateGender;
     private bool alpha;
@@ -58,6 +61,8 @@ public class Suricate : MonoBehaviour {
         
     // Use this for initialization
     void Start() {
+        nbOfSuricates++;
+        suricateID = nbOfSuricates;
         animator = GetComponent<Animator>();
         if (suricateType == Type.Hunter) {
             GetComponent<Animator>().SetBool("hunter", true);
@@ -73,15 +78,15 @@ public class Suricate : MonoBehaviour {
             visionRange /= 2;
             FoV = CreateVisionField();
         }
-        gameObject.name = "Suricate "+gameObject.name+" "+suricateType +" "+suricateGender;
+        gameObject.name = "Suricate "+ suricateID + " "+suricateType +" "+suricateGender;
         if (alpha) {
             gameObject.name += " Alpha";
-            if (suricateGender == Gender.Female) {
-                pregnancyTime = 0;
-                timeSinceLastPregnancy = 0;
-                // For now this is between 10s & 30s
-                seedPlantingTime = 2/*Random.Range(10, 30)*/;
-            }
+        }
+        // A female can become an alpha female and needs this variable to be initialized!
+        if (suricateGender == Gender.Female) {
+            pregnancyTime = 0;
+            timeSinceLastPregnancy = 0;
+            seedPlantingTime = 2/*Random.Range(10, 30)*/;
         }
         dead = false;
         safe = false;
@@ -111,6 +116,27 @@ public class Suricate : MonoBehaviour {
                 hideTimer = 0;
             }
             UpdateInfoBar();
+            if (alpha && suricateGender == Gender.Female) {
+                // We are not yet pregnant
+                if (pregnancyTime == 0) {
+                    timeSinceLastPregnancy += Time.deltaTime;
+                    if (timeSinceLastPregnancy >= seedPlantingTime) {
+                        // Congratulations! You are pregnant!
+                        pregnancyTime = Time.deltaTime;
+                    }
+                }
+                // We are now pregnant
+                else {
+                    //Debug.Log("PREGNANT");
+                    pregnancyTime += Time.deltaTime;
+                    // After 15s we deliver the brats
+                    if (pregnancyTime >= 3/*15f*/) {
+                        pregnancyTime = 0;
+                        timeSinceLastPregnancy = 0;
+                        FindObjectOfType<Spawner>().SendMessage("SpawnBabies", transform);
+                    }
+                }
+            }
         }
         // We update the visionAlpha of the vision field in case the user changed it
         if (suricateType == Type.Hunter) {
@@ -118,34 +144,13 @@ public class Suricate : MonoBehaviour {
             materialColor.a = visionAlpha;
             FoV.GetComponent<MeshRenderer>().material.color = materialColor;
         }
-        if (alpha && suricateGender == Gender.Female) {
-            // We are not yet pregnant
-            if (pregnancyTime == 0) {
-                timeSinceLastPregnancy += Time.deltaTime;
-                if (timeSinceLastPregnancy >= seedPlantingTime) {
-                    // Congratulations! You are pregnant!
-                    pregnancyTime = Time.deltaTime;
-                }
-            }
-            // We are now pregnant
-            else {
-                //Debug.Log("PREGNANT");
-                pregnancyTime += Time.deltaTime;
-                // After 15s we deliver the brats
-                if (pregnancyTime >= 3/*15f*/) {
-                    pregnancyTime = 0;
-                    timeSinceLastPregnancy = 0;
-                    FindObjectOfType<Spawner>().SendMessage("SpawnBabies", transform);
-                }
-            }
-        }
     }
 
     // Called when a baby becomes an adult!
     private void GrownAssBaby() {
         transform.localScale *= 2;
         visionRange *= 2;
-        gameObject.name = "Suricate " + gameObject.name + " " + suricateType + " " + suricateGender;
+        gameObject.name = "Suricate " + suricateID + " " + suricateType + " " + suricateGender;
     }
 
     private void OnTriggerEnter(Collider other) {

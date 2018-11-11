@@ -557,7 +557,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1266069046}
   m_Layer: 0
-  m_Name: 'TODO: Correct the birthing when the alpha female dies'
+  m_Name: 'TODO: Make the babies follow someone else when the mother dies'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -796,7 +796,7 @@ MonoBehaviour:
   raptorPrefab: {fileID: 1000844380459578, guid: 37bc2de671ee5774397a785e0f29e841,
     type: 2}
   preyPrefab: {fileID: 1873624272913930, guid: 8a845f93e96a6c04a91e3f59a4d2d7bd, type: 2}
-  nbOfPreys: 50
+  nbOfPreys: 10
   initialColonySize: 4
   raptorSpawnTime: 15
   spawnSuricates: 1
