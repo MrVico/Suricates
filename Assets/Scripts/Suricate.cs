@@ -21,8 +21,8 @@ public class Suricate : MonoBehaviour {
     public Material material;
     [Range(0, 1)]
     private float visionAlpha = 1f;
-    private int visionAngle = 90;
-    private int visionRange = 5;
+    private float visionAngle = 90f;
+    private float visionRange = 5f;
     private int hideTime = 5;
     
     private Animator animator;
@@ -55,6 +55,9 @@ public class Suricate : MonoBehaviour {
 
     // When you are the tutor of babies, you wait for them
     private bool wait;
+
+    // TEST
+    private bool mother = false;
     
     // Use this for initialization
     void Start() {
@@ -92,6 +95,7 @@ public class Suricate : MonoBehaviour {
     // Update is called once per frame
     void Update() {
         if (!dead) {
+            Debug.Log(name + " range: " + visionRange);
             if (suricateType == Type.Hunter) {
                 detectCollision();
             }            
@@ -112,7 +116,6 @@ public class Suricate : MonoBehaviour {
             }
             UpdateInfoBar();
         }
-        // TODO: This can be moved into Die()
         // We update the visionAlpha of the vision field in case the user changed it
         if (suricateType == Type.Hunter) {
             Color materialColor = FoV.GetComponent<MeshRenderer>().material.GetColor("_Color");
@@ -123,7 +126,7 @@ public class Suricate : MonoBehaviour {
             // We are not yet pregnant
             if (pregnancyTime == 0) {
                 timeSinceLastPregnancy += Time.deltaTime;
-                if (timeSinceLastPregnancy >= seedPlantingTime) {
+                if (timeSinceLastPregnancy >= seedPlantingTime /*TEST*/ && !mother) {
                     // Congratulations! You are pregnant!
                     pregnancyTime = Time.deltaTime;
                 }
@@ -136,11 +139,19 @@ public class Suricate : MonoBehaviour {
                 if (pregnancyTime >= 3/*15f*/) {
                     pregnancyTime = 0;
                     timeSinceLastPregnancy = 0;
+                    mother = true;
                     Debug.Log("BABIES");
                     FindObjectOfType<Spawner>().SendMessage("SpawnBabies", transform);
                 }
             }
         }
+    }
+
+    // Called when a baby becomes an adult!
+    private void GrownAssBaby() {
+        transform.localScale *= 2;
+        visionRange *= 2;
+        gameObject.name = "Suricate " + gameObject.name + " " + suricateType + " " + suricateGender;
     }
 
     private void OnTriggerEnter(Collider other) {
@@ -215,9 +226,14 @@ public class Suricate : MonoBehaviour {
     
     // Called from Chase.cs is being eaten
     public void TakeABite(GameObject prey) {
+        // The prey takes a hit!
         prey.SendMessage("Aww");
-        currentBarValue += 0.5f;
-        if (currentBarValue > 100 || suricateType == Suricate.Type.Baby)
+        // Babies don't need that much food
+        if (suricateType == Suricate.Type.Baby)
+            currentBarValue += 1.5f;
+        else
+            currentBarValue += 0.5f;
+        if (currentBarValue > 100)
             currentBarValue = 100;
     }
 

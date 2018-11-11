@@ -13,7 +13,6 @@ public class Chase : SuricateBaseSM {
         moveSpeed = 3f;
         prey = animator.GetComponent<Suricate>().GetPrey();
         eating = false;
-        Debug.Log("Chase mode for " + prey.name);
 	}
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -42,6 +41,14 @@ public class Chase : SuricateBaseSM {
             Debug.Log(obj.gameObject.name + " is eating...");
             // We took a bite
             animator.SendMessage("TakeABite", prey);
+            // If we are the alpha female we need to give some to the babies
+            if (obj.GetComponent<Suricate>().IsAlpha() && obj.GetComponent<Suricate>().GetGender().Equals(Suricate.Gender.Female)) {
+                foreach (GameObject baby in GameObject.FindGameObjectsWithTag("Suricate")) {
+                    if (baby.GetComponent<Suricate>().GetSuricateType().Equals(Suricate.Type.Baby)) {
+                        baby.SendMessage("TakeABite", prey);
+                    }
+                }
+            }
         }
     }
 
