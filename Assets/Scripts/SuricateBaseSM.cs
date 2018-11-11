@@ -20,6 +20,9 @@ public class SuricateBaseSM : StateMachineBehaviour {
     private Quaternion rotation;
     private Animator animator;
 
+    // If we are a tutor we have to wait for the babies
+    private bool wait;
+
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         obj = animator.gameObject;
@@ -33,15 +36,17 @@ public class SuricateBaseSM : StateMachineBehaviour {
     }
 
     protected void Move(Vector3 destination) {
-        MovementController.Move(obj.transform, destination, rotationSpeed, moveSpeed);
+        if(!wait)
+            MovementController.Move(obj.transform, destination, rotationSpeed, moveSpeed);
+    }
+    
+    // Babies notify to wait
+    public void WaitForUs() {
+        wait = true;
     }
 
-    // The suricate is dead
-    protected void ThisIsTheEnd() {
-        Debug.Log("RIP " + animator.name);
-        // The eagle is taking it with him
-        obj.transform.parent = raptor.transform;
-        //obj.transform.position = new Vector3(0, -0.6f, 0.8f);
-        animator.gameObject.SendMessage("Die");
+    // Babies are here, let's go!
+    public void AllGood() {
+        wait = false;
     }
 }

@@ -29,10 +29,6 @@ public class Wander : SuricateBaseSM {
             }
             Move(destination);
         }
-        // An eagle caught us
-        else {
-            ThisIsTheEnd();
-        }
     }
 
 	// OnStateExit is called when a transition ends and the state machine finishes evaluating this state

@@ -12,15 +12,18 @@ public class Suricate : MonoBehaviour {
     public static int runHash = Animator.StringToHash("run");
     public static int deadHash = Animator.StringToHash("dead");
     
-    public enum Type { Hunter, Sentinel };
+    public enum Type { Hunter, Sentinel, Baby };
+    public enum Gender { Null, Male, Female };
 
-    public Type suricateType;
+    private Type suricateType;
+    private Gender suricateGender;
+    private bool alpha;
     public Material material;
     [Range(0, 1)]
-    public float alpha;
-    public int visionAngle = 90;
-    public int visionRange = 5;
-    public int hideTime = 5;
+    private float visionAlpha = 1f;
+    private int visionAngle = 90;
+    private int visionRange = 5;
+    private int hideTime = 5;
     
     private Animator animator;
     private GameObject prey;
@@ -36,6 +39,22 @@ public class Suricate : MonoBehaviour {
     private float currentBarValue;
 
     private bool dead;
+
+    /*
+        Gestation 11 semaines
+        4 portées par an
+        2-4 petits
+        Les petits ne sortent du terrier qu'au bout de 21 jours
+    */
+
+    // 11 weeks
+    private float pregnancyTime;
+    private float timeSinceLastPregnancy;
+    // Get pregnant after 3-4 months if there's an alpha male
+    private float seedPlantingTime;
+
+    // When you are the tutor of babies, you wait for them
+    private bool wait;
     
     // Use this for initialization
     void Start() {
@@ -49,6 +68,21 @@ public class Suricate : MonoBehaviour {
             GetComponent<Animator>().SetBool("sentinel", true);
             FoV = null;
         }
+        else if (suricateType == Type.Baby) {
+            GetComponent<Animator>().SetBool("baby", true);
+            visionRange /= 2;
+            FoV = CreateVisionField();
+        }
+        gameObject.name = "Suricate "+gameObject.name+" "+suricateType +" "+suricateGender;
+        if (alpha) {
+            gameObject.name += " Alpha";
+            if (suricateGender == Gender.Female) {
+                pregnancyTime = 0;
+                timeSinceLastPregnancy = 0;
+                // For now this is between 10s & 30s
+                seedPlantingTime = 2/*Random.Range(10, 30)*/;
+            }
+        }
         dead = false;
         safe = false;
         MemoriseHoles();
@@ -58,29 +92,54 @@ public class Suricate : MonoBehaviour {
     // Update is called once per frame
     void Update() {
         if (!dead) {
-            if (suricateType == Type.Hunter)
+            if (suricateType == Type.Hunter) {
                 detectCollision();
+            }            
             // We want to stay safe for a while
             if (safe)
                 hideTimer += Time.deltaTime;
-            // After a certain time we come back out
+            // After a certain time we come back out, should be the same for everyone!
             if (hideTimer >= hideTime) {
                 animator.ResetTrigger(runHash);
                 if (suricateType == Type.Hunter)
                     animator.SetTrigger(wanderHash);
                 else if (suricateType == Type.Sentinel)
                     animator.SetTrigger(herdHash);
+                else if (suricateType == Type.Baby)
+                    animator.SetBool("baby", true);
                 safe = false;
                 hideTimer = 0;
             }
             UpdateInfoBar();
         }
         // TODO: This can be moved into Die()
-        // We update the alpha of the vision field in case the user changed it
+        // We update the visionAlpha of the vision field in case the user changed it
         if (suricateType == Type.Hunter) {
             Color materialColor = FoV.GetComponent<MeshRenderer>().material.GetColor("_Color");
-            materialColor.a = alpha;
+            materialColor.a = visionAlpha;
             FoV.GetComponent<MeshRenderer>().material.color = materialColor;
+        }
+        if (alpha && suricateGender == Gender.Female) {
+            // We are not yet pregnant
+            if (pregnancyTime == 0) {
+                timeSinceLastPregnancy += Time.deltaTime;
+                if (timeSinceLastPregnancy >= seedPlantingTime) {
+                    // Congratulations! You are pregnant!
+                    pregnancyTime = Time.deltaTime;
+                }
+            }
+            // We are now pregnant
+            else {
+                //Debug.Log("PREGNANT");
+                pregnancyTime += Time.deltaTime;
+                // After 15s we deliver the brats
+                if (pregnancyTime >= 3/*15f*/) {
+                    pregnancyTime = 0;
+                    timeSinceLastPregnancy = 0;
+                    Debug.Log("BABIES");
+                    FindObjectOfType<Spawner>().SendMessage("SpawnBabies", transform);
+                }
+            }
         }
     }
 
@@ -108,12 +167,42 @@ public class Suricate : MonoBehaviour {
         }
     }
 
+    public bool IsDead(){
+        return dead;
+    }
+
+    public void SetGender(Suricate.Gender gender){
+        suricateGender = gender;
+    }
+
+    public Suricate.Gender GetGender(){
+        return suricateGender;
+    }
+
+    public void IsAlpha(bool value){
+        alpha = value;
+    }
+
+    public bool IsAlpha(){
+        return alpha;
+    }
+
     public void SetType(Suricate.Type type){
         suricateType = type;
     }
+
+    public Suricate.Type GetSuricateType() {
+        return suricateType;
+    }
    
+   // We are dead
     private void CaughtBy(GameObject raptor) {
         this.raptor = raptor;
+        Debug.Log("RIP " + gameObject.name);
+        // The eagle is taking it with him
+        gameObject.transform.parent = raptor.transform;
+        //obj.transform.position = new Vector3(0, -0.6f, 0.8f);
+        Die();
     }
 
     public GameObject GetRaptor() {
@@ -123,12 +212,12 @@ public class Suricate : MonoBehaviour {
     public GameObject GetPrey() {
         return prey;
     }
-
+    
     // Called from Chase.cs is being eaten
     public void TakeABite(GameObject prey) {
         prey.SendMessage("Aww");
         currentBarValue += 0.5f;
-        if (currentBarValue > 100)
+        if (currentBarValue > 100 || suricateType == Suricate.Type.Baby)
             currentBarValue = 100;
     }
 
@@ -136,7 +225,7 @@ public class Suricate : MonoBehaviour {
     private void Die() {
         GetComponent<MeshRenderer>().material.color = Color.red;
         // We "disable" the vision field
-        alpha = 0;
+        visionAlpha = 0;
         animator.ResetTrigger(Suricate.wanderHash);
         animator.ResetTrigger(Suricate.chaseHash);
         animator.ResetTrigger(Suricate.herdHash);        
@@ -145,6 +234,9 @@ public class Suricate : MonoBehaviour {
         dead = true;
         // We hide the infobar
         transform.GetComponentInChildren<Canvas>().enabled = false;
+        // Notify the spawner
+        FindObjectOfType<Spawner>().SendMessage("SuricateDied", this);
+        gameObject.name = "Dead Suricate";
     }
 
     // A raptor was spotted, run away!
@@ -155,6 +247,7 @@ public class Suricate : MonoBehaviour {
             animator.ResetTrigger(wanderHash);
             animator.ResetTrigger(chaseHash);
             animator.ResetTrigger(herdHash);
+            animator.SetBool("baby", false);
             animator.SetTrigger(runHash);
         }
     } 
@@ -189,9 +282,9 @@ public class Suricate : MonoBehaviour {
         Mesh mesh = new Mesh();
         visionCone.GetComponent<MeshFilter>().mesh = mesh;
         visionCone.GetComponent<MeshRenderer>().material = material;
-        // Set the alpha component of the material's color to 0 so the FoV is transparent
+        // Set the visionAlpha component of the material's color to 0 so the FoV is transparent
         Color materialColor = visionCone.GetComponent<MeshRenderer>().material.GetColor("_Color");
-        materialColor.a = alpha;
+        materialColor.a = visionAlpha;
         visionCone.GetComponent<MeshRenderer>().material.color = materialColor;
 
         List<Vector3> vertices = new List<Vector3>();
@@ -250,10 +343,10 @@ public class Suricate : MonoBehaviour {
                 // If we are a hunter and already chasing a prey we focus on that :)
                 if (suricateType == Type.Hunter && prey == null && hit.collider.gameObject.CompareTag("Prey")) {
                     prey = hit.collider.gameObject;
+                    Debug.Log("Chasing "+prey.name);
                     prey.SendMessage("SetEnemy", gameObject);
                     animator.ResetTrigger(wanderHash);
                     animator.SetTrigger(chaseHash);
-                    return;
                 }
                 // If we see another prey we notify it so it can run
                 else if(suricateType == Type.Hunter && prey != null && hit.collider.gameObject.CompareTag("Prey")) {

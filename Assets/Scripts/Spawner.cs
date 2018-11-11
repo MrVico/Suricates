@@ -15,7 +15,9 @@ public class Spawner : MonoBehaviour {
     public bool spawnSuricates;
 
     private List<GameObject> suricates;
+    private int totalSuricates;
 
+    private GameObject preyContainer;
     private List<GameObject> preys;
     // Just for testing purposes
     private int totalPreys;
@@ -25,10 +27,12 @@ public class Spawner : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         totalPreys = 0;
+        totalSuricates = 0;
         timer = 0;
         preys = new List<GameObject>();
         suricates = new List<GameObject>();
-        if(spawnSuricates)
+        preyContainer = GameObject.FindGameObjectWithTag("PreyContainer");
+        if (spawnSuricates)
             InitialSuricateSpawn();
         for(int i=0; i<nbOfPreys; i++) {
             SpawnPrey();
@@ -55,13 +59,30 @@ public class Spawner : MonoBehaviour {
         preys.Add(prey);
         totalPreys++;
         prey.name = "Prey " + totalPreys;
+        prey.transform.parent = preyContainer.transform;
     }
 
     private void PreyDied(GameObject prey) {
         preys.Remove(prey);
-        Destroy(prey);
+        //Destroy(prey);
     }
 
+    private void SuricateDied(Suricate suricate){
+        if(suricate.IsAlpha()){
+            foreach(GameObject candidat in GameObject.FindGameObjectsWithTag("Suricate")){
+                // The first alive suricate of the same gender becomes the new alpha
+                if (candidat.GetComponent<Suricate>().GetGender().Equals(suricate.GetGender())
+                    && !candidat.GetComponent<Suricate>().IsDead()){
+                    candidat.GetComponent<Suricate>().IsAlpha(true);
+                    Debug.Log("Transfer alpha");
+                    candidat.name += " Alpha";
+                    return;
+                }
+            }
+        }
+    }
+
+    // IRL there are about 20 members per family, always an alpha male & female
     private void InitialSuricateSpawn(){
         // All the initial suricates start inside their home
         Vector3 position = GameObject.FindGameObjectWithTag("Hole").transform.position;
@@ -69,18 +90,68 @@ public class Spawner : MonoBehaviour {
         position.y = suricatePrefab.transform.position.y;
         GameObject suricate;
         // Instantiate them
-        for(int i=0; i<initialColonySize; i++){
+        for(int i=0; i<initialColonySize; i++) {
+            totalSuricates++;
             suricate = Instantiate(suricatePrefab, position, Quaternion.identity);
             // The colony has always 2 sentinels watching over it
             if(i < 2){
                 suricate.GetComponent<Suricate>().SetType(Suricate.Type.Sentinel);
-                suricate.name = "Sentinel Suricate "+(i+1);
+                // Actual name will be set in the Start method of Suricate.cs
+                DetermineSuricateGender(suricate.GetComponent<Suricate>());
             }
+            // The rest are hunters
             else{
+                // Create the two alphas
+                if(i < 4){
+                    suricate.GetComponent<Suricate>().IsAlpha(true);
+                    // One male
+                    if(i == 2)
+                        suricate.GetComponent<Suricate>().SetGender(Suricate.Gender.Male);
+                    // One female
+                    else if(i == 3)
+                        suricate.GetComponent<Suricate>().SetGender(Suricate.Gender.Female);
+                }
+                else {
+                    DetermineSuricateGender(suricate.GetComponent<Suricate>());
+                }
                 suricate.GetComponent<Suricate>().SetType(Suricate.Type.Hunter);
-                suricate.name = "Hunter Suricate "+(i-1);
             }
+            suricate.name = "" + totalSuricates;
             suricates.Add(suricate);
+        }
+    }
+
+    // Between 2 and 4 suricates per brood
+    private void SpawnBabies(Transform transform) {
+        // Should the mother always be in their home when giving birth???
+        // We should add a general day time so we know how many days passed etc...
+        GameObject suricate;
+        Vector3 position = transform.position;
+        //Debug.Log("Forward: " + transform.forward+" Backward: "+ (-transform.forward));
+        // The suricate shouldn't be flying!
+        position.y /= 2;
+        for(int i=0; i<Random.Range(2, 4); i++) {
+            // We want to spawn the baby a bit behind it's mother
+            Vector3 direction = Quaternion.AngleAxis(Random.Range(-70, 70), Vector3.up) * -transform.forward;
+            position += direction * 1.5f;
+            totalSuricates++;
+            suricate = Instantiate(suricatePrefab, position, Quaternion.identity);
+            // A baby is half as big as an adult
+            suricate.transform.localScale /= 2;
+            suricate.GetComponent<Suricate>().SetType(Suricate.Type.Baby);
+            DetermineSuricateGender(suricate.GetComponent<Suricate>());
+            suricate.name = "" + totalSuricates;
+            suricates.Add(suricate);
+        }        
+    }
+
+    private void DetermineSuricateGender(Suricate suricate) {
+        // I guess it's 1/2 male/female
+        if (Random.value < 0.5) {
+            suricate.SetGender(Suricate.Gender.Male);
+        }
+        else {
+            suricate.SetGender(Suricate.Gender.Female);
         }
     }
 

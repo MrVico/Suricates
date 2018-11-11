@@ -48,13 +48,9 @@ public class Herd : SuricateBaseSM {
 	override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         base.OnStateUpdate(animator, stateInfo, layerIndex);
         //Debug.DrawRay(obj.transform.position, obj.transform.forward*5, Color.red, 0.16f);
-        // A raptor caught us
-        if (raptor != null) {
-            ThisIsTheEnd();
-        }
-        else if (!onPost) {
+        if (!onPost) {
             Move(posts[postIndex]);
-            if (Vector3.Distance(obj.transform.position, posts[postIndex]) < 0.1f) {
+            if (Vector3.Distance(obj.transform.position, posts[postIndex]) < 0.2f) {
                 // This way it's perfect
                 obj.transform.position = posts[postIndex];
                 onPost = true;
@@ -94,12 +90,14 @@ public class Herd : SuricateBaseSM {
                 detectEnemies();
                 
                 // TEST
+                /*
                 if(postTimer > 3f){
                     Debug.Log("Time over");
                     foreach (GameObject suricate in GameObject.FindGameObjectsWithTag("Suricate")) {
                         suricate.SendMessage("ToSafety");
                     }
                 }
+                */
             }
         }
     }
