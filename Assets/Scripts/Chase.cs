@@ -36,9 +36,6 @@ public class Chase : SuricateBaseSM {
         }
         // We are currently eating a prey
         else if (eating && prey.GetComponent<Prey>().GetLife() > 0) {
-            Debug.Log("Prey: " + prey);
-            //eatingTimer += Time.deltaTime;
-            Debug.Log(obj.gameObject.name + " is eating...");
             // We took a bite
             animator.SendMessage("TakeABite", prey);
             // If we are the alpha female we need to give some to the babies

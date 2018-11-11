@@ -51,8 +51,7 @@ public class Spawner : MonoBehaviour {
             timer = 0;
         }
 	}
-
-    // TODO: Don't spawn near a Suricate!
+    
     private void SpawnPrey() {
         Vector3 position = new Vector3(Random.Range(-20f, 20f), preyPrefab.transform.localScale.y/2, Random.Range(-20f, 20f));
         GameObject prey = Instantiate(preyPrefab, position, Quaternion.identity);
@@ -64,7 +63,6 @@ public class Spawner : MonoBehaviour {
 
     private void PreyDied(GameObject prey) {
         preys.Remove(prey);
-        //Destroy(prey);
     }
 
     private void SuricateDied(Suricate suricate){
@@ -74,7 +72,6 @@ public class Spawner : MonoBehaviour {
                 if (candidat.GetComponent<Suricate>().GetGender().Equals(suricate.GetGender())
                     && !candidat.GetComponent<Suricate>().IsDead()){
                     candidat.GetComponent<Suricate>().IsAlpha(true);
-                    Debug.Log("Transfer alpha");
                     candidat.name += " Alpha";
                     return;
                 }

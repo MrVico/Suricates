@@ -30,7 +30,7 @@ public class Follow : SuricateBaseSM {
         base.OnStateUpdate(animator, stateInfo, layerIndex);
         growthTime += Time.deltaTime;
         // After 10s we are no more baby!
-        if(growthTime > 1f) {
+        if(growthTime > 10f) {
             animator.gameObject.GetComponent<Suricate>().SetType(Suricate.Type.Hunter);
             animator.SetBool("baby", false);
             animator.SetBool("hunter", true);
@@ -42,7 +42,9 @@ public class Follow : SuricateBaseSM {
 
 	// OnStateExit is called when a transition ends and the state machine finishes evaluating this state
 	override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-        // We are big!
-        obj.SendMessage("GrownAssBaby");
+        if(growthTime > 10f) {
+            // We are big!
+            obj.SendMessage("GrownAssBaby");
+        }
     }
 }

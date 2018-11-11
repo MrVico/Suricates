@@ -4,11 +4,10 @@ using UnityEngine;
 
 public class RaptorBaseSM : StateMachineBehaviour {
 
-    protected float flyTime = 8f;
+    protected float flyTime = 6f;
     protected float rotationSpeed = 10f;
-    // Full 360
-    protected float rotationAngle = 180f;
-    protected float moveDistance = 40f;
+    protected float rotationAngle = 30f;
+    protected float moveDistance = 30f;
     protected float moveSpeed = 3f;
     protected float flyHeight = 10f;
 

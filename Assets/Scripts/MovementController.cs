@@ -48,7 +48,7 @@ public class MovementController : MonoBehaviour{
         }
         Vector3 destination = position + direction * distance;
         // We need to get a destination inside the ground zone
-        while (!IsDestinationInsideGroundZone(destination)) {
+        while (!IsPositionInsideGroundZone(destination)) {
             angle += 5f*angleDirection;
             direction = GetDirectionWithinAngle(forward, angle, false);
             if (raptorReset)
@@ -67,7 +67,7 @@ public class MovementController : MonoBehaviour{
         return Quaternion.AngleAxis(angle, Vector3.up) * targetForward;
     }
 
-    private static bool IsDestinationInsideGroundZone(Vector3 destination) {
+    public static bool IsPositionInsideGroundZone(Vector3 destination) {
         //Debug.Log("Destination: " + destination);
         // -1 to let a little bit of space between the destination and the border
         if (destination.x >= render.bounds.min.x + 1 && destination.x <= render.bounds.max.x - 1 && destination.z >= render.bounds.min.z + 1 && destination.z <= render.bounds.max.z - 1)

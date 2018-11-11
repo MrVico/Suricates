@@ -24,6 +24,7 @@ public class Prey : MonoBehaviour {
             Vector3 moveDirection = transform.position - enemy.transform.position;
             moveDirection.y = 0;
             transform.Translate(moveDirection.normalized * runSpeed * Time.deltaTime);
+            // TODO: Don't go outside the map!
         }
         // If an enemy was close but is now at a safe distance
         else if(enemy != null && Vector3.Distance(transform.position, enemy.transform.position) >= safeDistance) {
@@ -52,16 +53,7 @@ public class Prey : MonoBehaviour {
     }
 
     private void Dead() {
-        Debug.Log("The prey died!");
         // call method on Spawner...
         FindObjectOfType<Spawner>().SendMessage("PreyDied", gameObject);
-    }
-
-    private void OnCollisionEnter(Collision collision) {
-        Debug.Log("Collider: " + collision.gameObject.name+" Tag: "+collision.gameObject.tag);
-        if (collision.gameObject.tag == "SuricateFoV") {
-            Debug.Log("run");
-            enemy = collision.gameObject;
-        }
     }
 }

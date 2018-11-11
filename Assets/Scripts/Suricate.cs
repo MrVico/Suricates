@@ -55,10 +55,7 @@ public class Suricate : MonoBehaviour {
 
     // When you are the tutor of babies, you wait for them
     private bool wait;
-
-    // TEST
-    private bool mother = false;
-    
+        
     // Use this for initialization
     void Start() {
         animator = GetComponent<Animator>();
@@ -95,7 +92,6 @@ public class Suricate : MonoBehaviour {
     // Update is called once per frame
     void Update() {
         if (!dead) {
-            Debug.Log(name + " range: " + visionRange);
             if (suricateType == Type.Hunter) {
                 detectCollision();
             }            
@@ -126,7 +122,7 @@ public class Suricate : MonoBehaviour {
             // We are not yet pregnant
             if (pregnancyTime == 0) {
                 timeSinceLastPregnancy += Time.deltaTime;
-                if (timeSinceLastPregnancy >= seedPlantingTime /*TEST*/ && !mother) {
+                if (timeSinceLastPregnancy >= seedPlantingTime) {
                     // Congratulations! You are pregnant!
                     pregnancyTime = Time.deltaTime;
                 }
@@ -139,8 +135,6 @@ public class Suricate : MonoBehaviour {
                 if (pregnancyTime >= 3/*15f*/) {
                     pregnancyTime = 0;
                     timeSinceLastPregnancy = 0;
-                    mother = true;
-                    Debug.Log("BABIES");
                     FindObjectOfType<Spawner>().SendMessage("SpawnBabies", transform);
                 }
             }
@@ -209,7 +203,6 @@ public class Suricate : MonoBehaviour {
    // We are dead
     private void CaughtBy(GameObject raptor) {
         this.raptor = raptor;
-        Debug.Log("RIP " + gameObject.name);
         // The eagle is taking it with him
         gameObject.transform.parent = raptor.transform;
         //obj.transform.position = new Vector3(0, -0.6f, 0.8f);
@@ -246,7 +239,6 @@ public class Suricate : MonoBehaviour {
         animator.ResetTrigger(Suricate.chaseHash);
         animator.ResetTrigger(Suricate.herdHash);        
         animator.SetTrigger(Suricate.deadHash);
-        Debug.Log("Die");
         dead = true;
         // We hide the infobar
         transform.GetComponentInChildren<Canvas>().enabled = false;
@@ -356,10 +348,10 @@ public class Suricate : MonoBehaviour {
         while (rotAngle < visionAngle/2) {
             //Debug.DrawRay(FoV.transform.position, scanVector * range, Color.red, 0.16f);
             if (Physics.Raycast(FoV.transform.position, scanVector, out hit, visionRange)) {
+                //Debug.Log("Collision Prey: "+prey+" Collider: " + hit.collider.gameObject.name+" Tag: "+ hit.collider.gameObject.tag);
                 // If we are a hunter and already chasing a prey we focus on that :)
                 if (suricateType == Type.Hunter && prey == null && hit.collider.gameObject.CompareTag("Prey")) {
                     prey = hit.collider.gameObject;
-                    Debug.Log("Chasing "+prey.name);
                     prey.SendMessage("SetEnemy", gameObject);
                     animator.ResetTrigger(wanderHash);
                     animator.SetTrigger(chaseHash);

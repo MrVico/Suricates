@@ -76,28 +76,9 @@ public class Herd : SuricateBaseSM {
                         lookDirection = 1;
                 }
                 postTimer += Time.deltaTime;
-                // We were on this post long enough, off to the next one
-                // Not useful I think, IRL the suricates don't rotate positions
-                /*
-                if (postTimer > postTime) {
-                    postIndex = (postIndex + 1) % 4;
-                    onPost = false;
-                    postTimer = 0;
-                }
-                */
                 // We look around
                 rotateLook();
                 detectEnemies();
-                
-                // TEST
-                /*
-                if(postTimer > 3f){
-                    Debug.Log("Time over");
-                    foreach (GameObject suricate in GameObject.FindGameObjectsWithTag("Suricate")) {
-                        suricate.SendMessage("ToSafety");
-                    }
-                }
-                */
             }
         }
     }
@@ -148,5 +129,6 @@ public class Herd : SuricateBaseSM {
             // This way the rotation is smooth by always having the same speed
             obj.transform.rotation = Quaternion.RotateTowards(obj.transform.rotation, rotation, lookRotationSpeed * Time.deltaTime);
         }
+        Debug.DrawRay(obj.transform.position, obj.transform.forward * 2f, Color.red, 0.15f);
     }
 }
