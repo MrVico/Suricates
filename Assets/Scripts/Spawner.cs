@@ -7,6 +7,8 @@ public class Spawner : MonoBehaviour {
     public GameObject suricatePrefab;
     public GameObject raptorPrefab;
     public GameObject preyPrefab;
+    public Material alphaMaleMaterial;
+    public Material alphaFemaleMaterial;
     public int nbOfPreys;
     public int initialColonySize;
     public float raptorSpawnTime;
@@ -37,6 +39,8 @@ public class Spawner : MonoBehaviour {
         for(int i=0; i<nbOfPreys; i++) {
             SpawnPrey();
         }
+        // TEST
+        //SpawnRaptor();
     }
 	
 	// Update is called once per frame
@@ -73,6 +77,10 @@ public class Spawner : MonoBehaviour {
                     && !candidat.GetComponent<Suricate>().IsDead()){
                     candidat.GetComponent<Suricate>().IsAlpha(true);
                     candidat.name += " Alpha";
+                    if(suricate.GetGender().Equals(Suricate.Gender.Male))
+                        candidat.GetComponent<Renderer>().material = alphaMaleMaterial;
+                    else if (suricate.GetGender().Equals(Suricate.Gender.Female))
+                        candidat.GetComponent<Renderer>().material = alphaFemaleMaterial;
                     return;
                 }
             }
@@ -102,11 +110,15 @@ public class Spawner : MonoBehaviour {
                 if(i < 4){
                     suricate.GetComponent<Suricate>().IsAlpha(true);
                     // One male
-                    if(i == 2)
+                    if (i == 2) {
                         suricate.GetComponent<Suricate>().SetGender(Suricate.Gender.Male);
+                        suricate.GetComponent<Renderer>().material = alphaMaleMaterial;
+                    }
                     // One female
-                    else if(i == 3)
+                    else if (i == 3) {
                         suricate.GetComponent<Suricate>().SetGender(Suricate.Gender.Female);
+                        suricate.GetComponent<Renderer>().material = alphaFemaleMaterial;
+                    }
                 }
                 else {
                     DetermineSuricateGender(suricate.GetComponent<Suricate>());

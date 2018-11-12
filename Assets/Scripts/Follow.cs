@@ -8,7 +8,8 @@ public class Follow : SuricateBaseSM {
 
     // Shouldn't always be the alpha female, but way too complicated to do otherwise
     private GameObject tutor;
-    private float growthTime;
+    private float timer;
+    private float babyTime = 10f;
 
 	// OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
 	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
@@ -22,15 +23,15 @@ public class Follow : SuricateBaseSM {
                 return;
             }
         }
-        growthTime = 0;
+        timer = 0;
     }
 
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
 	override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         base.OnStateUpdate(animator, stateInfo, layerIndex);
-        growthTime += Time.deltaTime;
-        // After 10s we are no more baby!
-        if(growthTime > 10f) {
+        timer += Time.deltaTime;
+        // After babyTime we are no more baby!
+        if(timer >= babyTime) {
             animator.gameObject.GetComponent<Suricate>().SetType(Suricate.Type.Hunter);
             animator.SetBool("baby", false);
             animator.SetBool("hunter", true);
@@ -42,7 +43,7 @@ public class Follow : SuricateBaseSM {
 
 	// OnStateExit is called when a transition ends and the state machine finishes evaluating this state
 	override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-        if(growthTime > 10f) {
+        if(timer >= babyTime) {
             // We are big!
             obj.SendMessage("GrownAssBaby");
         }

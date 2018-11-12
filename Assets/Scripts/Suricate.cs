@@ -55,6 +55,9 @@ public class Suricate : MonoBehaviour {
     private float timeSinceLastPregnancy;
     // Get pregnant after 3-4 months if there's an alpha male
     private float seedPlantingTime;
+    private float minSeed = 10f;
+    private float maxSeed = 30f;
+    private float pregnancyDuration = 15f;
 
     // When you are the tutor of babies, you wait for them
     private bool wait;
@@ -86,7 +89,7 @@ public class Suricate : MonoBehaviour {
         if (suricateGender == Gender.Female) {
             pregnancyTime = 0;
             timeSinceLastPregnancy = 0;
-            seedPlantingTime = 2/*Random.Range(10, 30)*/;
+            seedPlantingTime = Random.Range(minSeed, maxSeed);
         }
         dead = false;
         safe = false;
@@ -112,11 +115,10 @@ public class Suricate : MonoBehaviour {
                     animator.SetTrigger(herdHash);
                 else if (suricateType == Type.Baby)
                     animator.SetBool("baby", true);
-                safe = false;
                 hideTimer = 0;
             }
             UpdateInfoBar();
-            if (alpha && suricateGender == Gender.Female) {
+            if (alpha && suricateGender == Gender.Female && suricateType != Suricate.Type.Baby) {
                 // We are not yet pregnant
                 if (pregnancyTime == 0) {
                     timeSinceLastPregnancy += Time.deltaTime;
@@ -129,8 +131,8 @@ public class Suricate : MonoBehaviour {
                 else {
                     //Debug.Log("PREGNANT");
                     pregnancyTime += Time.deltaTime;
-                    // After 15s we deliver the brats
-                    if (pregnancyTime >= 3/*15f*/) {
+                    // After pregnancyDuration we deliver the brats
+                    if (pregnancyTime >= pregnancyDuration) {
                         pregnancyTime = 0;
                         timeSinceLastPregnancy = 0;
                         FindObjectOfType<Spawner>().SendMessage("SpawnBabies", transform);
@@ -151,12 +153,22 @@ public class Suricate : MonoBehaviour {
         transform.localScale *= 2;
         visionRange *= 2;
         gameObject.name = "Suricate " + suricateID + " " + suricateType + " " + suricateGender;
+        // The baby can well be an alpha!
+        if (alpha)
+            gameObject.name += " Alpha";
     }
 
+    // We enter our home, we are safe
     private void OnTriggerEnter(Collider other) {
         if (other.CompareTag("Hole")) {
-            //Debug.Log(name + " is safe!");
             safe = true;
+        }
+    }
+
+    // We exit our home, into the dangerous world!
+    private void OnTriggerExit(Collider other) {
+        if (other.CompareTag("Hole")) {
+            safe = false;
         }
     }
 
