@@ -74,6 +74,8 @@ public class Herd : SuricateBaseSM {
                     // Starts looking right
                     else
                         lookDirection = 1;
+                    // Now we stand!
+                    obj.transform.localScale = new Vector3(obj.transform.localScale.x, 2.5f, obj.transform.localScale.z);
                 }
                 postTimer += Time.deltaTime;
                 // We look around

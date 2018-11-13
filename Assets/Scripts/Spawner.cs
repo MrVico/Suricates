@@ -131,7 +131,6 @@ public class Spawner : MonoBehaviour {
 
     // Between 2 and 4 suricates per brood
     private void SpawnBabies(Transform transform) {
-        Debug.Log("Mother: " + transform.name);
         // Should the mother always be in their home when giving birth???
         // We should add a general day time so we know how many days passed etc...
         GameObject suricate;
