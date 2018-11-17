@@ -26,7 +26,7 @@ public class Fly : RaptorBaseSM {
         else
             destination = MovementController.GetNewDestination(obj.transform.position, obj.transform.forward, rotationAngle, 20f, reset);
         // After this time passed the raptor leaves
-        leaveTime = Random.Range(10f, 20f);
+        leaveTime = Random.Range(20f, 30f);
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks

@@ -16,6 +16,8 @@ public class Suricate : MonoBehaviour {
     public static int deadHash = Animator.StringToHash("dead");
 
     private static int nbOfSuricates = 0;
+    private static int nbOfSafeSuricates = 0;
+    private static bool everyoneSafe = false;
 
     private int suricateID;
     private Type suricateType;
@@ -31,7 +33,9 @@ public class Suricate : MonoBehaviour {
     private Animator animator;
     private GameObject prey;
     private GameObject raptor;
+
     private GameObject[] holes;
+    private bool alert;
     private bool safe;
     private float hideTimer;
 
@@ -92,6 +96,7 @@ public class Suricate : MonoBehaviour {
             seedPlantingTime = Random.Range(minSeed, maxSeed);
         }
         dead = false;
+        alert = false;
         safe = false;
         MemoriseHoles();
         InitInfoBar();
@@ -102,12 +107,21 @@ public class Suricate : MonoBehaviour {
         if (!dead) {
             if (suricateType == Type.Hunter) {
                 detectCollision();
-            }            
-            // We want to stay safe for a while
-            if (safe)
+            }        
+            // We should be under alert and everyone is running home
+            if(alert) {
+                Debug.Log("Everyone safe: "+everyoneSafe+" Number of safe suricates: " + nbOfSafeSuricates+ " alive: "+Spawner.aliveSuricates);
+                // If ALL the suricates are home we start the hide timer
+                if(nbOfSafeSuricates == Spawner.aliveSuricates) {
+                    everyoneSafe = true;
+                }
+            }
+            // Once everyone is safe we wait it out
+            if (everyoneSafe)
                 hideTimer += Time.deltaTime;
-            // After a certain time we come back out, should be the same for everyone!
+            // After a certain time we come back out, everyone at once!
             if (hideTimer >= hideTime) {
+                alert = false;
                 animator.ResetTrigger(runHash);
                 if (suricateType == Type.Hunter)
                     animator.SetTrigger(wanderHash);
@@ -162,6 +176,7 @@ public class Suricate : MonoBehaviour {
     private void OnTriggerEnter(Collider other) {
         if (other.CompareTag("Hole")) {
             safe = true;
+            nbOfSafeSuricates++;
         }
     }
 
@@ -169,6 +184,7 @@ public class Suricate : MonoBehaviour {
     private void OnTriggerExit(Collider other) {
         if (other.CompareTag("Hole")) {
             safe = false;
+            nbOfSafeSuricates--;
         }
     }
 
@@ -222,7 +238,10 @@ public class Suricate : MonoBehaviour {
         this.raptor = raptor;
         // The eagle is taking it with him
         gameObject.transform.parent = raptor.transform;
-        //obj.transform.position = new Vector3(0, -0.6f, 0.8f);
+        // Notify everyone of the danger!
+        foreach (GameObject suricate in GameObject.FindGameObjectsWithTag("Suricate")) {
+            suricate.SendMessage("ToSafety");
+        }
         Die();
     }
 
@@ -267,8 +286,9 @@ public class Suricate : MonoBehaviour {
     // A raptor was spotted, run away!
     private void ToSafety() {
         // We can't run if we are dead!
-        if(!dead){
+        if(!dead && !alert) {
             Debug.Log("RUUUUUUUN");
+            alert = true;
             animator.ResetTrigger(wanderHash);
             animator.ResetTrigger(chaseHash);
             animator.ResetTrigger(herdHash);

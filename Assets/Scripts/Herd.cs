@@ -68,12 +68,16 @@ public class Herd : SuricateBaseSM {
                     // This way it's perfect
                     obj.transform.rotation = Quaternion.LookRotation(Vector3.zero - obj.transform.position);                    
                     initialRotation = obj.transform.rotation.eulerAngles.y;
+                    // We always look the same direction first since the two sentinels are facing each other
+                    lookDirection = 1;
+                    /*
                     // Starts looking left                    
                     if (Random.value < 0.5f)
                         lookDirection = -1;
                     // Starts looking right
                     else
                         lookDirection = 1;
+                    */
                     // Now we stand!
                     obj.transform.localScale = new Vector3(obj.transform.localScale.x, 2.5f, obj.transform.localScale.z);
                 }

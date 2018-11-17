@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Spawner : MonoBehaviour {
 
+    public static int totalSuricates;
+    public static int aliveSuricates;
+
     public GameObject suricatePrefab;
     public GameObject raptorPrefab;
     public GameObject preyPrefab;
@@ -17,7 +20,6 @@ public class Spawner : MonoBehaviour {
     public bool spawnSuricates;
 
     private List<GameObject> suricates;
-    private int totalSuricates;
 
     private GameObject preyContainer;
     private List<GameObject> preys;
@@ -30,6 +32,7 @@ public class Spawner : MonoBehaviour {
 	void Start () {
         totalPreys = 0;
         totalSuricates = 0;
+        aliveSuricates = 0;
         timer = 0;
         preys = new List<GameObject>();
         suricates = new List<GameObject>();
@@ -40,7 +43,7 @@ public class Spawner : MonoBehaviour {
             SpawnPrey();
         }
         // TEST
-        //SpawnRaptor();
+        SpawnRaptor();
     }
 	
 	// Update is called once per frame
@@ -50,10 +53,12 @@ public class Spawner : MonoBehaviour {
         if(preys.Count < nbOfPreys) {
             SpawnPrey();
         }
+        /*
         if(timer >= raptorSpawnTime){
             SpawnRaptor();
             timer = 0;
         }
+        */
 	}
     
     private void SpawnPrey() {
@@ -70,7 +75,8 @@ public class Spawner : MonoBehaviour {
     }
 
     private void SuricateDied(Suricate suricate){
-        if(suricate.IsAlpha()){
+        aliveSuricates--;
+        if (suricate.IsAlpha()){
             foreach(GameObject candidat in GameObject.FindGameObjectsWithTag("Suricate")){
                 // The first alive suricate of the same gender becomes the new alpha
                 if (candidat.GetComponent<Suricate>().GetGender().Equals(suricate.GetGender())
@@ -97,6 +103,7 @@ public class Spawner : MonoBehaviour {
         // Instantiate them
         for(int i=0; i<initialColonySize; i++) {
             totalSuricates++;
+            aliveSuricates++;
             suricate = Instantiate(suricatePrefab, position, Quaternion.identity);
             // The colony has always 2 sentinels watching over it
             if(i < 2){
@@ -140,6 +147,7 @@ public class Spawner : MonoBehaviour {
         position.y /= 2;
         for(int i=0; i<Random.Range(2, 4); i++) {
             totalSuricates++;
+            aliveSuricates++;
             // We want to spawn the baby a bit behind it's mother
             Vector3 direction = Quaternion.AngleAxis(Random.Range(-70, 70), Vector3.up) * -transform.forward;
             position += direction * 1.5f;
