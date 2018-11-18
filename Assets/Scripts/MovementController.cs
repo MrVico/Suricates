@@ -12,6 +12,9 @@ public class MovementController : MonoBehaviour{
    
     void Start() {
         render = GetComponent<Renderer>();
+        // min --> -35, 0, -25
+        // max --> 35, 0, 25
+        //Debug.Log("Boundaries: " + render.bounds.min + " " + render.bounds.max);
     }
 
     public static void Move(Transform objTransform, Vector3 destination, float rotationSpeed, float moveSpeed) {
@@ -68,7 +71,6 @@ public class MovementController : MonoBehaviour{
     }
 
     public static bool IsPositionInsideGroundZone(Vector3 destination) {
-        //Debug.Log("Destination: " + destination);
         // -1 to let a little bit of space between the destination and the border
         if (destination.x >= render.bounds.min.x + 1 && destination.x <= render.bounds.max.x - 1 && destination.z >= render.bounds.min.z + 1 && destination.z <= render.bounds.max.z - 1)
             return true;

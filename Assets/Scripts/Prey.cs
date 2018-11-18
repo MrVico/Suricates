@@ -23,8 +23,9 @@ public class Prey : MonoBehaviour {
         if(!catched && enemy != null && Vector3.Distance(transform.position, enemy.transform.position) < safeDistance) {
             Vector3 moveDirection = transform.position - enemy.transform.position;
             moveDirection.y = 0;
-            transform.Translate(moveDirection.normalized * runSpeed * Time.deltaTime);
-            // TODO: Don't go outside the map!
+            Vector3 destination = transform.position + (moveDirection.normalized * runSpeed * Time.deltaTime);
+            if (MovementController.IsPositionInsideGroundZone(destination))
+                transform.Translate(moveDirection.normalized * runSpeed * Time.deltaTime);
         }
         // If an enemy was close but is now at a safe distance
         else if(enemy != null && Vector3.Distance(transform.position, enemy.transform.position) >= safeDistance) {

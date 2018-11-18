@@ -62,7 +62,7 @@ public class Spawner : MonoBehaviour {
 	}
     
     private void SpawnPrey() {
-        Vector3 position = new Vector3(Random.Range(-20f, 20f), preyPrefab.transform.localScale.y/2, Random.Range(-20f, 20f));
+        Vector3 position = new Vector3(Random.Range(-33f, 33f), preyPrefab.transform.localScale.y/2, Random.Range(-23f, 23f));
         GameObject prey = Instantiate(preyPrefab, position, Quaternion.identity);
         preys.Add(prey);
         totalPreys++;
