@@ -70,14 +70,6 @@ public class Herd : SuricateBaseSM {
                     initialRotation = obj.transform.rotation.eulerAngles.y;
                     // We always look the same direction first since the two sentinels are facing each other
                     lookDirection = 1;
-                    /*
-                    // Starts looking left                    
-                    if (Random.value < 0.5f)
-                        lookDirection = -1;
-                    // Starts looking right
-                    else
-                        lookDirection = 1;
-                    */
                     // Now we stand!
                     obj.transform.localScale = new Vector3(obj.transform.localScale.x, 2.5f, obj.transform.localScale.z);
                 }
@@ -91,8 +83,9 @@ public class Herd : SuricateBaseSM {
 
 	// OnStateExit is called when a transition ends and the state machine finishes evaluating this state
 	override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-	
-	}
+        // We don't stand anymore!
+        obj.transform.localScale = new Vector3(obj.transform.localScale.x, 1f, obj.transform.localScale.z);
+    }
 
     private void detectEnemies() {
         RaycastHit[] coneHits = MyPhysics.ConeCastAll(obj.transform.position, radius, obj.transform.forward, depth, angle);

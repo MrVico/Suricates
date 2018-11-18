@@ -43,7 +43,7 @@ public class Spawner : MonoBehaviour {
             SpawnPrey();
         }
         // TEST
-        SpawnRaptor();
+        //SpawnRaptor();
     }
 	
 	// Update is called once per frame

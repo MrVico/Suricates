@@ -14,15 +14,21 @@ public class Follow : SuricateBaseSM {
 	// OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
 	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         base.OnStateEnter(animator, stateInfo, layerIndex);
-        // We want to follow the nearest male hunter
+
+        List<GameObject> tutorCandidats = new List<GameObject>();
         foreach (GameObject candidat in GameObject.FindGameObjectsWithTag("Suricate")) {
+            /*if(candidat.GetComponent<Suricate>().GetSuricateType().Equals(Suricate.Type.Hunter))
+                Debug.Log("Name: "+candidat.name+" Distance: " + Vector3.Distance(candidat.transform.position, obj.transform.position));*/
             if (candidat.GetComponent<Suricate>().GetSuricateType().Equals(Suricate.Type.Hunter)
-                 && candidat.GetComponent<Suricate>().GetGender().Equals(Suricate.Gender.Female)
-                 && candidat.GetComponent<Suricate>().IsAlpha() ) {
-                tutor = candidat;
-                return;
+                 && !candidat.GetComponent<Suricate>().IsDead()
+                 && Vector3.Distance(candidat.transform.position, obj.transform.position) < 20f) {
+                tutorCandidats.Add(candidat);
             }
         }
+        // We choose a hunter that's nearby
+        tutor = tutorCandidats.ElementAt(Random.Range(0, tutorCandidats.Count));
+        Debug.Log("Tutor: " + tutor.name);
+        tutor.SendMessage("TutorMe", obj);
         timer = 0;
     }
 

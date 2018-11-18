@@ -9,6 +9,7 @@ public class Suricate : MonoBehaviour {
     public enum Gender { Null, Male, Female };
 
     // All the possible suricate state's
+    public static int collectHash = Animator.StringToHash("collect");
     public static int chaseHash = Animator.StringToHash("chase");
     public static int wanderHash = Animator.StringToHash("wander");
     public static int herdHash = Animator.StringToHash("herd");
@@ -28,7 +29,7 @@ public class Suricate : MonoBehaviour {
     private float visionAlpha = 1f;
     private float visionAngle = 90f;
     private float visionRange = 5f;
-    private int hideTime = 5;
+    private int hideTime = 2;
     
     private Animator animator;
     private GameObject prey;
@@ -59,12 +60,13 @@ public class Suricate : MonoBehaviour {
     private float timeSinceLastPregnancy;
     // Get pregnant after 3-4 months if there's an alpha male
     private float seedPlantingTime;
-    private float minSeed = 10f;
-    private float maxSeed = 30f;
-    private float pregnancyDuration = 15f;
+    private float minSeed = /*10f*/2;
+    private float maxSeed = /*30f*/3;
+    private float pregnancyDuration = /*15f*/4;
 
-    // When you are the tutor of babies, you wait for them
-    private bool wait;
+    // When you are the tutor
+    private bool collectingBabies;
+    private List<GameObject> youths;
         
     // Use this for initialization
     void Start() {
@@ -98,6 +100,7 @@ public class Suricate : MonoBehaviour {
         dead = false;
         alert = false;
         safe = false;
+        youths = new List<GameObject>();
         MemoriseHoles();
         InitInfoBar();
     }
@@ -105,16 +108,12 @@ public class Suricate : MonoBehaviour {
     // Update is called once per frame
     void Update() {
         if (!dead) {
-            if (suricateType == Type.Hunter) {
+            if (suricateType == Type.Hunter && !collectingBabies) {
                 detectCollision();
             }        
-            // We should be under alert and everyone is running home
-            if(alert) {
-                Debug.Log("Everyone safe: "+everyoneSafe+" Number of safe suricates: " + nbOfSafeSuricates+ " alive: "+Spawner.aliveSuricates);
-                // If ALL the suricates are home we start the hide timer
-                if(nbOfSafeSuricates == Spawner.aliveSuricates) {
-                    everyoneSafe = true;
-                }
+            // If we are alert && ALL the suricates are home we start the hide timer
+            if(alert && nbOfSafeSuricates == Spawner.aliveSuricates) {
+                everyoneSafe = true;
             }
             // Once everyone is safe we wait it out
             if (everyoneSafe)
@@ -132,7 +131,7 @@ public class Suricate : MonoBehaviour {
                 hideTimer = 0;
             }
             UpdateInfoBar();
-            if (alpha && suricateGender == Gender.Female && suricateType != Suricate.Type.Baby) {
+            if (!alert && alpha && suricateGender == Gender.Female && suricateType != Suricate.Type.Baby) {
                 // We are not yet pregnant
                 if (pregnancyTime == 0) {
                     timeSinceLastPregnancy += Time.deltaTime;
@@ -143,7 +142,6 @@ public class Suricate : MonoBehaviour {
                 }
                 // We are now pregnant
                 else {
-                    //Debug.Log("PREGNANT");
                     pregnancyTime += Time.deltaTime;
                     // After pregnancyDuration we deliver the brats
                     if (pregnancyTime >= pregnancyDuration) {
@@ -153,6 +151,19 @@ public class Suricate : MonoBehaviour {
                     }
                 }
             }
+            // We need to check if they didn't grow up, if so, remove them from the list
+            if(youths.Count > 0) {
+                // ToArray() to create a copy, thus the live modification to the list won't affect us
+                foreach(GameObject youth in youths.ToArray()) {
+                    if (!youth.GetComponent<Suricate>().GetSuricateType().Equals(Suricate.Type.Baby)) {
+                        youths.Remove(youth);
+                    }
+                }
+            }
+        }
+        // This way the dead suricate is shown properly
+        else if(dead && raptor != null && transform.localPosition != new Vector3(0, -0.6f, 0.8f)) {
+            transform.localPosition = new Vector3(0, -0.6f, 0.8f);
         }
         // We update the visionAlpha of the vision field in case the user changed it
         if (suricateType == Type.Hunter) {
@@ -197,7 +208,7 @@ public class Suricate : MonoBehaviour {
     private void UpdateInfoBar() {
         Vector2 screenPosition = Camera.main.WorldToScreenPoint(new Vector3(transform.position.x, transform.position.y, transform.position.z + 1.5f));
         infoBar.transform.position = screenPosition;
-        currentBarValue -= 0.1f;
+        currentBarValue -= 0.05f;
         infoBar.value = currentBarValue / maxBarValue;
         // Dead
         if(currentBarValue <= 0) {
@@ -236,7 +247,7 @@ public class Suricate : MonoBehaviour {
    // We are dead
     private void CaughtBy(GameObject raptor) {
         this.raptor = raptor;
-        // The eagle is taking it with him
+        // The eagle is taking us with him
         gameObject.transform.parent = raptor.transform;
         // Notify everyone of the danger!
         foreach (GameObject suricate in GameObject.FindGameObjectsWithTag("Suricate")) {
@@ -251,6 +262,23 @@ public class Suricate : MonoBehaviour {
 
     public GameObject GetPrey() {
         return prey;
+    }
+
+    public void TutorMe(GameObject baby) {
+        Debug.Log("I'm the tutor for: " + baby.name);
+        collectingBabies = true;
+        youths.Add(baby);
+        animator.ResetTrigger(Suricate.chaseHash);
+        animator.ResetTrigger(Suricate.wanderHash);
+        animator.SetTrigger(Suricate.collectHash);
+    }
+
+    public void CollectFinished() {
+        collectingBabies = false;
+    }
+
+    public List<GameObject> GetYouths() {
+        return youths;
     }
     
     // Called from Chase.cs is being eaten
@@ -287,7 +315,6 @@ public class Suricate : MonoBehaviour {
     private void ToSafety() {
         // We can't run if we are dead!
         if(!dead && !alert) {
-            Debug.Log("RUUUUUUUN");
             alert = true;
             animator.ResetTrigger(wanderHash);
             animator.ResetTrigger(chaseHash);

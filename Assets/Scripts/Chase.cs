@@ -19,7 +19,7 @@ public class Chase : SuricateBaseSM {
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         base.OnStateUpdate(animator, stateInfo, layerIndex);
         // The prey was eaten, we go back to wandering around
-        if (prey.GetComponent<Prey>().GetLife() <= 0) {
+        if (prey == null || (prey != null && prey.GetComponent<Prey>().GetLife() <= 0)) {
             eating = false;
             animator.ResetTrigger(Suricate.chaseHash);
             animator.SetTrigger(Suricate.wanderHash);
@@ -38,12 +38,10 @@ public class Chase : SuricateBaseSM {
         else if (eating && prey.GetComponent<Prey>().GetLife() > 0) {
             // We took a bite
             animator.SendMessage("TakeABite", prey);
-            // If we are the alpha female we need to give some to the babies
-            if (obj.GetComponent<Suricate>().IsAlpha() && obj.GetComponent<Suricate>().GetGender().Equals(Suricate.Gender.Female)) {
-                foreach (GameObject baby in GameObject.FindGameObjectsWithTag("Suricate")) {
-                    if (baby.GetComponent<Suricate>().GetSuricateType().Equals(Suricate.Type.Baby)) {
-                        baby.SendMessage("TakeABite", prey);
-                    }
+            // If we are a tutor we need to give some to the youths
+            if (obj.GetComponent<Suricate>().GetYouths().Count > 0) {
+                foreach (GameObject youth in obj.GetComponent<Suricate>().GetYouths()) {
+                    youth.SendMessage("TakeABite", prey);
                 }
             }
         }
