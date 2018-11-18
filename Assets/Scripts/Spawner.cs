@@ -107,7 +107,7 @@ public class Spawner : MonoBehaviour {
             suricate = Instantiate(suricatePrefab, position, Quaternion.identity);
             // The colony has always 2 sentinels watching over it
             if(i < 2){
-                suricate.GetComponent<Suricate>().SetType(Suricate.Type.Sentinel);
+                suricate.GetComponent<Suricate>().SetSuricateType(Suricate.Type.Sentinel);
                 // Actual name will be set in the Start method of Suricate.cs
                 DetermineSuricateGender(suricate.GetComponent<Suricate>());
             }
@@ -130,7 +130,7 @@ public class Spawner : MonoBehaviour {
                 else {
                     DetermineSuricateGender(suricate.GetComponent<Suricate>());
                 }
-                suricate.GetComponent<Suricate>().SetType(Suricate.Type.Hunter);
+                suricate.GetComponent<Suricate>().SetSuricateType(Suricate.Type.Hunter);
             }
             suricates.Add(suricate);
         }
@@ -154,7 +154,7 @@ public class Spawner : MonoBehaviour {
             suricate = Instantiate(suricatePrefab, position, Quaternion.identity);
             // A baby is half as big as an adult
             suricate.transform.localScale /= 2;
-            suricate.GetComponent<Suricate>().SetType(Suricate.Type.Baby);
+            suricate.GetComponent<Suricate>().SetSuricateType(Suricate.Type.Baby);
             DetermineSuricateGender(suricate.GetComponent<Suricate>());
             suricate.name = "" + totalSuricates;
             suricates.Add(suricate);

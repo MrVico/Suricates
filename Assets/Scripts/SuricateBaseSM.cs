@@ -18,7 +18,7 @@ public class SuricateBaseSM : StateMachineBehaviour {
     protected GameObject raptor;
 
     private Quaternion rotation;
-    private Animator animator;
+    //private Animator animator;
 
     // If we are a tutor we have to wait for the babies
     private bool wait;
@@ -26,7 +26,7 @@ public class SuricateBaseSM : StateMachineBehaviour {
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         obj = animator.gameObject;
-        this.animator = animator;
+        //this.animator = animator;
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks

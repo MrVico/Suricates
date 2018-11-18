@@ -27,7 +27,6 @@ public class Follow : SuricateBaseSM {
         }
         // We choose a hunter that's nearby
         tutor = tutorCandidats.ElementAt(Random.Range(0, tutorCandidats.Count));
-        Debug.Log("Tutor: " + tutor.name);
         tutor.SendMessage("TutorMe", obj);
         timer = 0;
     }
@@ -38,9 +37,9 @@ public class Follow : SuricateBaseSM {
         timer += Time.deltaTime;
         // After babyTime we are no more baby!
         if(timer >= babyTime) {
-            animator.gameObject.GetComponent<Suricate>().SetType(Suricate.Type.Hunter);
             animator.SetBool("baby", false);
             animator.SetBool("hunter", true);
+            animator.SetTrigger(Suricate.wanderHash);
         }
         if(Vector3.Distance(obj.transform.position, tutor.transform.position) > 1.5f) {
             Move(tutor.transform.position);
