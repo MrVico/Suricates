@@ -72,6 +72,9 @@ public class Suricate : MonoBehaviour {
     private float maxSeed = 30f;
     private float pregnancyDuration = 15f;
 
+    // The amount the baby ate
+    private float babyGrowthEating = 0f;
+
     // When you are the tutor
     private bool collectingBabies;
     private List<GameObject> youths;
@@ -176,12 +179,14 @@ public class Suricate : MonoBehaviour {
         else if(dead && raptor != null && transform.localPosition != new Vector3(0, -0.6f, 0.8f)) {
             transform.localPosition = new Vector3(0, -0.6f, 0.8f);
         }
+        /*
         // We update the visionAlpha of the vision field in case the user changed it
         if (suricateType == Type.Hunter) {
             Color materialColor = FoV.GetComponent<MeshRenderer>().material.GetColor("_Color");
             materialColor.a = visionAlpha;
             FoV.GetComponent<MeshRenderer>().material.color = materialColor;
         }
+        */
     }
 
     // Called when a baby becomes an adult!
@@ -231,13 +236,13 @@ public class Suricate : MonoBehaviour {
         if (suricateType.Equals(Suricate.Type.Sentinel) && backUpCalled)
             Debug.Log(name+" backup: " + backupname);
         // If we are a hungry sentinel on post we want to go hunt!
-        if(!alert && !backUpCalled && GetSuricateType().Equals(Suricate.Type.Sentinel) && currentBarValue < 80f && transform.position == myPost) {
+        if(!alert && !backUpCalled && GetSuricateType().Equals(Suricate.Type.Sentinel) && currentBarValue < 40f && transform.position == myPost) {
             GameObject candidat = null;
             // We select the closest hunter that isn't starving to relieve us
             foreach(GameObject suricate in GameObject.FindGameObjectsWithTag("Suricate")) {
                 if(suricate.GetComponent<Suricate>().GetSuricateType().Equals(Suricate.Type.Hunter) 
                 && !suricate.GetComponent<Suricate>().IsAlpha()
-                && suricate.GetComponent<Suricate>().GetFullness() > 75f
+                && suricate.GetComponent<Suricate>().GetFullness() > 60f
                 &&  ((candidat == null) || (candidat != null && Vector3.Distance(suricate.transform.position, transform.position) < Vector3.Distance(candidat.transform.position, transform.position))) ) {
                     if(candidat != null)
                         candidat.GetComponent<Suricate>().SetSuricateType(Suricate.Type.Hunter);
@@ -256,7 +261,7 @@ public class Suricate : MonoBehaviour {
             }
         }
         // Dead
-        else if(currentBarValue <= 0) {
+        if(currentBarValue <= 0) {
             Die();
         }
     }
@@ -271,7 +276,6 @@ public class Suricate : MonoBehaviour {
         suricateType = Type.Sentinel;
         animator.SetBool("hunter", false);
         animator.SetBool("sentinel", true);
-        Debug.Log(name+" is OnSentinelDuty");
         animator.ResetTrigger(wanderHash);
         animator.ResetTrigger(chaseHash);
         animator.SetTrigger(herdHash);
@@ -366,19 +370,25 @@ public class Suricate : MonoBehaviour {
         // The prey takes a hit!
         prey.SendMessage("Aww");
         // Babies don't need that much food
-        if (suricateType == Suricate.Type.Baby)
+        if (suricateType == Suricate.Type.Baby) {
             currentBarValue += 1.5f;
+            babyGrowthEating += 1;
+        }
         else
             currentBarValue += 0.5f;
         if (currentBarValue > 100)
             currentBarValue = 100;
     }
 
+    public float GetBabyGrowth() {
+        return babyGrowthEating;
+    }
+
     // The suricate died
     private void Die() {
         GetComponent<MeshRenderer>().material.color = Color.red;
-        // We "disable" the vision field
-        visionAlpha = 0;
+        // We destroy the vision field
+        Destroy(transform.Find("Vision Cone").gameObject);
         animator.ResetTrigger(Suricate.wanderHash);
         animator.ResetTrigger(Suricate.chaseHash);
         animator.ResetTrigger(Suricate.herdHash);        

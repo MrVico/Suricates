@@ -535,7 +535,7 @@ MonoBehaviour:
   preyPrefab: {fileID: 1873624272913930, guid: 8a845f93e96a6c04a91e3f59a4d2d7bd, type: 2}
   alphaMaleMaterial: {fileID: 2100000, guid: b970b0038e42acc4da3a3b34a9ea9218, type: 2}
   alphaFemaleMaterial: {fileID: 2100000, guid: 119ec2eed0c8faa4b99db761a1523eff, type: 2}
-  nbOfPreys: 80
+  nbOfPreys: 50
   initialColonySize: 6
   raptorSpawnTime: 100
   spawnSuricates: 1
