@@ -121,7 +121,7 @@ public class Suricate : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if (!dead) {
+		if (!dead) {
             if (suricateType == Type.Hunter && !collectingBabies) {
                 detectCollision();
             }        
@@ -179,7 +179,7 @@ public class Suricate : MonoBehaviour {
         else if(dead && raptor != null && transform.localPosition != new Vector3(0, -0.6f, 0.8f)) {
             transform.localPosition = new Vector3(0, -0.6f, 0.8f);
         }
-        /*
+		/*
         // We update the visionAlpha of the vision field in case the user changed it
         if (suricateType == Type.Hunter) {
             Color materialColor = FoV.GetComponent<MeshRenderer>().material.GetColor("_Color");
@@ -187,7 +187,7 @@ public class Suricate : MonoBehaviour {
             FoV.GetComponent<MeshRenderer>().material.color = materialColor;
         }
         */
-    }
+	}
 
     // Called when a baby becomes an adult!
     private void GrownAssBaby() {
