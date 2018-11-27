@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Pause : MonoBehaviour {
+public class PauseOnClick : MonoBehaviour {
 
 	public Text text;
 	private bool isPaused = false;
@@ -12,20 +12,25 @@ public class Pause : MonoBehaviour {
 	void Start () {
 		text.text = "Pause";
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 
-	public void pauseButton() {
+	public void pause() {
 		if (!isPaused) {
 			text.text = "Play";
 			isPaused = true;
+#if UNITY_EDITOR
+			UnityEditor.EditorApplication.isPaused = true;
+#else
+			Application.Pause();
+#endif
 		}
 		else {
 			text.text = "Pause";
 			isPaused = false;
+#if UNITY_EDITOR
+			UnityEditor.EditorApplication.isPaused = false;
+#else
+			Application.Play();
+#endif
 		}
 	}
 }
