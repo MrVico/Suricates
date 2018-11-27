@@ -53,6 +53,7 @@ public class Suricate : MonoBehaviour {
     private Slider infoBar;
     private float maxBarValue;
     private float currentBarValue;
+    private float amountEaten;
 
     private bool dead;
 
@@ -223,6 +224,7 @@ public class Suricate : MonoBehaviour {
         infoBar = transform.GetComponentInChildren<Slider>();
         maxBarValue = 100f;
         currentBarValue = maxBarValue;
+        amountEaten = 0;
     }
 
     //TEST
@@ -374,10 +376,17 @@ public class Suricate : MonoBehaviour {
             currentBarValue += 1.5f;
             babyGrowthEating += 1;
         }
-        else
+        else{
             currentBarValue += 0.5f;
+        }
         if (currentBarValue > 100)
             currentBarValue = 100;
+        // Needed to determine the new alpha female
+        amountEaten++;
+    }
+
+    public float GetAmountEaten(){
+        return amountEaten;
     }
 
     public float GetBabyGrowth() {

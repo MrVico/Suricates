@@ -76,18 +76,40 @@ public class Spawner : MonoBehaviour {
 
     private void SuricateDied(Suricate suricate){
         aliveSuricates--;
+        // If an alpha died we need to elect a new one
         if (suricate.IsAlpha()){
-            foreach(GameObject candidat in GameObject.FindGameObjectsWithTag("Suricate")){
-                // The first alive suricate of the same gender becomes the new alpha
-                if (candidat.GetComponent<Suricate>().GetGender().Equals(suricate.GetGender())
-                    && !candidat.GetComponent<Suricate>().IsDead()){
-                    candidat.GetComponent<Suricate>().IsAlpha(true);
-                    candidat.name += " Alpha";
-                    if(suricate.GetGender().Equals(Suricate.Gender.Male))
-                        candidat.GetComponent<Renderer>().material = alphaMaleMaterial;
-                    else if (suricate.GetGender().Equals(Suricate.Gender.Female))
-                        candidat.GetComponent<Renderer>().material = alphaFemaleMaterial;
-                    return;
+            // If it's a male, the first male suricate becomes the new alpha
+            if(suricate.GetGender().Equals(Suricate.Gender.Male)){      
+                foreach(GameObject candidat in GameObject.FindGameObjectsWithTag("Suricate")){
+                    if (candidat.GetComponent<Suricate>().GetGender().Equals(suricate.GetGender())
+                        && !candidat.GetComponent<Suricate>().IsDead()){
+                            candidat.GetComponent<Suricate>().IsAlpha(true);
+                            candidat.name += " Alpha";
+                            candidat.GetComponent<Renderer>().material = alphaMaleMaterial;
+                            return;
+                    }
+                }
+            }
+            // If it's a female we need to get the biggest female to replace her
+            else{
+                GameObject newAlphaFemale = null;
+                foreach(GameObject candidat in GameObject.FindGameObjectsWithTag("Suricate")){
+                    if (candidat.GetComponent<Suricate>().GetGender().Equals(suricate.GetGender())
+                        && !candidat.GetComponent<Suricate>().IsDead()){
+                            if(newAlphaFemale == null){
+                                newAlphaFemale = candidat;
+                            }
+                            // If the candidat ate more it's bigger!
+                            else if(candidat.GetComponent<Suricate>().GetAmountEaten() > newAlphaFemale.GetComponent<Suricate>().GetAmountEaten()){
+                                newAlphaFemale = candidat;
+                            }
+                    }
+                }
+                // If we found a female
+                if(newAlphaFemale != null){
+                    newAlphaFemale.GetComponent<Suricate>().IsAlpha(true);
+                    newAlphaFemale.name += " Alpha";
+                    newAlphaFemale.GetComponent<Renderer>().material = alphaFemaleMaterial;
                 }
             }
         }
