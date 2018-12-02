@@ -141,6 +141,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a35c6eec37202eb41bc13a150b3c0aa0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1101 &1101017468562402584
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 1
+    m_ConditionEvent: dead
+    m_EventTreshold: 0
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: 1102683024502723416}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0.25
+  m_TransitionOffset: 0
+  m_ExitTime: 0.75
+  m_HasExitTime: 1
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 1
 --- !u!1101 &1101026146876462042
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -801,6 +825,7 @@ AnimatorState:
   m_Transitions:
   - {fileID: 1101133095646675698}
   - {fileID: 1101778107683316182}
+  - {fileID: 1101017468562402584}
   m_StateMachineBehaviours:
   - {fileID: 114093555783292166}
   m_Position: {x: 50, y: 50, z: 0}

@@ -88,7 +88,6 @@ public class Suricate : MonoBehaviour {
         if (suricateType == Type.Hunter) {
             animator.SetBool("hunter", true);
             animator.SetTrigger(wanderHash);
-            // Only on the hunter 'cause the sentinel has better sight
         }
         else if (suricateType == Type.Sentinel) {
             animator.SetBool("sentinel", true);
@@ -147,8 +146,8 @@ public class Suricate : MonoBehaviour {
             }
             UpdateFullnessBar();
             if (!alert && alpha && suricateGender == Gender.Female && suricateType != Suricate.Type.Baby) {
-                // We are not yet pregnant
-                if (pregnancyTime == 0) {
+                // We are not yet pregnant and don't have kids to look after
+                if (pregnancyTime == 0 && youths.Count == 0) {
                     timeSinceLastPregnancy += Time.deltaTime;
                     if (timeSinceLastPregnancy >= seedPlantingTime) {
                         // Congratulations! You are pregnant!
@@ -156,7 +155,7 @@ public class Suricate : MonoBehaviour {
                     }
                 }
                 // We are now pregnant
-                else {
+                else if(pregnancyTime > 0){
                     pregnancyTime += Time.deltaTime;
                     // After pregnancyDuration we deliver the brats
                     if (pregnancyTime >= pregnancyDuration) {
@@ -243,7 +242,7 @@ public class Suricate : MonoBehaviour {
     private void UpdateFullnessBar() {
         Vector2 screenPosition = Camera.main.WorldToScreenPoint(new Vector3(transform.position.x, transform.position.y, transform.position.z + 1.5f));
         infoBar.transform.position = screenPosition;
-        currentBarValue -= 0.03f;
+        currentBarValue -= 0.03f * Time.timeScale;
         infoBar.value = currentBarValue / maxBarValue;
         /*
         if (suricateType.Equals(Suricate.Type.Sentinel) && backUpCalled)
