@@ -30,6 +30,7 @@ public class Spawner : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+        // Change this value to increase/descrease the playspeed!
         Time.timeScale = 1f;
         totalPreys = 0;
         totalSuricates = 0;
@@ -61,6 +62,16 @@ public class Spawner : MonoBehaviour {
         }
         */
 	}
+
+    public int GetNumberOfPostedSentinels(){
+        int amount = 0;
+        foreach(GameObject suricate in GameObject.FindGameObjectsWithTag("Suricate")){
+            if(suricate.GetComponent<Suricate>().GetSuricateType().Equals(Suricate.Type.Sentinel)){
+                amount++;
+            }
+        }
+        return amount;
+    }
     
     private void SpawnPrey() {
         Vector3 position = new Vector3(Random.Range(-33f, 33f), preyPrefab.transform.localScale.y/2, Random.Range(-23f, 23f));

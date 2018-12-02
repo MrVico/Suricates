@@ -198,10 +198,20 @@ public class Suricate : MonoBehaviour {
         GameObject visionCone = transform.Find("Vision Cone").gameObject;
         visionCone.transform.localPosition = new Vector3(0f, -0.3f, 0f);
         gameObject.name = "Suricate " + suricateID + " " + suricateType + " " + suricateGender;
-        gameObject.GetComponent<Suricate>().SetSuricateType(Suricate.Type.Hunter);
         // The baby can well be an alpha!
         if (alpha)
             gameObject.name += " Alpha";
+        // We've to be a sentinel 'cause the old ones died
+        if(FindObjectOfType<Spawner>().GetNumberOfPostedSentinels() < 2){
+            gameObject.GetComponent<Suricate>().SetSuricateType(Suricate.Type.Sentinel);
+            animator.SetBool("sentinel", true);
+            animator.SetTrigger(Suricate.herdHash);
+        }
+        else{
+            gameObject.GetComponent<Suricate>().SetSuricateType(Suricate.Type.Hunter);
+            animator.SetBool("hunter", true);
+            animator.SetTrigger(Suricate.wanderHash);
+        }
     }
 
     // We enter our home, we are safe
@@ -235,8 +245,10 @@ public class Suricate : MonoBehaviour {
         infoBar.transform.position = screenPosition;
         currentBarValue -= 0.03f;
         infoBar.value = currentBarValue / maxBarValue;
+        /*
         if (suricateType.Equals(Suricate.Type.Sentinel) && backUpCalled)
             Debug.Log(name+" backup: " + backupname);
+        */
         // If we are a hungry sentinel on post we want to go hunt!
         if(!alert && !backUpCalled && GetSuricateType().Equals(Suricate.Type.Sentinel) && currentBarValue < 40f && transform.position == myPost) {
             GameObject candidat = null;
@@ -252,14 +264,12 @@ public class Suricate : MonoBehaviour {
                     candidat.GetComponent<Suricate>().SetSuricateType(Suricate.Type.Sentinel);
                 }
             }
-            Debug.Log("Looking for a new sentinel...");
             // If we found someone to relieve us from our duty
             if (candidat != null) {
                 backUpCalled = true;
                 // We give him our post!
                 candidat.SendMessage("OnSentinelDuty", this);
                 backupname = candidat.name;
-                //Debug.Log(name + " is hungry, " + candidat.name + " will relieve him off his duty");
             }
         }
         // Dead
@@ -289,7 +299,6 @@ public class Suricate : MonoBehaviour {
     }
 
     public void RelievedFromPost() {
-        Debug.Log(name+" relieved from herding!");
         backUpCalled = false;
         suricateType = Type.Hunter;
         animator.SetBool("sentinel", false);

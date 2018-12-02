@@ -28,8 +28,6 @@ public class Follow : SuricateBaseSM {
         // After babyTime and if we ate enough we are no more baby!
         if(timer >= babyTime && obj.GetComponent<Suricate>().GetBabyGrowth() > 200f) {
             animator.SetBool("baby", false);
-            animator.SetBool("hunter", true);
-            animator.SetTrigger(Suricate.wanderHash);
         }
         // If the suricate is dead or no more hunter we need to find another one!
         else if(tutor.GetComponent<Suricate>().IsDead() || !tutor.GetComponent<Suricate>().GetSuricateType().Equals(Suricate.Type.Hunter)) {
