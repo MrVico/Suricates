@@ -18,6 +18,7 @@ public class Follow : SuricateBaseSM {
         base.OnStateEnter(animator, stateInfo, layerIndex);
         FindTutor();
         timer = 0;
+        moveSpeed = 4f;
     }
 
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks

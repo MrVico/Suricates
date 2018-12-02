@@ -30,6 +30,7 @@ public class Spawner : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+        Time.timeScale = 1f;
         totalPreys = 0;
         totalSuricates = 0;
         aliveSuricates = 0;
