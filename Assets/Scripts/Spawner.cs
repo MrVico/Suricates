@@ -55,12 +55,10 @@ public class Spawner : MonoBehaviour {
         if(preys.Count < nbOfPreys) {
             SpawnPrey();
         }
-        /*
         if(timer >= raptorSpawnTime){
             SpawnRaptor();
             timer = 0;
         }
-        */
 	}
 
     public int GetNumberOfPostedSentinels(){

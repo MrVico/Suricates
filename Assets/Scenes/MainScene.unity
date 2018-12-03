@@ -296,7 +296,7 @@ RectTransform:
   - {fileID: 356416664}
   - {fileID: 1692902831}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -637,7 +637,7 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: ad58fec67de3e2c4ab7ab9ed6e487b1e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -822,7 +822,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &371995897
 GameObject:
@@ -2003,6 +2003,34 @@ CanvasRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1077972772}
   m_CullTransparentMesh: 0
+--- !u!1 &1103050199
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1103050200}
+  m_Layer: 0
+  m_Name: 'TODO: Change camera angle'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1103050200
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1103050199}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -6.7504277, y: -3.6874008, z: 7.225465}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1187619417
 GameObject:
   m_ObjectHideFlags: 0
@@ -2579,9 +2607,9 @@ MonoBehaviour:
   preyPrefab: {fileID: 1873624272913930, guid: 8a845f93e96a6c04a91e3f59a4d2d7bd, type: 2}
   alphaMaleMaterial: {fileID: 2100000, guid: b970b0038e42acc4da3a3b34a9ea9218, type: 2}
   alphaFemaleMaterial: {fileID: 2100000, guid: 119ec2eed0c8faa4b99db761a1523eff, type: 2}
-  nbOfPreys: 10
-  initialColonySize: 6
-  raptorSpawnTime: 100
+  nbOfPreys: 0
+  initialColonySize: 1
+  raptorSpawnTime: 15
   spawnSuricates: 1
 --- !u!114 &1745030000
 MonoBehaviour:

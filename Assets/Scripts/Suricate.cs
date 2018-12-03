@@ -403,7 +403,6 @@ public class Suricate : MonoBehaviour {
 
     // The suricate died
     private void Die() {
-        GetComponent<MeshRenderer>().material.color = Color.red;
         // We destroy the vision field
         Destroy(transform.Find("Vision Cone").gameObject);
         animator.ResetTrigger(Suricate.wanderHash);
