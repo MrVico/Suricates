@@ -16,6 +16,7 @@ public class Suricate : MonoBehaviour {
     public static int herdHash = Animator.StringToHash("herd");
     public static int runHash = Animator.StringToHash("run");
     public static int deadHash = Animator.StringToHash("dead");
+    public static int adultHash = Animator.StringToHash("adulthood");
 
     private static int nbOfSuricates = 0;
     private static int nbOfSafeSuricates = 0;
@@ -126,7 +127,7 @@ public class Suricate : MonoBehaviour {
                 detectCollision();
             }        
             // If we are alert && ALL the suricates are home we start the hide timer
-            if(alert && nbOfSafeSuricates == Spawner.aliveSuricates) {
+            if(alert && nbOfSafeSuricates >= Spawner.aliveSuricates) {
                 everyoneSafe = true;
             }
             // Once everyone is safe we wait it out
@@ -142,7 +143,9 @@ public class Suricate : MonoBehaviour {
                     animator.SetTrigger(herdHash);
                 else if (suricateType == Type.Baby)
                     animator.SetBool("baby", true);
+                // reset
                 hideTimer = 0;
+                everyoneSafe = false;
             }
             UpdateFullnessBar();
             if (!alert && alpha && suricateGender == Gender.Female && suricateType != Suricate.Type.Baby) {
@@ -236,18 +239,11 @@ public class Suricate : MonoBehaviour {
         amountEaten = 0;
     }
 
-    //TEST
-    private string backupname;
-
     private void UpdateFullnessBar() {
         Vector2 screenPosition = Camera.main.WorldToScreenPoint(new Vector3(transform.position.x, transform.position.y, transform.position.z + 1.5f));
         infoBar.transform.position = screenPosition;
         currentBarValue -= 0.03f * Time.timeScale;
         infoBar.value = currentBarValue / maxBarValue;
-        /*
-        if (suricateType.Equals(Suricate.Type.Sentinel) && backUpCalled)
-            Debug.Log(name+" backup: " + backupname);
-        */
         // If we are a hungry sentinel on post we want to go hunt!
         if(!alert && !backUpCalled && GetSuricateType().Equals(Suricate.Type.Sentinel) && currentBarValue < 40f && transform.position == myPost) {
             GameObject candidat = null;
@@ -268,7 +264,6 @@ public class Suricate : MonoBehaviour {
                 backUpCalled = true;
                 // We give him our post!
                 candidat.SendMessage("OnSentinelDuty", this);
-                backupname = candidat.name;
             }
         }
         // Dead

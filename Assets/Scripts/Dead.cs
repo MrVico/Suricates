@@ -23,7 +23,6 @@ public class Dead : StateMachineBehaviour {
 		if(!caught){
 			Color materialColor = bodyMesh.material.GetColor("_Color");
 			materialColor.a = materialColor.a - Time.deltaTime * 0.25f;
-			Debug.Log("Alpha: "+materialColor.a);
 			if(materialColor.a < 0){
 				Destroy(animator.gameObject);
 			}

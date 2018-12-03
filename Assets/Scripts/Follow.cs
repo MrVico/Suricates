@@ -28,6 +28,7 @@ public class Follow : SuricateBaseSM {
         // After babyTime and if we ate enough we are no more baby!
         if(timer >= babyTime && obj.GetComponent<Suricate>().GetBabyGrowth() > 200f) {
             animator.SetBool("baby", false);
+            animator.SetTrigger(Suricate.adultHash);
         }
         // If the suricate is dead or no more hunter we need to find another one!
         else if(tutor.GetComponent<Suricate>().IsDead() || !tutor.GetComponent<Suricate>().GetSuricateType().Equals(Suricate.Type.Hunter)) {
@@ -41,7 +42,7 @@ public class Follow : SuricateBaseSM {
 
 	// OnStateExit is called when a transition ends and the state machine finishes evaluating this state
 	override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-        if(timer >= babyTime) {
+        if(timer >= babyTime && obj.GetComponent<Suricate>().GetBabyGrowth() > 200f) {
             // We are big!
             obj.SendMessage("GrownAssBaby");
         }
