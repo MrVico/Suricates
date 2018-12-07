@@ -16,21 +16,13 @@ public class PauseOnClick : MonoBehaviour {
 	public void pause() {
 		if (!isPaused) {
 			text.text = "Play";
+			Time.timeScale = 0f;
 			isPaused = true;
-#if UNITY_EDITOR
-			UnityEditor.EditorApplication.isPaused = true;
-#else
-			Application.Pause();
-#endif
 		}
 		else {
 			text.text = "Pause";
+			Time.timeScale = 1f;
 			isPaused = false;
-#if UNITY_EDITOR
-			UnityEditor.EditorApplication.isPaused = false;
-#else
-			Application.Play();
-#endif
 		}
 	}
 }

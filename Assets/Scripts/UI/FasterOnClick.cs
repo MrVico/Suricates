@@ -17,11 +17,13 @@ public class FasterOnClick : MonoBehaviour {
 		if (!isFast)
 		{
 			text.text = "Normal";
+			Time.timeScale = 4f;
 			isFast = true;
 		}
 		else
 		{
 			text.text = "Fast";
+			Time.timeScale = 1f;
 			isFast = false;
 		}
 	}

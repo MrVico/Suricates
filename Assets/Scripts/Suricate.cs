@@ -130,9 +130,9 @@ public class Suricate : MonoBehaviour {
             if(alert && nbOfSafeSuricates >= Spawner.aliveSuricates) {
                 everyoneSafe = true;
             }
-            // Once everyone is safe we wait it out
-            if (everyoneSafe)
-                hideTimer += Time.deltaTime;
+			// Once everyone is safe we wait it out
+			if (everyoneSafe)
+				hideTimer += Time.deltaTime;
             // After a certain time we come back out, everyone at once!
             if (hideTimer >= hideTime) {
                 alert = false;
