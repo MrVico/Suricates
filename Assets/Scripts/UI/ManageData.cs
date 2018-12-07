@@ -29,6 +29,11 @@ public class ManageData : MonoBehaviour {
 	private static List<int> dataFoodList;
 	private static List<int> dataPredList;
 
+	// Add or Remove meerkat
+	public GameObject suricatePrefab;
+	public GameObject raptorPrefab;
+	public GameObject preyPrefab;
+
 
 
 	// Use this for initialization
@@ -107,7 +112,7 @@ public class ManageData : MonoBehaviour {
 
 	private void printGraph(List<int> valueList, int type)
 	{
-		float x_size = 10f;
+		float x_size = 30f;
 		float y_max = 50f;
 		float graph_height = graphConainer.sizeDelta.y;
 
@@ -242,5 +247,75 @@ public class ManageData : MonoBehaviour {
 			}
 		}
 			
+	}
+
+	// Add 1 meerkat hunter to the hole
+	public void addMeerkat() {
+		Vector3 position = GameObject.FindGameObjectWithTag("Hole").transform.position;
+		position.y = suricatePrefab.transform.position.y;
+
+		GameObject suricate;
+		suricate = Instantiate(suricatePrefab, position, Quaternion.identity);
+		suricate.GetComponent<Suricate>().SetSuricateType(Suricate.Type.Hunter);
+
+	}
+
+	// Remove 1 meerkat hunter
+	public void removeMeerkat() {
+		GameObject[] suricates;
+		suricates = GameObject.FindGameObjectsWithTag("Suricate");
+
+		GameObject suricate = new GameObject();
+		int last = suricates.Length - 1;
+		bool loop = true;
+		while(loop) {
+			if(suricates[last].GetComponent<Suricate>().GetSuricateType() == Suricate.Type.Hunter) {
+				suricate = suricates[last];
+				loop = false;
+			}
+
+			last -= 1;
+		}
+
+		GameObject.Destroy(suricate);
+	}
+
+	public void addfood() {
+		Vector3 position = new Vector3(Random.Range(-33f, 33f), preyPrefab.transform.localScale.y / 2, Random.Range(-23f, 23f));
+		GameObject prey = Instantiate(preyPrefab, position, Quaternion.identity);
+	}
+
+	public void removefood() {
+		GameObject[] preys;
+		preys = GameObject.FindGameObjectsWithTag("Prey");
+
+		int last = preys.Length - 1;
+		GameObject prey = preys[last];
+
+		GameObject.Destroy(prey);
+	}
+
+	// Spawn a predator
+	public void addPredator() {
+		Vector3 position = new Vector3(0, 10f, Random.Range(-20f, 20f));
+		// On the left
+		if (Random.value < 0.5f)
+			position.x = -50f;
+		// On the right
+		else
+			position.x = 50f;
+		GameObject raptor = Instantiate(raptorPrefab, position, Quaternion.identity);
+		raptor.name = "Raptor";
+	}
+
+	// Remove predator
+	public void removePredator() {
+		GameObject[] predators;
+		predators = GameObject.FindGameObjectsWithTag("Predator");
+
+		int last = predators.Length - 1;
+		GameObject predator = predators[last];
+
+		GameObject.Destroy(predator);
 	}
 }
