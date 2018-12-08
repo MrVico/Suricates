@@ -30,13 +30,15 @@ public class Follow : SuricateBaseSM {
             animator.SetBool("baby", false);
             animator.SetTrigger(Suricate.adultHash);
         }
-        // If the suricate is dead or no more hunter we need to find another one!
-        else if(tutor.GetComponent<Suricate>().IsDead() || !tutor.GetComponent<Suricate>().GetSuricateType().Equals(Suricate.Type.Hunter)) {
-            FindTutor();
-        }
-        // We follow our tutor
-        else if(Vector3.Distance(obj.transform.position, tutor.transform.position) > 1.5f) {
-            Move(tutor.transform.position);
+        else if(tutor != null){
+            // If the suricate is dead or no more hunter we need to find another one!
+            if(tutor.GetComponent<Suricate>().IsDead() || !tutor.GetComponent<Suricate>().GetSuricateType().Equals(Suricate.Type.Hunter)) {
+                FindTutor();
+            }
+            // We follow our tutor
+            else if(Vector3.Distance(obj.transform.position, tutor.transform.position) > 1.5f) {
+                Move(tutor.transform.position);
+            }
         }
 	}
 

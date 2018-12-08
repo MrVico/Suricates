@@ -7,59 +7,57 @@ public class Spawner : MonoBehaviour {
     public static int totalSuricates;
     public static int aliveSuricates;
 
-    public GameObject suricatePrefab;
-    public GameObject raptorPrefab;
-    public GameObject preyPrefab;
-    public Material alphaMaleMaterial;
-    public Material alphaFemaleMaterial;
-    public int nbOfPreys;
-    public int initialColonySize;
-    public float raptorSpawnTime;
+    [SerializeField] GameObject suricatePrefab;
+    [SerializeField] GameObject raptorPrefab;
+    [SerializeField] GameObject preyPrefab;
+    [SerializeField] Material alphaMaleMaterial;
+    [SerializeField] Material alphaFemaleMaterial;
+    [SerializeField] float raptorSpawnTime;
+
+    private int nbOfPreys;
+    private int initialColonySize;
 
     // For testing purposes only
     public bool spawnSuricates;
+    // Just for testing purposes
+    private int totalPreys;
 
     private List<GameObject> suricates;
 
     private GameObject preyContainer;
     private List<GameObject> preys;
-    // Just for testing purposes
-    private int totalPreys;
 
     private float timer;
 
-	// Use this for initialization
-	void Start () {
-        // Change this value to increase/descrease the playspeed!
-        Time.timeScale = 1f;
-        totalPreys = 0;
+    private bool simulationStarted = false;
+
+	// Update is called once per frame
+	void Update () {
+        if(simulationStarted){
+            timer += Time.deltaTime;
+            // We always want to have a certain amount of preys alive, or do we?
+            if(preys.Count < nbOfPreys) {
+                SpawnPrey();
+            }
+            if(timer >= raptorSpawnTime){
+                SpawnRaptor();
+                timer = 0;
+            }
+        }
+	}
+
+    public void SetUpSimulation(int nbOfSuricates, int nbOfPredators, int nbOfPreys){
+        initialColonySize = nbOfSuricates;
+        this.nbOfPreys = nbOfPreys;
+        simulationStarted = true;
+        // Set up
         totalSuricates = 0;
         aliveSuricates = 0;
         timer = 0;
-        preys = new List<GameObject>();
         suricates = new List<GameObject>();
-        preyContainer = GameObject.FindGameObjectWithTag("PreyContainer");
         if (spawnSuricates)
             InitialSuricateSpawn();
-        for(int i=0; i<nbOfPreys; i++) {
-            SpawnPrey();
-        }
-        // TEST
-        //SpawnRaptor();
     }
-	
-	// Update is called once per frame
-	void Update () {
-        timer += Time.deltaTime;
-        // We always want to have a certain amount of preys alive, or do we?
-        if(preys.Count < nbOfPreys) {
-            SpawnPrey();
-        }
-        if(timer >= raptorSpawnTime){
-            SpawnRaptor();
-            timer = 0;
-        }
-	}
 
     public int GetNumberOfPostedSentinels(){
         int amount = 0;
@@ -69,6 +67,20 @@ public class Spawner : MonoBehaviour {
             }
         }
         return amount;
+    }
+
+    // Called from ManageData to set up the food
+    public void SpawnPreys(int nbOfPreys){
+        preys = new List<GameObject>();
+        preyContainer = GameObject.FindGameObjectWithTag("PreyContainer");
+        totalPreys = 0;
+        // Clear
+        foreach(GameObject prey in GameObject.FindGameObjectsWithTag("Prey")){
+            Destroy(prey);
+        }
+        for(int i=0; i<nbOfPreys; i++) {
+            SpawnPrey();
+        }
     }
     
     private void SpawnPrey() {

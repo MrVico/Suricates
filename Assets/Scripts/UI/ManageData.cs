@@ -1,16 +1,20 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class ManageData : MonoBehaviour {
 
-	public Text nbMeerkatText;
-	public Text nbFoodText;
-	public Text nbPredatorText;
+	[SerializeField] Button startButton;
+	[SerializeField] Button pauseButton;
+	
+	[SerializeField] Slider meerkatSlider;
+	[SerializeField] Slider predatorSlider;
+	[SerializeField] Slider foodSlider;
 
-	private int nbMeerkat;
-	private int nbFood;
-	private int nbPredator;
+	[SerializeField] int nbMeerkat;
+	[SerializeField] int nbFood;
+	[SerializeField] int nbPredator;
 
 	private int interval = 1;
 	private float nextTime = 0;
@@ -23,7 +27,6 @@ public class ManageData : MonoBehaviour {
 
 	[SerializeField] private Sprite dotSprite;
 
-
 	// Data
 	private static List<int> dataMeerkatList;
 	private static List<int> dataFoodList;
@@ -34,22 +37,24 @@ public class ManageData : MonoBehaviour {
 	public GameObject raptorPrefab;
 	public GameObject preyPrefab;
 
-
+	private bool simulationStarted = false;
 
 	// Use this for initialization
 	void Start () {
-		nbMeerkat = 0;
-		nbFood = 0;
-		nbPredator = 0;
-
 		dataMeerkatList = new List<int> ();
 		dataFoodList = new List<int>();
 		dataPredList = new List<int>();
+
+		meerkatSlider.onValueChanged.AddListener(delegate {MeerkatSliderValueChanged(); });
+		predatorSlider.onValueChanged.AddListener(delegate {PredatorSliderValueChanged(); });
+		foodSlider.onValueChanged.AddListener(delegate {FoodSliderValueChanged(); });
+
+		setData();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if(Time.time >= nextTime) {
+		if(simulationStarted && Time.time >= nextTime) {
 			nextTime += interval;
 			updateEverySecond();
 		}
@@ -57,11 +62,19 @@ public class ManageData : MonoBehaviour {
 		//clearGraph();
 	}
 
+	// Called from UI, to start the simulation
+	public void StartSimulation(){
+		simulationStarted = true;
+		FindObjectOfType<Spawner>().SetUpSimulation(nbMeerkat, nbPredator, nbFood);
+		startButton.gameObject.SetActive(false);
+		pauseButton.gameObject.SetActive(true);
+	}
+
 	private void updateEverySecond() {
 		nbMeerkat = GameObject.FindGameObjectsWithTag("Suricate").Length;
 		nbFood = GameObject.FindGameObjectsWithTag("Prey").Length;
 		nbPredator = GameObject.FindGameObjectsWithTag("Predator").Length;
-		setDataText();
+		setData();
 
 		dataMeerkatList.Add(nbMeerkat);
 		dataFoodList.Add(nbFood);
@@ -71,26 +84,48 @@ public class ManageData : MonoBehaviour {
 			printGraph(dataMeerkatList, 0);
 			printGraph(dataFoodList, 1);
 			printGraph(dataPredList, 2);
-			
-
 
 			/*if(dataMeerkatList.Count > 15) {
 				clearGraph();
 				printGraph(dataMeerkatList);
-			}
-				
+			}				
 			else {
 				//clearGraph();
 				printGraph(dataMeerkatList);
 			}*/
-
 		}
 	}
 
-	private void setDataText() {
-		nbMeerkatText.text = "meerkats: " + nbMeerkat.ToString();
-		nbFoodText.text = "foods: " + nbFood.ToString();
-		nbPredatorText.text = "predators: " + nbPredator.ToString();
+	private void MeerkatSliderValueChanged(){
+		if(!simulationStarted){
+			meerkatSlider.GetComponentInChildren<Text>().text = meerkatSlider.value.ToString();
+			nbMeerkat = (int) meerkatSlider.value;
+		}
+	}
+
+	private void PredatorSliderValueChanged(){
+		if(!simulationStarted){
+			predatorSlider.GetComponentInChildren<Text>().text = predatorSlider.value.ToString();
+			nbPredator = (int) predatorSlider.value;
+		}
+	}
+	
+	private void FoodSliderValueChanged(){
+		if(!simulationStarted){
+			foodSlider.GetComponentInChildren<Text>().text = foodSlider.value.ToString();
+			nbFood = (int) foodSlider.value;
+			FindObjectOfType<Spawner>().SpawnPreys(nbFood);
+		}
+	}
+
+	// TODO: Make a seperate stat panel for the live stats
+	private void setData() {
+		meerkatSlider.value = nbMeerkat;
+		meerkatSlider.GetComponentInChildren<Text>().text = nbMeerkat.ToString();
+		predatorSlider.value = nbPredator;
+		predatorSlider.GetComponentInChildren<Text>().text = nbPredator.ToString();
+		foodSlider.value = nbFood;
+		foodSlider.GetComponentInChildren<Text>().text = nbFood.ToString();
 	}
 
 	private GameObject printDot(Vector2 position)
