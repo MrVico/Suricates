@@ -18,9 +18,13 @@ public class Suricate : MonoBehaviour {
     public static int deadHash = Animator.StringToHash("dead");
     public static int adultHash = Animator.StringToHash("adulthood");
 
+    // Can all females have kids or just the alpha one?
+    public static bool kidsForEveryone = true;
+
     private static int nbOfSuricates;
     private static int nbOfSafeSuricates;
     private static bool everyoneSafe;
+    private static float waitingForLastOne;
     private static List<Vector3> sentinelPosts;
 
     private int suricateID;
@@ -57,13 +61,6 @@ public class Suricate : MonoBehaviour {
     private float amountEaten;
 
     private bool dead;
-
-    /*
-        Gestation 11 semaines
-        4 portées par an
-        2-4 petits
-        Les petits ne sortent du terrier qu'au bout de 21 jours
-    */
 
     // The bigger this number the faster they starve
     private float hungerRate = 0.01f;
@@ -137,10 +134,15 @@ public class Suricate : MonoBehaviour {
                 detectCollision();
             }        
             // If we are alert && ALL the suricates are home we start the hide timer
-            if(alert && nbOfSafeSuricates >= GameObject.FindGameObjectsWithTag("Suricate").Length) {
+            if(alert && (nbOfSafeSuricates >= GameObject.FindGameObjectsWithTag("Suricate").Length) ||
+                        // Sometimes someone gets lost
+                        (nbOfSafeSuricates == GameObject.FindGameObjectsWithTag("Suricate").Length-1 && hideTimer > waitingForLastOne+1)) {
                 everyoneSafe = true;
             }
-            else if(alert){
+            else if(alert && nbOfSafeSuricates == GameObject.FindGameObjectsWithTag("Suricate").Length-1){
+                if(hideTimer == 0)
+                    waitingForLastOne = Time.deltaTime;
+                hideTimer += Time.deltaTime;
                 Debug.Log("NbSafe: "+nbOfSafeSuricates+" Total: "+GameObject.FindGameObjectsWithTag("Suricate").Length);
             }
 			// Once everyone is safe we wait it out
@@ -161,7 +163,7 @@ public class Suricate : MonoBehaviour {
                 everyoneSafe = false;
             }
             UpdateFullnessBar();
-            if (!alert && alpha && suricateGender == Gender.Female && suricateType != Suricate.Type.Baby) {
+            if (!alert && (alpha || (!alpha && kidsForEveryone)) && suricateGender == Gender.Female && suricateType != Suricate.Type.Baby) {
                 // We are not yet pregnant and don't have kids to look after
                 if (pregnancyTime == 0 && youths.Count == 0) {
                     timeSinceLastPregnancy += Time.deltaTime;
