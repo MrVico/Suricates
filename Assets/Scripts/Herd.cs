@@ -46,8 +46,8 @@ public class Herd : SuricateBaseSM {
         else if (onPost) {
             //Debug.Log("Rotation towards the center, angle: " + Vector3.Angle(obj.transform.forward, (Vector3.zero - obj.transform.position)));
             // We always want to look at the center (0,0,0) of the zone before we look around
-            if (postTimer == 0 && Vector3.Angle(obj.transform.forward, (Vector3.zero - obj.transform.localPosition)) >= 0.3f) {
-                obj.transform.rotation = Quaternion.RotateTowards(obj.transform.rotation, Quaternion.LookRotation(Vector3.zero - obj.transform.localPosition), 200f * Time.deltaTime);
+            if (postTimer == 0 && Vector3.Angle(obj.transform.forward, (Vector3.zero - obj.transform.position)) >= 0.3f) {
+                obj.transform.rotation = Quaternion.RotateTowards(obj.transform.rotation, Quaternion.LookRotation(Vector3.zero - obj.transform.position), 200f * Time.deltaTime);
             }
             else {
                 // Look rotation setup once
@@ -56,7 +56,7 @@ public class Herd : SuricateBaseSM {
                     if (obj.transform.GetComponent<Suricate>().GetPredecessor() != null)
                         obj.transform.GetComponent<Suricate>().GetPredecessor().SendMessage("RelievedFromPost");
                     // This way it's perfect
-                    obj.transform.rotation = Quaternion.LookRotation(Vector3.zero - obj.transform.localPosition);                    
+                    obj.transform.rotation = Quaternion.LookRotation(Vector3.zero - obj.transform.position);                    
                     initialRotation = obj.transform.rotation.eulerAngles.y;
                     // We always look the same direction first since the two sentinels are facing each other
                     lookDirection = 1;
@@ -81,7 +81,7 @@ public class Herd : SuricateBaseSM {
     }
 
     private void detectEnemies() {
-        RaycastHit[] coneHits = MyPhysics.ConeCastAll(obj.transform.localPosition, radius, obj.transform.forward, depth, angle);
+        RaycastHit[] coneHits = MyPhysics.ConeCastAll(obj.transform.position, radius, obj.transform.forward, depth, angle);
         if (coneHits.Length > 0) {
             for (int i = 0; i < coneHits.Length; i++) {
                 if (coneHits[i].collider.CompareTag("Predator")) {
@@ -121,6 +121,6 @@ public class Herd : SuricateBaseSM {
             // This way the rotation is smooth by always having the same speed
             obj.transform.rotation = Quaternion.RotateTowards(obj.transform.rotation, rotation, lookRotationSpeed * Time.deltaTime);
         }
-        Debug.DrawRay(obj.transform.localPosition, obj.transform.forward * 2f, Color.red, 0.15f);
+        Debug.DrawRay(obj.transform.position, obj.transform.forward * 2f, Color.red, 0.15f);
     }
 }

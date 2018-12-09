@@ -43,9 +43,9 @@ public class Spawner : MonoBehaviour {
 	void Update () {
         if(simulationStarted){
             timer += Time.deltaTime;
-            // We always want to have a certain amount of preys alive, or do we?
-            if(preys.Count < nbOfPreys) {
-                SpawnPrey();
+            // We always want to have a certain amount of preys alive, so we respawn the dead ones
+            for(int i=GameObject.FindGameObjectsWithTag("Prey").Length; i<nbOfPreys; i++){
+                SpawnPrey(false);
             }
             if(timer >= raptorRespawnTime){
                 SpawnRaptor();
@@ -90,14 +90,23 @@ public class Spawner : MonoBehaviour {
             Destroy(prey);
         }
         for(int i=0; i<nbOfPreys; i++) {
-            SpawnPrey();
+            SpawnPrey(true);
         }
     }
     
-    private void SpawnPrey() {
-        Vector3 position = new Vector3(Random.Range(groundBoundaries.min.x+2, groundBoundaries.max.x-2), 
-                                        preyPrefab.transform.localScale.y/2, 
-                                        Random.Range(groundBoundaries.min.z+2, groundBoundaries.max.z-2));
+    private void SpawnPrey(bool initialSpawn) {
+        Vector3 position;
+        if(initialSpawn){
+            position = new Vector3(Random.Range(groundBoundaries.min.x+2, groundBoundaries.max.x-2), 
+                                            preyPrefab.transform.localScale.y/2, 
+                                            Random.Range(groundBoundaries.min.z+2, groundBoundaries.max.z-2));
+        }
+        // We spawn them a little more to the center
+        else{
+            position = new Vector3(Random.Range(groundBoundaries.center.x+20, groundBoundaries.center.x-20), 
+                                            preyPrefab.transform.localScale.y/2, 
+                                            Random.Range(groundBoundaries.center.z+15, groundBoundaries.center.z-15));
+        }
         GameObject prey = Instantiate(preyPrefab, position, Quaternion.identity);
         preys.Add(prey);
         totalPreys++;
@@ -155,7 +164,10 @@ public class Spawner : MonoBehaviour {
         if(suricate.GetSuricateType().Equals(Suricate.Type.Sentinel)){
             foreach(GameObject candidat in GameObject.FindGameObjectsWithTag("Suricate")){
                 if(candidat.GetComponent<Suricate>().GetSuricateType().Equals(Suricate.Type.Hunter) && !candidat.GetComponent<Suricate>().IsAlpha()){
-                    candidat.GetComponent<Suricate>().OnSentinelDuty(suricate);
+                    Debug.Log(candidat.name+" is on post "+suricate.GetPost()+" with "+GetNumberOfPostedSentinels()+" other");
+                    // We only want to have 2 sentinels at the same time
+                    if(GetNumberOfPostedSentinels() < 2)
+                        candidat.GetComponent<Suricate>().OnSentinelDuty(suricate);
                     return;
                 }
             }

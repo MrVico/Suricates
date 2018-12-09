@@ -22,7 +22,9 @@ public class Chase : SuricateBaseSM {
         if (prey == null || (prey != null && prey.GetComponent<Prey>().GetLife() <= 0)) {
             eating = false;
             animator.ResetTrigger(Suricate.chaseHash);
-            animator.SetTrigger(Suricate.wanderHash);
+            // If we are on alert we need to run not wander!
+            if(!obj.gameObject.GetComponent<Suricate>().IsOnAlert())
+                animator.SetTrigger(Suricate.wanderHash);
         }
         else if (!eating) {
             float distance = Vector3.Distance(obj.transform.position, prey.transform.position);
@@ -41,7 +43,8 @@ public class Chase : SuricateBaseSM {
             // If we are a tutor we need to give some to the youths
             if (obj.GetComponent<Suricate>().GetYouths().Count > 0) {
                 foreach (GameObject youth in obj.GetComponent<Suricate>().GetYouths()) {
-                    youth.SendMessage("TakeABite", prey);
+                    if(youth != null)
+                        youth.SendMessage("TakeABite", prey);
                 }
             }
         }
@@ -50,6 +53,6 @@ public class Chase : SuricateBaseSM {
 	// OnStateExit is called when a transition ends and the state machine finishes evaluating this state
 	override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         if (prey != null)
-            Destroy(prey);
+            Destroy(prey);  
     }
 }

@@ -64,8 +64,8 @@ public class ManageData : MonoBehaviour {
 		FindObjectOfType<Spawner>().SetUpSimulation(nbMeerkat, predatorRespawnTime, nbFood);
 		startButton.gameObject.SetActive(false);
 		pauseButton.gameObject.SetActive(true);
-		graph.SetActive(true);
-		StartCoroutine(UpdateDataEverySecond());
+		//graph.SetActive(true);
+		//StartCoroutine(UpdateDataEverySecond());
 	}
 
 	private IEnumerator UpdateDataEverySecond(){

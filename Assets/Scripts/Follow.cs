@@ -12,13 +12,14 @@ public class Follow : SuricateBaseSM {
     private GameObject tutor;
     private float timer;
     private float babyTime = 15f;
+    private float eatingGoal = 150f;
 
 	// OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
 	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         base.OnStateEnter(animator, stateInfo, layerIndex);
         FindTutor();
         timer = 0;
-        moveSpeed = 4f;
+        moveSpeed = 2f;
     }
 
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -26,7 +27,7 @@ public class Follow : SuricateBaseSM {
         base.OnStateUpdate(animator, stateInfo, layerIndex);
         timer += Time.deltaTime;
         // After babyTime and if we ate enough we are no more baby!
-        if(timer >= babyTime && obj.GetComponent<Suricate>().GetBabyGrowth() > 150f) {
+        if(timer >= babyTime && obj.GetComponent<Suricate>().GetBabyGrowth() > eatingGoal) {
             animator.SetBool("baby", false);
             animator.SetTrigger(Suricate.adultHash);
         }
@@ -35,8 +36,14 @@ public class Follow : SuricateBaseSM {
             if(tutor.GetComponent<Suricate>().IsDead() || !tutor.GetComponent<Suricate>().GetSuricateType().Equals(Suricate.Type.Hunter)) {
                 FindTutor();
             }
+            // We go join our tutor
+            else if(Vector3.Distance(obj.transform.position, tutor.transform.position) > 3f) {
+                moveSpeed = 4f;
+                Move(tutor.transform.position);
+            }
             // We follow our tutor
             else if(Vector3.Distance(obj.transform.position, tutor.transform.position) > 1.5f) {
+                moveSpeed = 2f;
                 Move(tutor.transform.position);
             }
         }
@@ -44,7 +51,7 @@ public class Follow : SuricateBaseSM {
 
 	// OnStateExit is called when a transition ends and the state machine finishes evaluating this state
 	override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-        if(timer >= babyTime && obj.GetComponent<Suricate>().GetBabyGrowth() > 200f) {
+        if(timer >= babyTime && obj.GetComponent<Suricate>().GetBabyGrowth() > eatingGoal) {
             // We are big!
             obj.SendMessage("GrownAssBaby");
         }

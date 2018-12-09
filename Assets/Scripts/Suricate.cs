@@ -65,6 +65,9 @@ public class Suricate : MonoBehaviour {
         Les petits ne sortent du terrier qu'au bout de 21 jours
     */
 
+    // The bigger this number the faster they starve
+    private float hungerRate = 0.01f;
+
     // 11 weeks
     private float pregnancyTime;
     private float timeSinceLastPregnancy;
@@ -134,8 +137,11 @@ public class Suricate : MonoBehaviour {
                 detectCollision();
             }        
             // If we are alert && ALL the suricates are home we start the hide timer
-            if(alert && nbOfSafeSuricates >= Spawner.aliveSuricates) {
+            if(alert && nbOfSafeSuricates >= GameObject.FindGameObjectsWithTag("Suricate").Length) {
                 everyoneSafe = true;
+            }
+            else if(alert){
+                Debug.Log("NbSafe: "+nbOfSafeSuricates+" Total: "+GameObject.FindGameObjectsWithTag("Suricate").Length);
             }
 			// Once everyone is safe we wait it out
 			if (everyoneSafe)
@@ -250,7 +256,7 @@ public class Suricate : MonoBehaviour {
     private void UpdateFullnessBar() {
         Vector2 screenPosition = Camera.main.WorldToScreenPoint(new Vector3(transform.position.x, transform.position.y, transform.position.z + 1.5f));
         infoBar.transform.position = screenPosition;
-        currentBarValue -= 0.03f * Time.timeScale;
+        currentBarValue -= hungerRate * Time.timeScale;
         infoBar.value = currentBarValue / maxBarValue;
         // If we are a hungry sentinel on post we want to go hunt!
         if(!alert && !backUpCalled && GetSuricateType().Equals(Suricate.Type.Sentinel) && currentBarValue < 40f && transform.position == myPost) {
@@ -287,6 +293,9 @@ public class Suricate : MonoBehaviour {
     public void OnSentinelDuty(Suricate sentinel) {
         predecessor = sentinel;
         myPost = sentinel.GetPost();
+        if(myPost != new Vector3(0, 0.5f, -24) && myPost != new Vector3(0, 0.5f, 24)){
+            Debug.Log("MY POST IS WRONG WRONG WRONG "+myPost+" from "+sentinel.name);
+        }
         suricateType = Type.Sentinel;
         animator.SetBool("hunter", false);
         animator.SetBool("sentinel", true);
@@ -308,7 +317,9 @@ public class Suricate : MonoBehaviour {
         animator.SetBool("sentinel", false);
         animator.SetBool("hunter", true);
         animator.ResetTrigger(herdHash);
-        animator.SetTrigger(wanderHash);
+        // We want to run right now not wander!
+        if(!alert)
+            animator.SetTrigger(wanderHash);
         gameObject.name = "Suricate " + suricateID + " " + suricateType + " " + suricateGender;
     }
 
@@ -398,6 +409,10 @@ public class Suricate : MonoBehaviour {
         amountEaten++;
     }
 
+    public bool IsOnAlert(){
+        return alert;
+    }
+
     public float GetAmountEaten(){
         return amountEaten;
     }
@@ -408,6 +423,9 @@ public class Suricate : MonoBehaviour {
 
     // The suricate died
     private void Die() {
+        // If we died of hunger while hiding
+        if(safe)
+            nbOfSafeSuricates--;
         // We destroy the vision field
         if(transform.Find("Vision Cone") != null)
             Destroy(transform.Find("Vision Cone").gameObject);
@@ -431,6 +449,7 @@ public class Suricate : MonoBehaviour {
             animator.ResetTrigger(wanderHash);
             animator.ResetTrigger(chaseHash);
             animator.ResetTrigger(herdHash);
+            animator.ResetTrigger(collectHash);
             animator.SetBool("baby", false);
             animator.SetTrigger(runHash);
         }

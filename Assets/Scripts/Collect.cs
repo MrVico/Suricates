@@ -21,10 +21,10 @@ public class Collect : SuricateBaseSM {
         youths = obj.GetComponent<Suricate>().GetYouths();
         collected = true;
         foreach (GameObject youth in youths) {
-            // If we still didn't collect everyone we go do it
-            if (Vector3.Distance(obj.transform.position, youth.transform.position) > 1.5f) {
+            // If we still didn't collect everyone we wait for them to come to us
+            if (youth != null && Vector3.Distance(obj.transform.position, youth.transform.position) > 3f) {
                 collected = false;
-                Move(youth.transform.position);
+                //Move(youth.transform.position);
                 return;
             }
         }
