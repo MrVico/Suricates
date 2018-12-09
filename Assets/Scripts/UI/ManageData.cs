@@ -16,6 +16,7 @@ public class ManageData : MonoBehaviour {
 	[SerializeField] Slider foodSlider;
 
 	[SerializeField] int nbMeerkat;
+	[SerializeField] int predatorRespawnTime;
 	[SerializeField] int nbFood;
 	[SerializeField] int nbPredator;
 
@@ -60,7 +61,7 @@ public class ManageData : MonoBehaviour {
 	// Called from UI, to start the simulation
 	public void StartSimulation(){
 		simulationStarted = true;
-		FindObjectOfType<Spawner>().SetUpSimulation(nbMeerkat, nbPredator, nbFood);
+		FindObjectOfType<Spawner>().SetUpSimulation(nbMeerkat, predatorRespawnTime, nbFood);
 		startButton.gameObject.SetActive(false);
 		pauseButton.gameObject.SetActive(true);
 		graph.SetActive(true);
@@ -110,8 +111,8 @@ public class ManageData : MonoBehaviour {
 
 	private void PredatorSliderValueChanged(){
 		if(!simulationStarted){
-			predatorSlider.GetComponentInChildren<Text>().text = predatorSlider.value.ToString();
-			nbPredator = (int) predatorSlider.value;
+			predatorSlider.GetComponentInChildren<Text>().text = predatorSlider.value.ToString()+"s";
+			predatorRespawnTime = (int) predatorSlider.value;
 		}
 	}
 	
@@ -127,8 +128,8 @@ public class ManageData : MonoBehaviour {
 	private void setData() {
 		meerkatSlider.value = nbMeerkat;
 		meerkatSlider.GetComponentInChildren<Text>().text = nbMeerkat.ToString();
-		predatorSlider.value = nbPredator;
-		predatorSlider.GetComponentInChildren<Text>().text = nbPredator.ToString();
+		predatorSlider.value = predatorRespawnTime;
+		predatorSlider.GetComponentInChildren<Text>().text = predatorRespawnTime.ToString()+"s";
 		foodSlider.value = nbFood;
 		foodSlider.GetComponentInChildren<Text>().text = nbFood.ToString();
 	}

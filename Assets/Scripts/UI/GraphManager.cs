@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public class GraphManager : MonoBehaviour {
 
@@ -30,6 +31,8 @@ public class GraphManager : MonoBehaviour {
 		values = new List<int>();
 
 		//StartCoroutine(AddValues());
+		//values = new List<int>(){ 10, 22, 45, 58, 94, 67, 102, 125, 150, 100, 90, 84, 67 };
+		//PopulateGraph(values);
 	}
 
 	// For testing
@@ -77,8 +80,8 @@ public class GraphManager : MonoBehaviour {
 		// Base max value
 		float yMax = 100f;
 		// Adjust max value accordingly
-		if(values[values.Count-1] > yMax - yMargin){
-			yMax = values[values.Count-1];
+		if(values.Max() > yMax - yMargin){
+			yMax = values.Max();
 		}
 		// Adjust width so it never goes offscreen
 		float xOffset = (graphWidth - xMargin*2) / (values.Count-1);

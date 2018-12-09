@@ -12,7 +12,7 @@ public class Spawner : MonoBehaviour {
     [SerializeField] GameObject preyPrefab;
     [SerializeField] Material alphaMaleMaterial;
     [SerializeField] Material alphaFemaleMaterial;
-    [SerializeField] float raptorSpawnTime;
+    [SerializeField] float raptorRespawnTime;
 
     private int nbOfPreys;
     private int initialColonySize;
@@ -30,17 +30,13 @@ public class Spawner : MonoBehaviour {
     private float timer;
 
     private bool simulationStarted = false;   
+    private int chosenPredatorRespawnTime;
     
     // The ground zone boundaries
     private Bounds groundBoundaries;
 
     void Awake(){
         groundBoundaries = GameObject.FindGameObjectWithTag("Ground").GetComponent<Renderer>().bounds;
-        /*
-        Debug.Log("Center: "+groundBoundaries.center);
-        Debug.Log("Min: "+groundBoundaries.min);
-        Debug.Log("Max: "+groundBoundaries.max);
-        */
     }
 
 	// Update is called once per frame
@@ -51,15 +47,18 @@ public class Spawner : MonoBehaviour {
             if(preys.Count < nbOfPreys) {
                 SpawnPrey();
             }
-            if(timer >= raptorSpawnTime){
+            if(timer >= raptorRespawnTime){
                 SpawnRaptor();
+                raptorRespawnTime = Random.Range(chosenPredatorRespawnTime - chosenPredatorRespawnTime/10, chosenPredatorRespawnTime + chosenPredatorRespawnTime/10);
                 timer = 0;
             }
         }
 	}
 
-    public void SetUpSimulation(int nbOfSuricates, int nbOfPredators, int nbOfPreys){
+    public void SetUpSimulation(int nbOfSuricates, int predatorReSpawnTime, int nbOfPreys){
         initialColonySize = nbOfSuricates;
+        chosenPredatorRespawnTime = predatorReSpawnTime;
+        raptorRespawnTime = Random.Range(predatorReSpawnTime - predatorReSpawnTime/10, predatorReSpawnTime + predatorReSpawnTime/10);
         this.nbOfPreys = nbOfPreys;
         simulationStarted = true;
         // Set up

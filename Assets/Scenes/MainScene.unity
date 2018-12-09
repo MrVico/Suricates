@@ -551,7 +551,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Number of Meerkats
+  m_Text: Colony size
 --- !u!222 &129325447
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6441,7 +6441,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 432479579}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 10
+  m_MaxValue: 60
   m_WholeNumbers: 1
   m_Value: 0
   m_OnValueChanged:
@@ -8560,6 +8560,7 @@ MonoBehaviour:
   predatorSlider: {fileID: 1189181780}
   foodSlider: {fileID: 450570176}
   nbMeerkat: 10
+  predatorRespawnTime: 20
   nbFood: 75
   nbPredator: 0
   graphWindow: {fileID: 1419350304}
@@ -8739,7 +8740,7 @@ MonoBehaviour:
   preyPrefab: {fileID: 1873624272913930, guid: 8a845f93e96a6c04a91e3f59a4d2d7bd, type: 2}
   alphaMaleMaterial: {fileID: 2100000, guid: b970b0038e42acc4da3a3b34a9ea9218, type: 2}
   alphaFemaleMaterial: {fileID: 2100000, guid: 119ec2eed0c8faa4b99db761a1523eff, type: 2}
-  raptorSpawnTime: 20
+  raptorRespawnTime: 0
   spawnSuricates: 1
 --- !u!114 &1745030000
 MonoBehaviour:
@@ -9534,7 +9535,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Number of Predators
+  m_Text: Predator respawn rate
 --- !u!222 &1951063221
 CanvasRenderer:
   m_ObjectHideFlags: 0
