@@ -12,6 +12,7 @@ TagManager:
   - Hole
   - Wall
   - PreyContainer
+  - Post
   layers:
   - Default
   - TransparentFX

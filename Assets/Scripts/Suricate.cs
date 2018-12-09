@@ -18,9 +18,9 @@ public class Suricate : MonoBehaviour {
     public static int deadHash = Animator.StringToHash("dead");
     public static int adultHash = Animator.StringToHash("adulthood");
 
-    private static int nbOfSuricates = 0;
-    private static int nbOfSafeSuricates = 0;
-    private static bool everyoneSafe = false;
+    private static int nbOfSuricates;
+    private static int nbOfSafeSuricates;
+    private static bool everyoneSafe;
     private static List<Vector3> sentinelPosts;
 
     private int suricateID;
@@ -83,6 +83,9 @@ public class Suricate : MonoBehaviour {
 
     void Awake(){
         sentinelPosts = new List<Vector3>(new Vector3[] { new Vector3(0, 0.5f, -24), new Vector3(0, 0.5f, 24) });
+        nbOfSuricates = 0;
+        nbOfSafeSuricates = 0;
+        everyoneSafe = false;
     }
 
     // Use this for initialization
@@ -127,7 +130,7 @@ public class Suricate : MonoBehaviour {
     // Update is called once per frame
     void Update() {
 		if (!dead) {
-            if (suricateType == Type.Hunter && !collectingBabies) {
+            if (!alert && suricateType == Type.Hunter && !collectingBabies) {
                 detectCollision();
             }        
             // If we are alert && ALL the suricates are home we start the hide timer
@@ -289,7 +292,9 @@ public class Suricate : MonoBehaviour {
         animator.SetBool("sentinel", true);
         animator.ResetTrigger(wanderHash);
         animator.ResetTrigger(chaseHash);
-        animator.SetTrigger(herdHash);
+        // Only if we aren't under attack
+        if(!alert)
+            animator.SetTrigger(herdHash);
         gameObject.name = "Suricate " + suricateID + " " + suricateType + " " + suricateGender;
     }
 
@@ -404,7 +409,8 @@ public class Suricate : MonoBehaviour {
     // The suricate died
     private void Die() {
         // We destroy the vision field
-        Destroy(transform.Find("Vision Cone").gameObject);
+        if(transform.Find("Vision Cone") != null)
+            Destroy(transform.Find("Vision Cone").gameObject);
         animator.ResetTrigger(Suricate.wanderHash);
         animator.ResetTrigger(Suricate.chaseHash);
         animator.ResetTrigger(Suricate.herdHash);        

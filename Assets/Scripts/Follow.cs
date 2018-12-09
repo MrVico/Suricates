@@ -26,7 +26,7 @@ public class Follow : SuricateBaseSM {
         base.OnStateUpdate(animator, stateInfo, layerIndex);
         timer += Time.deltaTime;
         // After babyTime and if we ate enough we are no more baby!
-        if(timer >= babyTime && obj.GetComponent<Suricate>().GetBabyGrowth() > 200f) {
+        if(timer >= babyTime && obj.GetComponent<Suricate>().GetBabyGrowth() > 150f) {
             animator.SetBool("baby", false);
             animator.SetTrigger(Suricate.adultHash);
         }

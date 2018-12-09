@@ -46,8 +46,8 @@ public class Herd : SuricateBaseSM {
         else if (onPost) {
             //Debug.Log("Rotation towards the center, angle: " + Vector3.Angle(obj.transform.forward, (Vector3.zero - obj.transform.position)));
             // We always want to look at the center (0,0,0) of the zone before we look around
-            if (postTimer == 0 && Vector3.Angle(obj.transform.forward, (Vector3.zero - obj.transform.position)) >= 0.3f) {
-                obj.transform.rotation = Quaternion.RotateTowards(obj.transform.rotation, Quaternion.LookRotation(Vector3.zero - obj.transform.position), 200f * Time.deltaTime);
+            if (postTimer == 0 && Vector3.Angle(obj.transform.forward, (Vector3.zero - obj.transform.localPosition)) >= 0.3f) {
+                obj.transform.rotation = Quaternion.RotateTowards(obj.transform.rotation, Quaternion.LookRotation(Vector3.zero - obj.transform.localPosition), 200f * Time.deltaTime);
             }
             else {
                 // Look rotation setup once
@@ -56,12 +56,14 @@ public class Herd : SuricateBaseSM {
                     if (obj.transform.GetComponent<Suricate>().GetPredecessor() != null)
                         obj.transform.GetComponent<Suricate>().GetPredecessor().SendMessage("RelievedFromPost");
                     // This way it's perfect
-                    obj.transform.rotation = Quaternion.LookRotation(Vector3.zero - obj.transform.position);                    
+                    obj.transform.rotation = Quaternion.LookRotation(Vector3.zero - obj.transform.localPosition);                    
                     initialRotation = obj.transform.rotation.eulerAngles.y;
                     // We always look the same direction first since the two sentinels are facing each other
                     lookDirection = 1;
                     // Now we stand!
                     obj.transform.localScale = new Vector3(obj.transform.localScale.x, 2.5f, obj.transform.localScale.z);
+                    // So we actually see our vision
+                    animator.gameObject.transform.Find("HerdRay").gameObject.SetActive(true);
                 }
                 postTimer += Time.deltaTime;
                 // We look around
@@ -75,10 +77,11 @@ public class Herd : SuricateBaseSM {
 	override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         // We don't stand anymore!
         obj.transform.localScale = new Vector3(obj.transform.localScale.x, 1f, obj.transform.localScale.z);
+        animator.gameObject.transform.Find("HerdRay").gameObject.SetActive(false);
     }
 
     private void detectEnemies() {
-        RaycastHit[] coneHits = MyPhysics.ConeCastAll(obj.transform.position, radius, obj.transform.forward, depth, angle);
+        RaycastHit[] coneHits = MyPhysics.ConeCastAll(obj.transform.localPosition, radius, obj.transform.forward, depth, angle);
         if (coneHits.Length > 0) {
             for (int i = 0; i < coneHits.Length; i++) {
                 if (coneHits[i].collider.CompareTag("Predator")) {
@@ -104,7 +107,7 @@ public class Herd : SuricateBaseSM {
             y = y - 360;
 
         //Debug.Log(obj.transform.name+" initialRotation: " + initialRotation);
-        //Debug.Log(obj.transform.name + " Direction: " + lookDirection + " y: " + y);
+        //.Log(obj.transform.name + " Direction: " + lookDirection + " y: " + y);
         
         // We look all the way, we now need to look in the other direction
         if ((lookDirection == 1 && y >= initialRotation + maxLookRotation) || (lookDirection == -1 && y <= initialRotation - maxLookRotation)) {
@@ -118,6 +121,6 @@ public class Herd : SuricateBaseSM {
             // This way the rotation is smooth by always having the same speed
             obj.transform.rotation = Quaternion.RotateTowards(obj.transform.rotation, rotation, lookRotationSpeed * Time.deltaTime);
         }
-        Debug.DrawRay(obj.transform.position, obj.transform.forward * 2f, Color.red, 0.15f);
+        Debug.DrawRay(obj.transform.localPosition, obj.transform.forward * 2f, Color.red, 0.15f);
     }
 }

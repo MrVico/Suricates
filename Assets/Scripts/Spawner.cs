@@ -29,7 +29,19 @@ public class Spawner : MonoBehaviour {
 
     private float timer;
 
-    private bool simulationStarted = false;
+    private bool simulationStarted = false;   
+    
+    // The ground zone boundaries
+    private Bounds groundBoundaries;
+
+    void Awake(){
+        groundBoundaries = GameObject.FindGameObjectWithTag("Ground").GetComponent<Renderer>().bounds;
+        /*
+        Debug.Log("Center: "+groundBoundaries.center);
+        Debug.Log("Min: "+groundBoundaries.min);
+        Debug.Log("Max: "+groundBoundaries.max);
+        */
+    }
 
 	// Update is called once per frame
 	void Update () {
@@ -84,7 +96,9 @@ public class Spawner : MonoBehaviour {
     }
     
     private void SpawnPrey() {
-        Vector3 position = new Vector3(Random.Range(-33f, 33f), preyPrefab.transform.localScale.y/2, Random.Range(-23f, 23f));
+        Vector3 position = new Vector3(Random.Range(groundBoundaries.min.x+2, groundBoundaries.max.x-2), 
+                                        preyPrefab.transform.localScale.y/2, 
+                                        Random.Range(groundBoundaries.min.z+2, groundBoundaries.max.z-2));
         GameObject prey = Instantiate(preyPrefab, position, Quaternion.identity);
         preys.Add(prey);
         totalPreys++;
@@ -134,6 +148,16 @@ public class Spawner : MonoBehaviour {
                     newAlphaFemale.GetComponent<Suricate>().IsAlpha(true);
                     newAlphaFemale.name += " Alpha";
                     newAlphaFemale.GetComponent<Renderer>().material = alphaFemaleMaterial;
+                }
+            }
+        }
+
+        // A sentinel died, we have to get a new one!
+        if(suricate.GetSuricateType().Equals(Suricate.Type.Sentinel)){
+            foreach(GameObject candidat in GameObject.FindGameObjectsWithTag("Suricate")){
+                if(candidat.GetComponent<Suricate>().GetSuricateType().Equals(Suricate.Type.Hunter) && !candidat.GetComponent<Suricate>().IsAlpha()){
+                    candidat.GetComponent<Suricate>().OnSentinelDuty(suricate);
+                    return;
                 }
             }
         }
@@ -219,13 +243,13 @@ public class Spawner : MonoBehaviour {
 
     // For the sake of simplicty we only spawn raptors on the left or on the right...
     private void SpawnRaptor(){
-        Vector3 position = new Vector3(0, 10f, Random.Range(-20f, 20f));
+        Vector3 position = new Vector3(0, 10f, Random.Range(groundBoundaries.min.z+5f, groundBoundaries.max.z-5f));
         // On the left
         if(Random.value < 0.5f)
-            position.x = -50f;
+            position.x = groundBoundaries.min.x - 15f;
         // On the right
         else
-            position.x = 50f;
+            position.x = groundBoundaries.max.x + 15f;
         GameObject raptor = Instantiate(raptorPrefab, position, Quaternion.identity);
         raptor.name = "Raptor";
     }

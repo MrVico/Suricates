@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -18,16 +19,13 @@ public class ManageData : MonoBehaviour {
 	[SerializeField] int nbFood;
 	[SerializeField] int nbPredator;
 
-	private int interval = 1;
-	private float nextTime = 0;
-
 	// Graph
 	public GameObject graphWindow;
 	public RectTransform graphConainer;
 	public RectTransform labelTemplateX;
 	public RectTransform labelTemplateY;
 
-	[SerializeField] private Sprite dotSprite;
+	[SerializeField] Sprite dotSprite;
 
 	// Data
 	private static List<int> dataMeerkatList;
@@ -43,7 +41,7 @@ public class ManageData : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		dataMeerkatList = new List<int> ();
+		dataMeerkatList = new List<int>();
 		dataFoodList = new List<int>();
 		dataPredList = new List<int>();
 
@@ -56,13 +54,7 @@ public class ManageData : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if(simulationStarted && Time.time >= nextTime) {
-			nextTime += interval;
-			updateEverySecond();
-			FindObjectOfType<GraphManager>().PopulateGraph(dataMeerkatList);
-		}
 
-		//clearGraph();
 	}
 
 	// Called from UI, to start the simulation
@@ -72,6 +64,15 @@ public class ManageData : MonoBehaviour {
 		startButton.gameObject.SetActive(false);
 		pauseButton.gameObject.SetActive(true);
 		graph.SetActive(true);
+		StartCoroutine(UpdateDataEverySecond());
+	}
+
+	private IEnumerator UpdateDataEverySecond(){
+		while(simulationStarted){
+			updateEverySecond();
+			FindObjectOfType<GraphManager>().PopulateGraph(dataMeerkatList);
+			yield return new WaitForSeconds(1);
+		}
 	}
 
 	private void updateEverySecond() {
