@@ -37,7 +37,7 @@ public class Herd : SuricateBaseSM {
         base.OnStateUpdate(animator, stateInfo, layerIndex);
         if (!onPost) {
             Move(post);
-            if (Vector3.Distance(obj.transform.position, post) < 0.2f) {
+            if (Vector3.Distance(obj.transform.position, post) < 0.7f) {
                 // This way it's perfect
                 obj.transform.position = post;
                 onPost = true;

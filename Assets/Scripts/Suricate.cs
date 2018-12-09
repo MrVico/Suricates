@@ -21,7 +21,7 @@ public class Suricate : MonoBehaviour {
     private static int nbOfSuricates = 0;
     private static int nbOfSafeSuricates = 0;
     private static bool everyoneSafe = false;
-    private static List<Vector3> sentinelPosts = new List<Vector3>(new Vector3[] { new Vector3(0, 0.5f, -24), new Vector3(0, 0.5f, 24) });
+    private static List<Vector3> sentinelPosts;
 
     private int suricateID;
     private Type suricateType;
@@ -80,6 +80,10 @@ public class Suricate : MonoBehaviour {
     // When you are the tutor
     private bool collectingBabies;
     private List<GameObject> youths;
+
+    void Awake(){
+        sentinelPosts = new List<Vector3>(new Vector3[] { new Vector3(0, 0.5f, -24), new Vector3(0, 0.5f, 24) });
+    }
 
     // Use this for initialization
     void Start() {

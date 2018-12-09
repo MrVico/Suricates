@@ -28,7 +28,6 @@ public class ManageButtons : MonoBehaviour {
 
 	// Called from UI, to pause/unpause the simulation
 	public void PauseSimulation(){
-		Debug.Log("Timescale: "+Time.timeScale+" saved: "+savedTimeScale);
 		// We aren't paused
 		if (Time.timeScale > 0) {
 			savedTimeScale = Time.timeScale;
@@ -44,6 +43,7 @@ public class ManageButtons : MonoBehaviour {
 
 	// Called from UI, to reset the simulation
 	public void ResetSimulation(){
+		Time.timeScale = 1f;
 		SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 	}
 
