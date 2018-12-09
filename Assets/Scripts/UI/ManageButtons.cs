@@ -47,6 +47,10 @@ public class ManageButtons : MonoBehaviour {
 		SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 	}
 
+	public void QuitApplication(){
+		Application.Quit();
+	}
+
 	// Called from UI, to change the play speed
 	public void PlaySpeed(){
 		// We are in fast mode
