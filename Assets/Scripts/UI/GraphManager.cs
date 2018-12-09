@@ -21,7 +21,7 @@ public class GraphManager : MonoBehaviour {
 	private List<int> values;
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 		mainContainer = GetComponent<RectTransform>();
 		xAxisLabel = xAxisLabelGO.GetComponent<RectTransform>();
 		yAxisLabel = yAxisLabelGO.GetComponent<RectTransform>();
@@ -29,15 +29,16 @@ public class GraphManager : MonoBehaviour {
 		yAxisDash = yAxisDashGO.GetComponent<RectTransform>();
 		values = new List<int>();
 
-		StartCoroutine(AddValues());
+		//StartCoroutine(AddValues());
 	}
 
+	// For testing
 	private IEnumerator AddValues(){
 		for(int i=0; i<100; i++){
 			Debug.Log((i+1)*10);
 			values.Add((i+1)*10);
 			PopulateGraph(values);
-			yield return new WaitForSeconds(0.01f);
+			yield return new WaitForSeconds(0.1f);
 		}
 	}
 	
@@ -53,7 +54,7 @@ public class GraphManager : MonoBehaviour {
 		return point;	
 	}
 
-	private void PopulateGraph(List<int> values){
+	public void PopulateGraph(List<int> values){
 		// Clear the graph before populating it
 		foreach(Transform child in transform){
 			// Delete the whole data hierarchy
@@ -77,18 +78,20 @@ public class GraphManager : MonoBehaviour {
 		float yMax = 100f;
 		// Adjust max value accordingly
 		if(values[values.Count-1] > yMax - yMargin){
-			yMax = values[values.Count-1] + yMargin;
+			yMax = values[values.Count-1];
 		}
 		// Adjust width so it never goes offscreen
-		float xOffset = (graphWidth - xMargin*2) / values.Count;
+		float xOffset = (graphWidth - xMargin*2) / (values.Count-1);
 		float xPos = 0f;
 		float yPos = 0f;
 		GameObject lastPoint = null;
 		for(int i=0; i<values.Count; i++){
 			xPos = i * xOffset + xMargin;
 			yPos = (values[i] / yMax) * (graphHeight - yMargin*2) + yMargin;
-			if(i == values.Count - 1)
-				Debug.Log("y: "+yPos+" for i: "+i);
+			/*
+			if(i==values.Count-1)
+				Debug.Log("y: "+yPos+" yMax: "+yMax);
+			*/
 			GameObject currentPoint = CreatePoint(new Vector2(xPos, yPos));
 			if(lastPoint != null){
 				LinkDots(lastPoint.GetComponent<RectTransform>().anchoredPosition,
@@ -100,7 +103,11 @@ public class GraphManager : MonoBehaviour {
 		// Axis X
 		float firstPosX = xMargin;
 		float lastPosX = xPos;
+		if(lastPosX <= graphWidth)
+			lastPosX = graphWidth-xMargin;
 		int horizontalSeparatorAmount = 12;
+		if(values.Count < horizontalSeparatorAmount)
+			horizontalSeparatorAmount = values.Count;
 		for(int i=0; i<=horizontalSeparatorAmount; i++){
 			float currentPosX = firstPosX + i*(lastPosX - firstPosX)/horizontalSeparatorAmount;
 			// Dashes
@@ -120,6 +127,8 @@ public class GraphManager : MonoBehaviour {
 		// Axis Y
 		float firstPosY = yMargin;
 		float lastPosY = yPos;
+		if(lastPosY <= graphHeight)
+			lastPosY = graphHeight-yMargin;
 		int verticalSeparatorAmount = 10;
 		for(int i=0; i<=verticalSeparatorAmount; i++){
 			float currentPosY = firstPosY + i*(lastPosY - firstPosY)/verticalSeparatorAmount;
@@ -134,7 +143,7 @@ public class GraphManager : MonoBehaviour {
 			labelY.SetParent(dataContainer, false);
 			labelY.gameObject.SetActive(true);
 			labelY.anchoredPosition = new Vector2(0f, currentPosY);
-			labelY.GetComponent<Text>().text = Mathf.RoundToInt((yMax - yMargin) * i / (verticalSeparatorAmount)).ToString();
+			labelY.GetComponent<Text>().text = Mathf.RoundToInt((yMax) * i / (verticalSeparatorAmount)).ToString();
 		}
 	}
 

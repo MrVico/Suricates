@@ -98,6 +98,8 @@ public class Spawner : MonoBehaviour {
 
     private void SuricateDied(Suricate suricate){
         aliveSuricates--;
+        // This way the suricate is seen as dead by the game straight away
+        suricate.tag = "Untagged";
         // If an alpha died we need to elect a new one
         if (suricate.IsAlpha()){
             // If it's a male, the first male suricate becomes the new alpha

@@ -172,7 +172,8 @@ public class Suricate : MonoBehaviour {
             if(youths.Count > 0) {
                 // ToArray() to create a copy, thus the live modification to the list won't affect us
                 foreach(GameObject youth in youths.ToArray()) {
-                    if (!youth.GetComponent<Suricate>().GetSuricateType().Equals(Suricate.Type.Baby)) {
+                    // The youth could've died
+                    if (youth != null && !youth.GetComponent<Suricate>().GetSuricateType().Equals(Suricate.Type.Baby)) {
                         youths.Remove(youth);
                     }
                 }

@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class ManageData : MonoBehaviour {
 
+	[SerializeField] GameObject graph;
+
 	[SerializeField] Button startButton;
 	[SerializeField] Button pauseButton;
 	
@@ -57,6 +59,7 @@ public class ManageData : MonoBehaviour {
 		if(simulationStarted && Time.time >= nextTime) {
 			nextTime += interval;
 			updateEverySecond();
+			FindObjectOfType<GraphManager>().PopulateGraph(dataMeerkatList);
 		}
 
 		//clearGraph();
@@ -68,6 +71,7 @@ public class ManageData : MonoBehaviour {
 		FindObjectOfType<Spawner>().SetUpSimulation(nbMeerkat, nbPredator, nbFood);
 		startButton.gameObject.SetActive(false);
 		pauseButton.gameObject.SetActive(true);
+		graph.SetActive(true);
 	}
 
 	private void updateEverySecond() {
