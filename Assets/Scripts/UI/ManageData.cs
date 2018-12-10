@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class ManageData : MonoBehaviour {
 
 	[SerializeField] GameObject graph;
+	[SerializeField] Toggle showGraphToggle;
 
 	[SerializeField] Button startButton;
 	[SerializeField] Button pauseButton;
@@ -41,6 +42,7 @@ public class ManageData : MonoBehaviour {
 	public GameObject preyPrefab;
 
 	private bool simulationStarted = false;
+	private Coroutine graphRoutine;
 
 	// Use this for initialization
 	void Start () {
@@ -55,7 +57,20 @@ public class ManageData : MonoBehaviour {
 		// Default value
 		kidsForEveryone = false;
 		kidsForEveryoneToggle.onValueChanged.AddListener((value) =>{
-				kidsForEveryone = value;
+			kidsForEveryone = value;
+		});
+
+		showGraphToggle.onValueChanged.AddListener((value) =>{
+			// Show graph
+			if(value){
+				graph.SetActive(true);
+				graphRoutine = StartCoroutine(UpdateDataEverySecond());
+			}
+			// Hide graph
+			else{
+				StopCoroutine(graphRoutine);
+				graph.SetActive(false);
+			}
 		});
 
 		SetData();
@@ -73,7 +88,7 @@ public class ManageData : MonoBehaviour {
 		kidsForEveryoneToggle.interactable = false;
 		
 		graph.SetActive(true);
-		StartCoroutine(UpdateDataEverySecond());
+		graphRoutine = StartCoroutine(UpdateDataEverySecond());		
 	}
 
 	private IEnumerator UpdateDataEverySecond(){

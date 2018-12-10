@@ -32,7 +32,6 @@ public class Herd : SuricateBaseSM {
         postTimer = 0;
         // Something went wrong, we have to find the unoccupied post
         if(post == Vector3.zero){
-            Debug.Log(name+" VECTOR ZERO POST");
             post = FindObjectOfType<Spawner>().GetUnoccupiedSentinelPost();
         }
     }
