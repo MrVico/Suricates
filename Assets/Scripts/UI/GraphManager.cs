@@ -74,12 +74,13 @@ public class GraphManager : MonoBehaviour {
 		int numberOfPoints = 0;
 		bool skipSome = false;
 		List<int> indexes = new List<int>();
+		int maxAmountOfPoints = 150;
 		// We only want to show 300 points in that case
-		if(values.Count >= 300){
+		if(values.Count >= maxAmountOfPoints){
 			skipSome = true;
-			float ratio = values.Count / 300f;
+			float ratio = values.Count / (maxAmountOfPoints * 1f);
 			// We only take the points at the indexes computed with the ratio
-			for(int i=0; i<300; i++){
+			for(int i=0; i<maxAmountOfPoints; i++){
 				indexes.Add(Mathf.RoundToInt(i*ratio));
 			}
 		}
@@ -102,7 +103,7 @@ public class GraphManager : MonoBehaviour {
 		float yPos = 0f;
 		GameObject lastPoint = null;
 		for(int i=0; i<values.Count; i++){
-			// Either we show all points if < 300 or we show 300 points
+			// Either we show all points if < maxAmountOfPoints or we maxAmountOfPoints points
 			if(!skipSome || (skipSome && indexes.Contains(i))){
 				xPos = i * xOffset + xMargin;
 				yPos = (values[i] / yMax) * (graphHeight - yMargin*2) + yMargin;

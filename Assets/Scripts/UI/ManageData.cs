@@ -58,14 +58,9 @@ public class ManageData : MonoBehaviour {
 				kidsForEveryone = value;
 		});
 
-		setData();
+		SetData();
 	}
 	
-	// Update is called once per frame
-	void Update () {
-
-	}
-
 	// Called from UI, to start the simulation
 	public void StartSimulation(){
 		simulationStarted = true;
@@ -83,35 +78,9 @@ public class ManageData : MonoBehaviour {
 
 	private IEnumerator UpdateDataEverySecond(){
 		while(simulationStarted){
-			updateEverySecond();
+			dataMeerkatList.Add(GameObject.FindGameObjectsWithTag("Suricate").Length);
 			FindObjectOfType<GraphManager>().PopulateGraph(dataMeerkatList);
 			yield return new WaitForSeconds(1);
-		}
-	}
-
-	private void updateEverySecond() {
-		nbMeerkat = GameObject.FindGameObjectsWithTag("Suricate").Length;
-		nbFood = GameObject.FindGameObjectsWithTag("Prey").Length;
-		nbPredator = GameObject.FindGameObjectsWithTag("Predator").Length;
-		setData();
-
-		dataMeerkatList.Add(nbMeerkat);
-		dataFoodList.Add(nbFood);
-		dataPredList.Add(nbPredator);
-
-		if (graphWindow.activeSelf == true) {
-			printGraph(dataMeerkatList, 0);
-			printGraph(dataFoodList, 1);
-			printGraph(dataPredList, 2);
-
-			/*if(dataMeerkatList.Count > 15) {
-				clearGraph();
-				printGraph(dataMeerkatList);
-			}				
-			else {
-				//clearGraph();
-				printGraph(dataMeerkatList);
-			}*/
 		}
 	}
 
@@ -137,14 +106,31 @@ public class ManageData : MonoBehaviour {
 		}
 	}
 
-	// TODO: Make a seperate stat panel for the live stats
-	private void setData() {
+	private void SetData() {
 		meerkatSlider.value = nbMeerkat;
 		meerkatSlider.GetComponentInChildren<Text>().text = nbMeerkat.ToString();
 		predatorSlider.value = predatorRespawnTime;
 		predatorSlider.GetComponentInChildren<Text>().text = predatorRespawnTime.ToString()+"s";
 		foodSlider.value = nbFood;
 		foodSlider.GetComponentInChildren<Text>().text = nbFood.ToString();
+	}
+
+/*
+	private void updateEverySecond() {
+		nbMeerkat = GameObject.FindGameObjectsWithTag("Suricate").Length;
+		nbFood = GameObject.FindGameObjectsWithTag("Prey").Length;
+		nbPredator = GameObject.FindGameObjectsWithTag("Predator").Length;
+		SetData();
+
+		dataMeerkatList.Add(nbMeerkat);
+		dataFoodList.Add(nbFood);
+		dataPredList.Add(nbPredator);
+
+		if (graphWindow.activeSelf == true) {
+			printGraph(dataMeerkatList, 0);
+			printGraph(dataFoodList, 1);
+			printGraph(dataPredList, 2);
+		}
 	}
 
 	private GameObject printDot(Vector2 position)
@@ -372,4 +358,5 @@ public class ManageData : MonoBehaviour {
 
 		GameObject.Destroy(predator);
 	}
+*/
 }
