@@ -37,7 +37,7 @@ public class Suricate : MonoBehaviour {
     private float visionAlpha = 1f;
     private float visionAngle = 90f;
     private float visionRange = 5f;
-    private int hideTime = 2;
+    private int hideTime = 4;
     
     private Animator animator;
     private GameObject prey;

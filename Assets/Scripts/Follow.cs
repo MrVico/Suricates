@@ -19,7 +19,7 @@ public class Follow : SuricateBaseSM {
         base.OnStateEnter(animator, stateInfo, layerIndex);
         FindTutor();
         timer = 0;
-        moveSpeed = 2f;
+        moveSpeed = 1.5f;
     }
 
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -43,7 +43,7 @@ public class Follow : SuricateBaseSM {
             }
             // We follow our tutor
             else if(Vector3.Distance(obj.transform.position, tutor.transform.position) > 1.5f) {
-                moveSpeed = 2f;
+                moveSpeed = 1.5f;
                 Move(tutor.transform.position);
             }
         }

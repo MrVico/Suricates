@@ -74,8 +74,8 @@ public class GraphManager : MonoBehaviour {
 		int numberOfPoints = 0;
 		bool skipSome = false;
 		List<int> indexes = new List<int>();
-		int maxAmountOfPoints = 150;
-		// We only want to show 300 points in that case
+		int maxAmountOfPoints = 100;
+		// We only want to show maxAmountOfPoints points in that case
 		if(values.Count >= maxAmountOfPoints){
 			skipSome = true;
 			float ratio = values.Count / (maxAmountOfPoints * 1f);

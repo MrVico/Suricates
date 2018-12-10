@@ -20,7 +20,9 @@ public class Run : SuricateBaseSM {
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
 	override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         base.OnStateUpdate(animator, stateInfo, layerIndex);
-        Move(destination);
+        // If we are safe, near enough of the destination, we wait 'till the danger is gone
+        if(Vector3.Distance(obj.transform.position, destination) > 1.4f)
+            Move(destination);
     }
 
 	// OnStateExit is called when a transition ends and the state machine finishes evaluating this state

@@ -126,6 +126,6 @@ public class Herd : SuricateBaseSM {
             // This way the rotation is smooth by always having the same speed
             obj.transform.rotation = Quaternion.RotateTowards(obj.transform.rotation, rotation, lookRotationSpeed * Time.deltaTime);
         }
-        Debug.DrawRay(obj.transform.position, obj.transform.forward * 2f, Color.red, 0.15f);
+        //Debug.DrawRay(obj.transform.position, obj.transform.forward * 2f, Color.red, 0.15f);
     }
 }
