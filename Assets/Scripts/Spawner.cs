@@ -27,6 +27,8 @@ public class Spawner : MonoBehaviour {
 
     private GameObject preyContainer;
     private List<GameObject> preys;
+    // List of preys that respawned and wait to show themselves
+    private List<GameObject> waitingPreys;
 
     private List<Vector3> sentinelPosts;
 
@@ -48,8 +50,8 @@ public class Spawner : MonoBehaviour {
         if(simulationStarted){
             timer += Time.deltaTime;
             // We always want to have a certain amount of preys alive, so we respawn the dead ones
-            for(int i=GameObject.FindGameObjectsWithTag("Prey").Length; i<nbOfPreys; i++){
-                SpawnPrey(false);
+            for(int i=(GameObject.FindGameObjectsWithTag("Prey").Length+waitingPreys.Count); i<nbOfPreys; i++){
+                StartCoroutine(SpawnPreyWithDelay(SpawnPrey(false)));
             }
             if(timer >= raptorRespawnTime){
                 SpawnRaptor();
@@ -71,8 +73,16 @@ public class Spawner : MonoBehaviour {
         aliveSuricates = 0;
         timer = 0;
         suricates = new List<GameObject>();
+        waitingPreys = new List<GameObject>();
         if (spawnSuricates)
             InitialSuricateSpawn();
+    }
+
+    private IEnumerator SpawnPreyWithDelay(GameObject prey){
+        yield return new WaitForSeconds(Random.Range(30, 45));
+        // The prey can be hunted
+        waitingPreys.Remove(prey);
+        prey.SetActive(true);
     }
 
     public int GetNumberOfPostedSentinels(){
@@ -99,7 +109,7 @@ public class Spawner : MonoBehaviour {
         }
     }
     
-    private void SpawnPrey(bool initialSpawn) {
+    private GameObject SpawnPrey(bool initialSpawn) {
         Vector3 position;
         if(initialSpawn){
             position = new Vector3(Random.Range(groundBoundaries.min.x+2, groundBoundaries.max.x-2), 
@@ -117,6 +127,12 @@ public class Spawner : MonoBehaviour {
         totalPreys++;
         prey.name = "Prey " + totalPreys;
         prey.transform.parent = preyContainer.transform;
+        // If the prey "respawns" we have it wait for a bit
+        if(!initialSpawn){
+            prey.SetActive(false);
+            waitingPreys.Add(prey);
+        }
+        return prey;
     }
 
     private void PreyDied(GameObject prey) {
@@ -221,13 +237,13 @@ public class Spawner : MonoBehaviour {
         }
     }
 
-    // Between 2 and 4 suricates per brood
+    // Between 2 and 7 suricates per brood
     private void SpawnBabies(Transform transform) {
         GameObject suricate;
         Vector3 position = transform.position;
         // The suricate shouldn't be flying!
         position.y /= 2;
-        for(int i=0; i<Random.Range(2, 4); i++) {
+        for(int i=0; i<Random.Range(2, 7+1); i++) {
             totalSuricates++;
             aliveSuricates++;
             // We want to spawn the baby a bit behind it's mother

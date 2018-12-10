@@ -394,20 +394,21 @@ public class Suricate : MonoBehaviour {
     
     // Called from Chase.cs is being eaten
     public void TakeABite(GameObject prey) {
+        float percentage = 0.75f;
         // The prey takes a hit!
         prey.SendMessage("Aww");
         // Babies don't need that much food
         if (suricateType == Suricate.Type.Baby) {
-            currentBarValue += 1.5f * Time.timeScale;
-            babyGrowthEating += 1 * Time.timeScale;
+            currentBarValue += 1f * Time.timeScale * percentage;
+            babyGrowthEating += 1 * Time.timeScale * percentage;
         }
         else{
-            currentBarValue += 0.5f * Time.timeScale;
+            currentBarValue += 0.5f * Time.timeScale * percentage;
         }
         if (currentBarValue > 100)
             currentBarValue = 100;
         // Needed to determine the new alpha female
-        amountEaten += Time.timeScale;
+        amountEaten += Time.timeScale * percentage;
     }
 
     public bool IsOnAlert(){
