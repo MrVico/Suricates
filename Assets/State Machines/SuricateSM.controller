@@ -137,7 +137,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af8cdecc2cbc9e94c9fe0054b9566710, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  herdRay: {fileID: 1127801890767270, guid: 0b0ed103364e56446bc326c4ae4368cc, type: 2}
 --- !u!114 &114781339189587362
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1128,14 +1127,14 @@ AnimatorStateMachine:
     m_Position: {x: -96, y: 252, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102001243054194558}
-    m_Position: {x: 156, y: -120, z: 0}
+    m_Position: {x: 120, y: -72, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
   m_StateMachineTransitions: {}
   m_StateMachineBehaviours: []
-  m_AnyStatePosition: {x: 50, y: 20, z: 0}
-  m_EntryPosition: {x: -132, y: 108, z: 0}
-  m_ExitPosition: {x: 888, y: 192, z: 0}
+  m_AnyStatePosition: {x: -72, y: -288, z: 0}
+  m_EntryPosition: {x: -84, y: 48, z: 0}
+  m_ExitPosition: {x: 720, y: -288, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
   m_DefaultState: {fileID: 1102614733134269488}

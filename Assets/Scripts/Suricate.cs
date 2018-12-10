@@ -64,7 +64,7 @@ public class Suricate : MonoBehaviour {
     private bool dead;
 
     // The bigger this number the faster they starve
-    private float hungerRate = 0.01f;
+    private float hungerRate = 0.02f;
 
     // 11 weeks
     private float pregnancyTime;
@@ -398,16 +398,16 @@ public class Suricate : MonoBehaviour {
         prey.SendMessage("Aww");
         // Babies don't need that much food
         if (suricateType == Suricate.Type.Baby) {
-            currentBarValue += 1.5f;
-            babyGrowthEating += 1;
+            currentBarValue += 1.5f * Time.timeScale;
+            babyGrowthEating += 1 * Time.timeScale;
         }
         else{
-            currentBarValue += 0.5f;
+            currentBarValue += 0.5f * Time.timeScale;
         }
         if (currentBarValue > 100)
             currentBarValue = 100;
         // Needed to determine the new alpha female
-        amountEaten++;
+        amountEaten += Time.timeScale;
     }
 
     public bool IsOnAlert(){

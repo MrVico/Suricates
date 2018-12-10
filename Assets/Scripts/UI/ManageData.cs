@@ -60,6 +60,7 @@ public class ManageData : MonoBehaviour {
 			kidsForEveryone = value;
 		});
 
+		showGraphToggle.interactable = false;
 		showGraphToggle.onValueChanged.AddListener((value) =>{
 			// Show graph
 			if(value){
@@ -87,6 +88,7 @@ public class ManageData : MonoBehaviour {
 		foodSlider.interactable = false;
 		kidsForEveryoneToggle.interactable = false;
 		
+		showGraphToggle.interactable = true;
 		graph.SetActive(true);
 		graphRoutine = StartCoroutine(UpdateDataEverySecond());		
 	}
@@ -94,7 +96,7 @@ public class ManageData : MonoBehaviour {
 	private IEnumerator UpdateDataEverySecond(){
 		while(simulationStarted){
 			dataMeerkatList.Add(GameObject.FindGameObjectsWithTag("Suricate").Length);
-			FindObjectOfType<GraphManager>().PopulateGraph(dataMeerkatList);
+			FindObjectOfType<GraphManager>().PopulateGraph(nbMeerkat, dataMeerkatList);
 			yield return new WaitForSeconds(1);
 		}
 	}

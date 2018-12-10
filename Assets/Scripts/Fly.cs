@@ -37,8 +37,11 @@ public class Fly : RaptorBaseSM {
         }
         // If we reset we don't need to wait for the timer
         else if ((destinationTimer >= flyTime || reset) && obj.transform.position.y >= flyHeight && MovementController.IsPositionInsideGroundZone(obj.transform.position)) {
-            // Reset done
-            reset = false;
+            // After resetting we fly away
+            if(reset){
+                animator.ResetTrigger(Raptor.flyHash);
+                animator.SetTrigger(Raptor.flyAwayHash);
+            }
             // We want the raptor to fly horizontally over the ground
             if (obj.transform.forward.y != 0) {
                 Vector3 tmp = obj.transform.forward;

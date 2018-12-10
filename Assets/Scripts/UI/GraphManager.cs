@@ -40,7 +40,7 @@ public class GraphManager : MonoBehaviour {
 		for(int i=0; i<450; i++){
 			//Debug.Log((i+1)*10);
 			values.Add((i+1)*10);
-			PopulateGraph(values);
+			PopulateGraph(50, values);
 			yield return new WaitForSeconds(0.1f);
 		}
 	}
@@ -57,7 +57,7 @@ public class GraphManager : MonoBehaviour {
 		return point;	
 	}
 
-	public void PopulateGraph(List<int> values){
+	public void PopulateGraph(int initialColonySize, List<int> values){
 		// Clear the graph before populating it
 		foreach(Transform child in transform){
 			// Delete the whole data hierarchy
@@ -91,8 +91,8 @@ public class GraphManager : MonoBehaviour {
 		// Top and bottom margins
 		float xMargin = 5f;
 		float yMargin = 5f;
-		// Base max value
-		float yMax = 100f;
+		// Initial max value
+		float yMax = initialColonySize * 3f;
 		// Adjust max value accordingly
 		if(values.Max() > yMax - yMargin){
 			yMax = values.Max();

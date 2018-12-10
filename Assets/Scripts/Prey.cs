@@ -48,7 +48,7 @@ public class Prey : MonoBehaviour {
 
     // Someone bit us
     private void Aww() {
-        life--;
+        life -= Time.timeScale;
         if (life <= 0)
             Dead();
     }
