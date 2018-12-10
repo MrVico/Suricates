@@ -77,8 +77,8 @@ public class ManageData : MonoBehaviour {
 		foodSlider.interactable = false;
 		kidsForEveryoneToggle.interactable = false;
 		
-		//graph.SetActive(true);
-		//StartCoroutine(UpdateDataEverySecond());
+		graph.SetActive(true);
+		StartCoroutine(UpdateDataEverySecond());
 	}
 
 	private IEnumerator UpdateDataEverySecond(){
@@ -336,7 +336,7 @@ public class ManageData : MonoBehaviour {
 
 	public void addfood() {
 		Vector3 position = new Vector3(Random.Range(-33f, 33f), preyPrefab.transform.localScale.y / 2, Random.Range(-23f, 23f));
-		GameObject prey = Instantiate(preyPrefab, position, Quaternion.identity);
+		Instantiate(preyPrefab, position, Quaternion.identity);
 	}
 
 	public void removefood() {

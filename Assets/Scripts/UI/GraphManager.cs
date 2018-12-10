@@ -37,8 +37,8 @@ public class GraphManager : MonoBehaviour {
 
 	// For testing
 	private IEnumerator AddValues(){
-		for(int i=0; i<100; i++){
-			Debug.Log((i+1)*10);
+		for(int i=0; i<450; i++){
+			//Debug.Log((i+1)*10);
 			values.Add((i+1)*10);
 			PopulateGraph(values);
 			yield return new WaitForSeconds(0.1f);
@@ -71,6 +71,19 @@ public class GraphManager : MonoBehaviour {
 		dataContainer.anchorMax = new Vector2(1, 1);
 		dataContainer.pivot = new Vector2(0, 0);
 
+		int numberOfPoints = 0;
+		bool skipSome = false;
+		List<int> indexes = new List<int>();
+		// We only want to show 300 points in that case
+		if(values.Count >= 300){
+			skipSome = true;
+			float ratio = values.Count / 300f;
+			// We only take the points at the indexes computed with the ratio
+			for(int i=0; i<300; i++){
+				indexes.Add(Mathf.RoundToInt(i*ratio));
+			}
+		}
+
 		float graphHeight = Mathf.Abs(mainContainer.sizeDelta.y);
 		float graphWidth = Mathf.Abs(mainContainer.sizeDelta.x);
 		
@@ -89,18 +102,17 @@ public class GraphManager : MonoBehaviour {
 		float yPos = 0f;
 		GameObject lastPoint = null;
 		for(int i=0; i<values.Count; i++){
-			xPos = i * xOffset + xMargin;
-			yPos = (values[i] / yMax) * (graphHeight - yMargin*2) + yMargin;
-			/*
-			if(i==values.Count-1)
-				Debug.Log("y: "+yPos+" yMax: "+yMax);
-			*/
-			GameObject currentPoint = CreatePoint(new Vector2(xPos, yPos));
-			if(lastPoint != null){
-				LinkDots(lastPoint.GetComponent<RectTransform>().anchoredPosition,
-							currentPoint.GetComponent<RectTransform>().anchoredPosition);
+			// Either we show all points if < 300 or we show 300 points
+			if(!skipSome || (skipSome && indexes.Contains(i))){
+				xPos = i * xOffset + xMargin;
+				yPos = (values[i] / yMax) * (graphHeight - yMargin*2) + yMargin;
+				GameObject currentPoint = CreatePoint(new Vector2(xPos, yPos));
+				numberOfPoints++;
+				if(lastPoint != null){
+					LinkDots(lastPoint.GetComponent<RectTransform>().anchoredPosition, currentPoint.GetComponent<RectTransform>().anchoredPosition);
+				}
+				lastPoint = currentPoint;
 			}
-			lastPoint = currentPoint;
 		}
 
 		// Axis X
