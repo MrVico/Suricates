@@ -43,8 +43,9 @@ public class Chase : SuricateBaseSM {
             // If we are a tutor we need to give some to the youths
             if (obj.GetComponent<Suricate>().GetYouths().Count > 0) {
                 foreach (GameObject youth in obj.GetComponent<Suricate>().GetYouths()) {
-                    if(youth != null)
+                    if(youth != null){
                         youth.SendMessage("TakeABite", prey);
+                    }
                 }
             }
         }

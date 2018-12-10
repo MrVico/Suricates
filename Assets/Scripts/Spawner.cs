@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class Spawner : MonoBehaviour {
 
@@ -27,6 +28,8 @@ public class Spawner : MonoBehaviour {
     private GameObject preyContainer;
     private List<GameObject> preys;
 
+    private List<Vector3> sentinelPosts;
+
     private float timer;
 
     private bool simulationStarted = false;   
@@ -37,6 +40,7 @@ public class Spawner : MonoBehaviour {
 
     void Awake(){
         groundBoundaries = GameObject.FindGameObjectWithTag("Ground").GetComponent<Renderer>().bounds;
+        sentinelPosts = new List<Vector3>(new Vector3[] { new Vector3(0, 0.5f, -24), new Vector3(0, 0.5f, 24) });
     }
 
 	// Update is called once per frame
@@ -165,7 +169,6 @@ public class Spawner : MonoBehaviour {
         if(suricate.GetSuricateType().Equals(Suricate.Type.Sentinel)){
             foreach(GameObject candidat in GameObject.FindGameObjectsWithTag("Suricate")){
                 if(candidat.GetComponent<Suricate>().GetSuricateType().Equals(Suricate.Type.Hunter) && !candidat.GetComponent<Suricate>().IsAlpha()){
-                    Debug.Log(candidat.name+" is on post "+suricate.GetPost()+" with "+GetNumberOfPostedSentinels()+" other");
                     // We only want to have 2 sentinels at the same time
                     if(GetNumberOfPostedSentinels() < 2)
                         candidat.GetComponent<Suricate>().OnSentinelDuty(suricate);
@@ -220,12 +223,8 @@ public class Spawner : MonoBehaviour {
 
     // Between 2 and 4 suricates per brood
     private void SpawnBabies(Transform transform) {
-        Debug.Log(transform.gameObject.name+" is a mother!");
-        // Should the mother always be in their home when giving birth???
-        // We should add a general day time so we know how many days passed etc...
         GameObject suricate;
         Vector3 position = transform.position;
-        //Debug.Log("Forward: " + transform.forward+" Backward: "+ (-transform.forward));
         // The suricate shouldn't be flying!
         position.y /= 2;
         for(int i=0; i<Random.Range(2, 4); i++) {
@@ -265,5 +264,30 @@ public class Spawner : MonoBehaviour {
             position.x = groundBoundaries.max.x + 15f;
         GameObject raptor = Instantiate(raptorPrefab, position, Quaternion.identity);
         raptor.name = "Raptor";
+    }
+
+    public Vector3 GetUnoccupiedSentinelPost(){
+        Vector3 otherPost;
+        foreach(GameObject suricate in GameObject.FindGameObjectsWithTag("Suricate")){
+            if(suricate.GetComponent<Suricate>().GetSuricateType().Equals(Suricate.Type.Sentinel)){
+                otherPost = suricate.GetComponent<Suricate>().GetPost();
+                // We compare the posts and take the one that is unoccupied
+                if(sentinelPosts.ElementAt(0) == otherPost)
+                    return sentinelPosts.ElementAt(1);
+                else
+                    return sentinelPosts.ElementAt(0);
+            }
+        }
+        return Vector3.zero;
+    }
+
+    public int GetNumberOfSafeSuricates(){
+        int amount = 0;
+        foreach(GameObject suricate in GameObject.FindGameObjectsWithTag("Suricate")){
+            if(suricate.GetComponent<Suricate>().IsSafe()){
+                amount++;
+            }
+        }
+        return amount;
     }
 }

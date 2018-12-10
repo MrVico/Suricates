@@ -9,7 +9,6 @@ public class Fly : RaptorBaseSM {
     private Vector3 destination;
     private float destinationTimer;
     private bool reset;
-    private float flyTimer;
     private float leaveTime;
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
@@ -17,7 +16,6 @@ public class Fly : RaptorBaseSM {
         base.OnStateEnter(animator, stateInfo, layerIndex);
         moveSpeed = 3f;
         destinationTimer = 0;
-        flyTimer = 0;
         // If this is true, it means we just dove and have to reset our height
         reset = (obj.transform.position.y < flyHeight);
         if(MovementController.IsPositionInsideGroundZone(obj.transform.position))

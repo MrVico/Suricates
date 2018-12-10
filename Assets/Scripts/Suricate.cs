@@ -6,6 +6,9 @@ using System.Linq;
 
 public class Suricate : MonoBehaviour {
 
+    //DEBUG
+    public bool debug = false;
+
     public enum Type { Hunter, Sentinel, Baby };
     public enum Gender { Null, Male, Female };
 
@@ -22,10 +25,8 @@ public class Suricate : MonoBehaviour {
     public static bool kidsForEveryone;
 
     private static int nbOfSuricates;
-    private static int nbOfSafeSuricates;
     private static bool everyoneSafe;
     private static float waitingForLastOne;
-    private static List<Vector3> sentinelPosts;
 
     private int suricateID;
     private Type suricateType;
@@ -74,19 +75,13 @@ public class Suricate : MonoBehaviour {
     private float maxSeed = 30f;
     private float pregnancyDuration = 15f;
 
+    private GameObject tutor;
     // The amount the baby ate
     private float babyGrowthEating = 0f;
 
     // When you are the tutor
     private bool collectingBabies;
     private List<GameObject> youths;
-
-    void Awake(){
-        sentinelPosts = new List<Vector3>(new Vector3[] { new Vector3(0, 0.5f, -24), new Vector3(0, 0.5f, 24) });
-        nbOfSuricates = 0;
-        nbOfSafeSuricates = 0;
-        everyoneSafe = false;
-    }
 
     // Use this for initialization
     void Start() {
@@ -100,8 +95,7 @@ public class Suricate : MonoBehaviour {
         else if (suricateType == Type.Sentinel) {
             animator.SetBool("sentinel", true);
             animator.SetTrigger(herdHash);
-            myPost = sentinelPosts.ElementAt(0);
-            sentinelPosts.RemoveAt(0);
+            myPost = FindObjectOfType<Spawner>().GetUnoccupiedSentinelPost();
         }
         else if (suricateType == Type.Baby) {
             animator.SetBool("baby", true);
@@ -132,18 +126,13 @@ public class Suricate : MonoBehaviour {
 		if (!dead) {
             if (!alert && suricateType == Type.Hunter && !collectingBabies) {
                 detectCollision();
-            }        
+            }    
             // If we are alert && ALL the suricates are home we start the hide timer
-            if(alert && (nbOfSafeSuricates >= GameObject.FindGameObjectsWithTag("Suricate").Length) ||
-                        // Sometimes someone gets lost
-                        (nbOfSafeSuricates == GameObject.FindGameObjectsWithTag("Suricate").Length-1 && hideTimer > waitingForLastOne+1)) {
+            if(alert && !everyoneSafe && (FindObjectOfType<Spawner>().GetNumberOfSafeSuricates() == GameObject.FindGameObjectsWithTag("Suricate").Length)) {
                 everyoneSafe = true;
             }
-            else if(alert && nbOfSafeSuricates == GameObject.FindGameObjectsWithTag("Suricate").Length-1){
-                if(hideTimer == 0)
-                    waitingForLastOne = Time.deltaTime;
-                hideTimer += Time.deltaTime;
-                Debug.Log("NbSafe: "+nbOfSafeSuricates+" Total: "+GameObject.FindGameObjectsWithTag("Suricate").Length);
+            if(debug){
+                Debug.Log("Alert: "+alert+" collecting: "+ collectingBabies+" type: "+suricateType+" prey: "+prey);
             }
 			// Once everyone is safe we wait it out
 			if (everyoneSafe)
@@ -162,8 +151,12 @@ public class Suricate : MonoBehaviour {
                 hideTimer = 0;
                 everyoneSafe = false;
             }
+            if(alert && !safe){
+                animator.ResetTrigger(wanderHash);
+                animator.SetTrigger(runHash);
+            }
             UpdateFullnessBar();
-            if (!alert && (alpha || (!alpha && kidsForEveryone)) && suricateGender == Gender.Female && suricateType != Suricate.Type.Baby) {
+            if (!alert && (alpha || (!alpha && kidsForEveryone)) && suricateGender == Gender.Female && suricateType != Suricate.Type.Baby && suricateType != Suricate.Type.Sentinel) {
                 // We are not yet pregnant and don't have kids to look after
                 if (pregnancyTime == 0 && youths.Count == 0) {
                     timeSinceLastPregnancy += Time.deltaTime;
@@ -198,14 +191,6 @@ public class Suricate : MonoBehaviour {
         else if(dead && raptor != null && transform.localPosition != new Vector3(0, -0.6f, 0.8f)) {
             transform.localPosition = new Vector3(0, -0.6f, 0.8f);
         }
-		/*
-        // We update the visionAlpha of the vision field in case the user changed it
-        if (suricateType == Type.Hunter) {
-            Color materialColor = FoV.GetComponent<MeshRenderer>().material.GetColor("_Color");
-            materialColor.a = visionAlpha;
-            FoV.GetComponent<MeshRenderer>().material.color = materialColor;
-        }
-        */
 	}
 
     // Called when a baby becomes an adult!
@@ -215,28 +200,29 @@ public class Suricate : MonoBehaviour {
         visionRange *= 2;
         GameObject visionCone = transform.Find("Vision Cone").gameObject;
         visionCone.transform.localPosition = new Vector3(0f, -0.3f, 0f);
-        gameObject.name = "Suricate " + suricateID + " " + suricateType + " " + suricateGender;
-        // The baby can well be an alpha!
-        if (alpha)
-            gameObject.name += " Alpha";
         // We've to be a sentinel 'cause the old ones died
         if(FindObjectOfType<Spawner>().GetNumberOfPostedSentinels() < 2){
             gameObject.GetComponent<Suricate>().SetSuricateType(Suricate.Type.Sentinel);
             animator.SetBool("sentinel", true);
-            animator.SetTrigger(Suricate.herdHash);
+            if(!alert)
+                animator.SetTrigger(Suricate.herdHash);
         }
         else{
             gameObject.GetComponent<Suricate>().SetSuricateType(Suricate.Type.Hunter);
             animator.SetBool("hunter", true);
-            animator.SetTrigger(Suricate.wanderHash);
+            if(!alert)
+                animator.SetTrigger(Suricate.wanderHash);
         }
+        gameObject.name = "Suricate " + suricateID + " " + suricateType + " " + suricateGender;
+        // The baby can well be an alpha!
+        if (alpha)
+            gameObject.name += " Alpha";
     }
 
     // We enter our home, we are safe
     private void OnTriggerEnter(Collider other) {
         if (other.CompareTag("Hole")) {
             safe = true;
-            nbOfSafeSuricates++;
         }
     }
 
@@ -244,7 +230,6 @@ public class Suricate : MonoBehaviour {
     private void OnTriggerExit(Collider other) {
         if (other.CompareTag("Hole")) {
             safe = false;
-            nbOfSafeSuricates--;
         }
     }
 
@@ -293,11 +278,10 @@ public class Suricate : MonoBehaviour {
     }
 
     public void OnSentinelDuty(Suricate sentinel) {
+        // A sentinel doesn't have kids to look after
+        youths.Clear();
         predecessor = sentinel;
         myPost = sentinel.GetPost();
-        if(myPost != new Vector3(0, 0.5f, -24) && myPost != new Vector3(0, 0.5f, 24)){
-            Debug.Log("MY POST IS WRONG WRONG WRONG "+myPost+" from "+sentinel.name);
-        }
         suricateType = Type.Sentinel;
         animator.SetBool("hunter", false);
         animator.SetBool("sentinel", true);
@@ -377,7 +361,7 @@ public class Suricate : MonoBehaviour {
         return prey;
     }
 
-    public void TutorMe(GameObject baby) {
+    public void TutorMe(GameObject baby) {       
         collectingBabies = true;
         youths.Add(baby);
         animator.ResetTrigger(Suricate.chaseHash);
@@ -385,12 +369,27 @@ public class Suricate : MonoBehaviour {
         animator.SetTrigger(Suricate.collectHash);
     }
 
+    public void SetTutor(GameObject tutor){
+        this.tutor = tutor;
+    }
+
+    public GameObject GetTutor(){
+        return tutor;
+    }
+
     public void CollectFinished() {
         collectingBabies = false;
     }
 
     public List<GameObject> GetYouths() {
-        return youths;
+        List<GameObject> actualYouth = new List<GameObject>();
+        foreach(GameObject youth in youths){
+            // Only our youth if we are its tutor
+            if(youth != null && youth.GetComponent<Suricate>().GetTutor() == gameObject){
+                actualYouth.Add(youth);
+            }
+        }
+        return actualYouth;
     }
     
     // Called from Chase.cs is being eaten
@@ -425,9 +424,6 @@ public class Suricate : MonoBehaviour {
 
     // The suricate died
     private void Die() {
-        // If we died of hunger while hiding
-        if(safe)
-            nbOfSafeSuricates--;
         // We destroy the vision field
         if(transform.Find("Vision Cone") != null)
             Destroy(transform.Find("Vision Cone").gameObject);
@@ -545,7 +541,8 @@ public class Suricate : MonoBehaviour {
         while (rotAngle < visionAngle/2) {
             //Debug.DrawRay(FoV.transform.position, scanVector * range, Color.red, 0.16f);
             if (Physics.Raycast(FoV.transform.position, scanVector, out hit, visionRange)) {
-                //Debug.Log("Collision Prey: "+prey+" Collider: " + hit.collider.gameObject.name+" Tag: "+ hit.collider.gameObject.tag);
+                if(debug)
+                    Debug.Log("Collision Prey: "+prey+" Collider: " + hit.collider.gameObject.name+" Tag: "+ hit.collider.gameObject.tag);
                 // If we are a hunter and already chasing a prey we focus on that :)
                 if (suricateType == Type.Hunter && prey == null && hit.collider.gameObject.CompareTag("Prey")) {
                     prey = hit.collider.gameObject;

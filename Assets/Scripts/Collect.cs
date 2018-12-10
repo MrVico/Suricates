@@ -17,6 +17,11 @@ public class Collect : SuricateBaseSM {
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
 	override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         base.OnStateUpdate(animator, stateInfo, layerIndex);
+        // If we are on alert we need to run to safety!
+        if(obj.GetComponent<Suricate>().IsOnAlert()){
+            animator.ResetTrigger(Suricate.collectHash);
+            animator.SetTrigger(Suricate.runHash);
+        }
         // We can have new young ones assigned to us
         youths = obj.GetComponent<Suricate>().GetYouths();
         collected = true;
@@ -24,7 +29,6 @@ public class Collect : SuricateBaseSM {
             // If we still didn't collect everyone we wait for them to come to us
             if (youth != null && Vector3.Distance(obj.transform.position, youth.transform.position) > 3f) {
                 collected = false;
-                //Move(youth.transform.position);
                 return;
             }
         }

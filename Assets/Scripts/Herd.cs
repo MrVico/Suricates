@@ -30,6 +30,11 @@ public class Herd : SuricateBaseSM {
         onPost = false;
         moveSpeed = 5f;
         postTimer = 0;
+        // Something went wrong, we have to find the unoccupied post
+        if(post == Vector3.zero){
+            Debug.Log(name+" VECTOR ZERO POST");
+            post = FindObjectOfType<Spawner>().GetUnoccupiedSentinelPost();
+        }
     }
 
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks

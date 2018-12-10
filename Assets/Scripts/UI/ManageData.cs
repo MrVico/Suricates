@@ -77,8 +77,8 @@ public class ManageData : MonoBehaviour {
 		foodSlider.interactable = false;
 		kidsForEveryoneToggle.interactable = false;
 		
-		graph.SetActive(true);
-		StartCoroutine(UpdateDataEverySecond());
+		//graph.SetActive(true);
+		//StartCoroutine(UpdateDataEverySecond());
 	}
 
 	private IEnumerator UpdateDataEverySecond(){

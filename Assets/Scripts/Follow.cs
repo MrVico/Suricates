@@ -72,6 +72,7 @@ public class Follow : SuricateBaseSM {
         if (tutorCandidats.Count > 0) {
             tutor = tutorCandidats.ElementAt(Random.Range(0, tutorCandidats.Count));
             tutor.SendMessage("TutorMe", obj);
+            obj.GetComponent<Suricate>().SetTutor(tutor);
         }
     }
 }
