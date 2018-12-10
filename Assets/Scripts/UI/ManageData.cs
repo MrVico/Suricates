@@ -14,10 +14,12 @@ public class ManageData : MonoBehaviour {
 	[SerializeField] Slider meerkatSlider;
 	[SerializeField] Slider predatorSlider;
 	[SerializeField] Slider foodSlider;
+	[SerializeField] Toggle kidsForEveryoneToggle;
 
 	[SerializeField] int nbMeerkat;
 	[SerializeField] int predatorRespawnTime;
 	[SerializeField] int nbFood;
+	[SerializeField] bool kidsForEveryone;
 	[SerializeField] int nbPredator;
 
 	// Graph
@@ -50,6 +52,12 @@ public class ManageData : MonoBehaviour {
 		predatorSlider.onValueChanged.AddListener(delegate {PredatorSliderValueChanged(); });
 		foodSlider.onValueChanged.AddListener(delegate {FoodSliderValueChanged(); });
 
+		// Default value
+		kidsForEveryone = false;
+		kidsForEveryoneToggle.onValueChanged.AddListener((value) =>{
+				kidsForEveryone = value;
+		});
+
 		setData();
 	}
 	
@@ -61,11 +69,16 @@ public class ManageData : MonoBehaviour {
 	// Called from UI, to start the simulation
 	public void StartSimulation(){
 		simulationStarted = true;
-		FindObjectOfType<Spawner>().SetUpSimulation(nbMeerkat, predatorRespawnTime, nbFood);
+		FindObjectOfType<Spawner>().SetUpSimulation(nbMeerkat, predatorRespawnTime, nbFood, kidsForEveryone);
 		startButton.gameObject.SetActive(false);
 		pauseButton.gameObject.SetActive(true);
-		//graph.SetActive(true);
-		//StartCoroutine(UpdateDataEverySecond());
+		meerkatSlider.interactable = false;
+		predatorSlider.interactable = false;
+		foodSlider.interactable = false;
+		kidsForEveryoneToggle.interactable = false;
+		
+		graph.SetActive(true);
+		StartCoroutine(UpdateDataEverySecond());
 	}
 
 	private IEnumerator UpdateDataEverySecond(){

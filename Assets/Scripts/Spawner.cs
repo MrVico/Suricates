@@ -55,11 +55,12 @@ public class Spawner : MonoBehaviour {
         }
 	}
 
-    public void SetUpSimulation(int nbOfSuricates, int predatorReSpawnTime, int nbOfPreys){
+    public void SetUpSimulation(int nbOfSuricates, int predatorReSpawnTime, int nbOfPreys, bool kidsForEveryone){
         initialColonySize = nbOfSuricates;
         chosenPredatorRespawnTime = predatorReSpawnTime;
         raptorRespawnTime = Random.Range(predatorReSpawnTime - predatorReSpawnTime/10, predatorReSpawnTime + predatorReSpawnTime/10);
         this.nbOfPreys = nbOfPreys;
+        Suricate.kidsForEveryone = kidsForEveryone;
         simulationStarted = true;
         // Set up
         totalSuricates = 0;

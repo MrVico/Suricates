@@ -19,7 +19,7 @@ public class Suricate : MonoBehaviour {
     public static int adultHash = Animator.StringToHash("adulthood");
 
     // Can all females have kids or just the alpha one?
-    public static bool kidsForEveryone = true;
+    public static bool kidsForEveryone;
 
     private static int nbOfSuricates;
     private static int nbOfSafeSuricates;
