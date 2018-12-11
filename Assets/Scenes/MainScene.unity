@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2056,7 +2056,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 65, y: -30}
-  m_SizeDelta: {x: 160, y: 20}
+  m_SizeDelta: {x: 220, y: 20}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &530126108
 MonoBehaviour:
@@ -4457,7 +4457,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 65, y: -30}
-  m_SizeDelta: {x: 160, y: 20}
+  m_SizeDelta: {x: 220, y: 20}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1040836432
 MonoBehaviour:
@@ -5580,7 +5580,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 65, y: -30}
-  m_SizeDelta: {x: 160, y: 20}
+  m_SizeDelta: {x: 220, y: 20}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1353468030
 MonoBehaviour:
@@ -7177,17 +7177,6 @@ MonoBehaviour:
   predatorRespawnTime: 45
   nbFood: 75
   kidsForEveryone: 0
-  nbPredator: 0
-  graphWindow: {fileID: 0}
-  graphConainer: {fileID: 0}
-  labelTemplateX: {fileID: 0}
-  labelTemplateY: {fileID: 0}
-  dotSprite: {fileID: 21300000, guid: 52f8cdf3679a69a44b5eb27fa7b08b13, type: 3}
-  suricatePrefab: {fileID: 1981733208715542, guid: bf558c75898905143a487570a282991e,
-    type: 2}
-  raptorPrefab: {fileID: 1000844380459578, guid: 37bc2de671ee5774397a785e0f29e841,
-    type: 2}
-  preyPrefab: {fileID: 1873624272913930, guid: 8a845f93e96a6c04a91e3f59a4d2d7bd, type: 2}
 --- !u!1 &1721453357
 GameObject:
   m_ObjectHideFlags: 0
@@ -7356,7 +7345,6 @@ MonoBehaviour:
   alphaMaleMaterial: {fileID: 2100000, guid: b970b0038e42acc4da3a3b34a9ea9218, type: 2}
   alphaFemaleMaterial: {fileID: 2100000, guid: 119ec2eed0c8faa4b99db761a1523eff, type: 2}
   raptorRespawnTime: 0
-  spawnSuricates: 1
 --- !u!114 &1745030000
 MonoBehaviour:
   m_ObjectHideFlags: 0

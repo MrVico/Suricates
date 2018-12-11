@@ -27,8 +27,6 @@ public class DataManager : MonoBehaviour {
 
 	// Data
 	private static List<int> dataMeerkatList;
-	private static List<int> dataFoodList;
-	private static List<int> dataPredList;
 
 	// Simulation information
 	private bool simulationStarted = false;
@@ -37,8 +35,6 @@ public class DataManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		dataMeerkatList = new List<int>();
-		dataFoodList = new List<int>();
-		dataPredList = new List<int>();
 
 		meerkatSlider.onValueChanged.AddListener(delegate {MeerkatSliderValueChanged(); });
 		predatorSlider.onValueChanged.AddListener(delegate {PredatorSliderValueChanged(); });

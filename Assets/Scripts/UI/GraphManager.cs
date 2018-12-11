@@ -21,8 +21,6 @@ public class GraphManager : MonoBehaviour {
 	private RectTransform xAxisDash;
 	private RectTransform yAxisDash;
 
-	private List<int> values;
-
 	// Use this for initialization
 	void Awake () {
 		mainContainer = GetComponent<RectTransform>();
@@ -30,7 +28,6 @@ public class GraphManager : MonoBehaviour {
 		yAxisLabel = yAxisLabelGO.GetComponent<RectTransform>();
 		xAxisDash = xAxisDashGO.GetComponent<RectTransform>();
 		yAxisDash = yAxisDashGO.GetComponent<RectTransform>();
-		values = new List<int>();
 	}
 	
 	// Creates a point at a giving position
