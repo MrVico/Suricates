@@ -4,19 +4,14 @@ using UnityEngine;
 
 public class MovementController : MonoBehaviour{
 
-    public static readonly string CHASE = "chase";
-    public static readonly string WANDER = "wander";
-
     // To get the ground zone boundaries
     private static Renderer render;
    
     void Start() {
         render = GetComponent<Renderer>();
-        // min --> -35, 0, -25
-        // max --> 35, 0, 25
-        //Debug.Log("Boundaries: " + render.bounds.min + " " + render.bounds.max);
     }
 
+    // Moves the given transform/gameobject
     public static void Move(Transform objTransform, Vector3 destination, float rotationSpeed, float moveSpeed) {
         Quaternion rotation = RotateTowards(objTransform, destination);
         objTransform.rotation = Quaternion.Slerp(objTransform.rotation, rotation, rotationSpeed * Time.deltaTime);
@@ -36,6 +31,7 @@ public class MovementController : MonoBehaviour{
         return rotation;
     }
 
+    // Gets a new destination given a current position, forward vector and max distance
     public static Vector3 GetNewDestination(Vector3 position, Vector3 forward, float rotationAngle, float distance, bool raptorReset=false) {
         Vector3 direction = GetDirectionWithinAngle(forward, rotationAngle);
         if (raptorReset)
@@ -57,12 +53,11 @@ public class MovementController : MonoBehaviour{
             if (raptorReset)
                 direction.y = 0.5f;
             destination = position + direction * distance;
-            //Debug.DrawRay(position, (position + direction * distance) - position, Color.red, 10f);
         }
-        //Debug.DrawRay(position, (destination - position), Color.red, 3f);
         return destination;
     }
 
+    // returns a random destination, for when the gameobject is at the edge of the ground zone
     private static Vector3 GetDirectionWithinAngle(Vector3 targetForward, float angle, bool random = true) {
         // We want to get a random angle direction
         if (random)
@@ -70,6 +65,7 @@ public class MovementController : MonoBehaviour{
         return Quaternion.AngleAxis(angle, Vector3.up) * targetForward;
     }
 
+    // Returns true if the given destination is inside the ground zone
     public static bool IsPositionInsideGroundZone(Vector3 destination) {
         // -1 to let a little bit of space between the destination and the border
         if (destination.x >= render.bounds.min.x + 1 && destination.x <= render.bounds.max.x - 1 && destination.z >= render.bounds.min.z + 1 && destination.z <= render.bounds.max.z - 1)

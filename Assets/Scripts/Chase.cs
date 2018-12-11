@@ -26,6 +26,7 @@ public class Chase : SuricateBaseSM {
             if(!obj.gameObject.GetComponent<Suricate>().IsOnAlert())
                 animator.SetTrigger(Suricate.wanderHash);
         }
+        // Before eating we need to catch up to the prey first!
         else if (!eating) {
             float distance = Vector3.Distance(obj.transform.position, prey.transform.position);
             if (distance > 1.0f) {

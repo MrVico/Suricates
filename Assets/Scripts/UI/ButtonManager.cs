@@ -4,13 +4,15 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class ManageButtons : MonoBehaviour {
+public class ButtonManager : MonoBehaviour {
 
+	// Buttons
 	[SerializeField] Button startButton;
 	[SerializeField] Button pauseButton;
 	[SerializeField] Button playSpeedButton;
 	[SerializeField] Button musicButton;
 
+	// Sprites
 	[SerializeField] Sprite normalSpeedSprite;
 	[SerializeField] Sprite fastSpeedSprite;
 	[SerializeField] Sprite playSprite;

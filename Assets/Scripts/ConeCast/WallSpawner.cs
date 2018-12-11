@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// For testing only!
 public class WallSpawner : MonoBehaviour {
-
-    //public int size;
 
 	// Use this for initialization
 	void Start () {

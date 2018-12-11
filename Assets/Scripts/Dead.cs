@@ -21,6 +21,7 @@ public class Dead : StateMachineBehaviour {
 	override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
 		// Only if we died of hunger
 		if(!caught){
+			// We fade out the material, from red to transparent
 			Color materialColor = bodyMesh.material.GetColor("_Color");
 			materialColor.a = materialColor.a - Time.deltaTime * 0.25f;
 			if(materialColor.a < 0){

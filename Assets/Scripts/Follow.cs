@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-// For the babies!
 public class Follow : SuricateBaseSM {
 
-    /*
-     * Change the growth to eating amount not time!
-     * */
     private GameObject tutor;
     private float timer;
+    // Minimum time it stays a baby
     private float babyTime = 15f;
+    // Minimum eating requirements to be able to grow up
     private float eatingGoal = 150f;
 
 	// OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
@@ -57,6 +55,7 @@ public class Follow : SuricateBaseSM {
         }
     }
 
+    // Finds the baby a tutor that he can follow and get food from
     private void FindTutor() {
         List<GameObject> tutorCandidats = new List<GameObject>();
         foreach (GameObject candidat in GameObject.FindGameObjectsWithTag("Suricate")) {

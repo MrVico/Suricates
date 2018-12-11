@@ -4,10 +4,6 @@ using UnityEngine;
 
 public class Run : SuricateBaseSM {
 
-    /**
-     * State of a suricate one's a raptor was spotted
-     **/
-
     private Vector3 destination;
 
 	// OnStateEnter is called when a transition starts and the state machine starts to evaluate this state

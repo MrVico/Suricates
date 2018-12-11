@@ -9,23 +9,10 @@ public static class MyPhysics {
 
         if (sphereCastHits.Length > 0) {
             for (int i = 0; i < sphereCastHits.Length; i++) {
-                /*
-                if(sphereCastHits[i].collider.CompareTag("Wall"))
-                    sphereCastHits[i].collider.gameObject.GetComponent<Renderer>().material.color = Color.white;
-                */
                 float angleToPosition = Vector3.Angle(direction, sphereCastHits[i].collider.gameObject.transform.position - origin);
                 if (angleToPosition < coneAngle) {
                     coneCastHitList.Add(sphereCastHits[i]);
                 }
-                // Changed that 'cause it was also looking backwards...
-                /*
-                Vector3 hitPoint = sphereCastHits[i].point;
-                Vector3 directionToHit = hitPoint - origin;
-                float angleToHit = Vector3.Angle(direction, directionToHit);
-                if (angleToHit < coneAngle) {
-                    coneCastHitList.Add(sphereCastHits[i]);
-                }
-                */
             }
         }
 

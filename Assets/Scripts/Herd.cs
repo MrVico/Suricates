@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// The behaviour that the sentinel should have when he guards the others
 public class Herd : SuricateBaseSM {
 
-    private static int nbOfSentinels = 0;
-    
+    // Rotation and look information
     private float radius = 10f;
     private float depth = 100f;
     private float angle = 20f;
@@ -26,7 +24,6 @@ public class Herd : SuricateBaseSM {
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         base.OnStateEnter(animator, stateInfo, layerIndex);
         post = obj.GetComponent<Suricate>().GetPost();
-        nbOfSentinels++;
         onPost = false;
         moveSpeed = 5f;
         postTimer = 0;
@@ -48,7 +45,6 @@ public class Herd : SuricateBaseSM {
             }
         }
         else if (onPost) {
-            //Debug.Log("Rotation towards the center, angle: " + Vector3.Angle(obj.transform.forward, (Vector3.zero - obj.transform.position)));
             // We always want to look at the center (0,0,0) of the zone before we look around
             if (postTimer == 0 && Vector3.Angle(obj.transform.forward, (Vector3.zero - obj.transform.position)) >= 0.3f) {
                 obj.transform.rotation = Quaternion.RotateTowards(obj.transform.rotation, Quaternion.LookRotation(Vector3.zero - obj.transform.position), 200f * Time.deltaTime);
@@ -84,6 +80,7 @@ public class Herd : SuricateBaseSM {
         animator.gameObject.transform.Find("HerdRay").gameObject.SetActive(false);
     }
 
+    // Detects the raptors inside the vision cone
     private void detectEnemies() {
         RaycastHit[] coneHits = MyPhysics.ConeCastAll(obj.transform.position, radius, obj.transform.forward, depth, angle);
         if (coneHits.Length > 0) {
@@ -101,30 +98,24 @@ public class Herd : SuricateBaseSM {
         }
     }
         
+    // Rotates the suricate and his vision cone to sweep the area
     private void rotateLook() {
         // Range = [0,360]
         int y = (int) obj.transform.rotation.eulerAngles.y;
-        //float y = obj.transform.rotation.eulerAngles.y;
 
-        // Quick fix
         if (post.z == -24 && y > 270)
             y = y - 360;
 
-        //Debug.Log(obj.transform.name+" initialRotation: " + initialRotation);
-        //.Log(obj.transform.name + " Direction: " + lookDirection + " y: " + y);
-        
         // We look all the way, we now need to look in the other direction
         if ((lookDirection == 1 && y >= initialRotation + maxLookRotation) || (lookDirection == -1 && y <= initialRotation - maxLookRotation)) {
             lookDirection *= -1;
         }
         else if (y >= initialRotation - maxLookRotation && y <= initialRotation + maxLookRotation) {
-            //obj.transform.eulerAngles = Vector3.Lerp(obj.transform.eulerAngles, new Vector3(0, (initialRotation + maxLookRotation * lookDirection), 0), lookRotationSpeed * Time.deltaTime);
             Quaternion rotation = new Quaternion(0F, 0F, 0F, 0F);
             // We only rotate around the Y axis
             rotation.eulerAngles = new Vector3(0, (initialRotation + maxLookRotation * lookDirection), 0);
             // This way the rotation is smooth by always having the same speed
             obj.transform.rotation = Quaternion.RotateTowards(obj.transform.rotation, rotation, lookRotationSpeed * Time.deltaTime);
         }
-        //Debug.DrawRay(obj.transform.position, obj.transform.forward * 2f, Color.red, 0.15f);
     }
 }

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class RaptorBaseSM : StateMachineBehaviour {
 
+    // Raptor state machine parameters
     protected float flyTime = 6f;
     protected float flyTimer = 0f;
     protected float rotationSpeed = 10f;

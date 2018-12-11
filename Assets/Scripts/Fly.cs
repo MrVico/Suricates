@@ -31,6 +31,7 @@ public class Fly : RaptorBaseSM {
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         destinationTimer += Time.deltaTime;
         flyTimer += Time.deltaTime;
+        // After a certain time we just leave
         if(flyTimer >= leaveTime) {
             animator.ResetTrigger(Raptor.flyHash);
             animator.SetTrigger(Raptor.flyAwayHash);

@@ -6,9 +6,6 @@ using System.Linq;
 
 public class Suricate : MonoBehaviour {
 
-    //DEBUG
-    public bool debug = false;
-
     public enum Type { Hunter, Sentinel, Baby };
     public enum Gender { Null, Male, Female };
 
@@ -24,13 +21,15 @@ public class Suricate : MonoBehaviour {
     // Can all females have kids or just the alpha one?
     public static bool kidsForEveryone;
 
+    // Colony information
     private static int nbOfSuricates;
     private static bool everyoneSafe;
-    private static float waitingForLastOne;
 
+    // Suricate information
     private int suricateID;
     private Type suricateType;
     private Gender suricateGender;
+    private GameObject FoV;
     private bool alpha;
     public Material material;
     [Range(0, 1)]
@@ -38,48 +37,46 @@ public class Suricate : MonoBehaviour {
     private float visionAngle = 90f;
     private float visionRange = 5f;
     private int hideTime = 4;
+    private bool dead;
     
+    // Gameobjects
     private Animator animator;
     private GameObject prey;
     private GameObject raptor;
-
     private GameObject[] holes;
 
+    // Sentinel stuff
     private Vector3 myPost;
-    // Sentinel --> Hunter
     private bool backUpCalled;
     private Suricate predecessor;
 
+    // Alert information
     private bool alert;
     private bool safe;
     private float hideTimer;
 
-    private GameObject FoV;
-
+    // Hunger information
     private Slider infoBar;
     private float maxBarValue;
     private float currentBarValue;
     private float amountEaten;
-
-    private bool dead;
-
     // The bigger this number the faster they starve
     private float hungerRate = 0.02f;
 
-    // 11 weeks
+    // Pregnancy information
     private float pregnancyTime;
     private float timeSinceLastPregnancy;
-    // Get pregnant after 3-4 months if there's an alpha male
     private float seedPlantingTime;
     private float minSeed = 10f;
     private float maxSeed = 30f;
     private float pregnancyDuration = 15f;
 
+    // Baby information
     private GameObject tutor;
     // The amount the baby ate
     private float babyGrowthEating = 0f;
 
-    // When you are the tutor
+    // Tutor information
     private bool collectingBabies;
     private List<GameObject> youths;
 
@@ -130,9 +127,6 @@ public class Suricate : MonoBehaviour {
             // If we are alert && ALL the suricates are home we start the hide timer
             if(alert && !everyoneSafe && (FindObjectOfType<Spawner>().GetNumberOfSafeSuricates() == GameObject.FindGameObjectsWithTag("Suricate").Length)) {
                 everyoneSafe = true;
-            }
-            if(debug){
-                Debug.Log("Alert: "+alert+" collecting: "+ collectingBabies+" type: "+suricateType+" prey: "+prey);
             }
 			// Once everyone is safe we wait it out
 			if (everyoneSafe)
@@ -240,6 +234,7 @@ public class Suricate : MonoBehaviour {
         amountEaten = 0;
     }
 
+    // Updates the hunger bar and calls another suricate if the sentinel is hungry
     private void UpdateFullnessBar() {
         Vector2 screenPosition = Camera.main.WorldToScreenPoint(new Vector3(transform.position.x, transform.position.y, transform.position.z + 1.5f));
         infoBar.transform.position = screenPosition;
@@ -277,6 +272,7 @@ public class Suricate : MonoBehaviour {
         return predecessor;
     }
 
+    // We got called to replace a sentinel
     public void OnSentinelDuty(Suricate sentinel) {
         // A sentinel doesn't have kids to look after
         youths.Clear();
@@ -297,6 +293,7 @@ public class Suricate : MonoBehaviour {
         return myPost;
     }
 
+    // Another suricate took our sentinel post
     public void RelievedFromPost() {
         backUpCalled = false;
         suricateType = Type.Hunter;
@@ -361,6 +358,7 @@ public class Suricate : MonoBehaviour {
         return prey;
     }
 
+    // We got chosen to tutor this baby
     public void TutorMe(GameObject baby) {       
         collectingBabies = true;
         youths.Add(baby);
@@ -392,7 +390,7 @@ public class Suricate : MonoBehaviour {
         return actualYouth;
     }
     
-    // Called from Chase.cs is being eaten
+    // Called from Chase.cs, we are eating the prey
     public void TakeABite(GameObject prey) {
         float percentage = 0.75f;
         // The prey takes a hit!
@@ -463,15 +461,9 @@ public class Suricate : MonoBehaviour {
         holes = GameObject.FindGameObjectsWithTag("Hole");
     }
 
-    // The suricate want to hide quickly
+    // The suricate wants to hide quickly
     public GameObject GetNearestHole() {
-        GameObject nearest = holes[0];
-        foreach (GameObject hole in holes) {
-            // TODO: Skip the first one since we already got it
-            if (Vector3.Distance(animator.transform.position, hole.transform.position) < Vector3.Distance(animator.transform.position, nearest.transform.position))
-                nearest = hole;
-        }
-        return nearest;
+        return  holes[0];
     }
 
     // Source : https://www.youtube.com/watch?v=FShHFmEFFkg
@@ -503,9 +495,7 @@ public class Suricate : MonoBehaviour {
         for (w = 0; w < visionAngle; w++) {
             for (s = 0; s < visionRange; s++) {
                 temp.x = Mathf.Cos(Mathf.Deg2Rad * w + Mathf.Deg2Rad * (s / visionRange)) * visionRange;
-                temp.z = Mathf.Sin(Mathf.Deg2Rad * w + Mathf.Deg2Rad * (s / visionRange)) * visionRange;                
-                // For some reason this doesn't always look ahead...
-                //vertices.Add(new Vector3(temp.x, temp.y, temp.z));
+                temp.z = Mathf.Sin(Mathf.Deg2Rad * w + Mathf.Deg2Rad * (s / visionRange)) * visionRange;        
                 vertices.Add(Quaternion.Euler(0, -45, 0) * new Vector3(temp.x, temp.y, temp.z));
                 normals.Add(Vector3.up);
                 uv.Add(new Vector2((visionRange + temp.x) / (visionRange * 2), (visionRange + temp.z) / (visionRange * 2)));
@@ -540,10 +530,7 @@ public class Suricate : MonoBehaviour {
         float rotAngle = -visionAngle/2;
         // Raycasts from -45 to 45 each 0.5
         while (rotAngle < visionAngle/2) {
-            //Debug.DrawRay(FoV.transform.position, scanVector * range, Color.red, 0.16f);
             if (Physics.Raycast(FoV.transform.position, scanVector, out hit, visionRange)) {
-                if(debug)
-                    Debug.Log("Collision Prey: "+prey+" Collider: " + hit.collider.gameObject.name+" Tag: "+ hit.collider.gameObject.tag);
                 // If we are a hunter and already chasing a prey we focus on that :)
                 if (suricateType == Type.Hunter && prey == null && hit.collider.gameObject.CompareTag("Prey")) {
                     prey = hit.collider.gameObject;

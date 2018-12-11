@@ -6,12 +6,14 @@ using System.Linq;
 
 public class GraphManager : MonoBehaviour {
 
+	// Templates
 	[SerializeField] Sprite dotSprite;
 	[SerializeField] GameObject xAxisLabelGO;
 	[SerializeField] GameObject yAxisLabelGO;
 	[SerializeField] GameObject xAxisDashGO;
 	[SerializeField] GameObject yAxisDashGO;
 
+	// Template transform information
 	private RectTransform mainContainer;
 	private RectTransform dataContainer;
 	private RectTransform xAxisLabel;
@@ -29,22 +31,9 @@ public class GraphManager : MonoBehaviour {
 		xAxisDash = xAxisDashGO.GetComponent<RectTransform>();
 		yAxisDash = yAxisDashGO.GetComponent<RectTransform>();
 		values = new List<int>();
-
-		//StartCoroutine(AddValues());
-		//values = new List<int>(){ 10, 22, 45, 58, 94, 67, 102, 125, 150, 100, 90, 84, 67 };
-		//PopulateGraph(values);
-	}
-
-	// For testing
-	private IEnumerator AddValues(){
-		for(int i=0; i<450; i++){
-			//Debug.Log((i+1)*10);
-			values.Add((i+1)*10);
-			PopulateGraph(50, values);
-			yield return new WaitForSeconds(0.1f);
-		}
 	}
 	
+	// Creates a point at a giving position
 	private GameObject CreatePoint(Vector2 anchoredPosition){
 		GameObject point = new GameObject("Point", typeof(Image));
 		point.transform.SetParent(dataContainer, false);
@@ -57,6 +46,7 @@ public class GraphManager : MonoBehaviour {
 		return point;	
 	}
 
+	// Populates the graph with part or all of the values, depending on the amount
 	public void PopulateGraph(int initialColonySize, List<int> values){
 		// Clear the graph before populating it
 		foreach(Transform child in transform){
@@ -163,6 +153,7 @@ public class GraphManager : MonoBehaviour {
 		}
 	}
 
+	// Creates a connection between two given points/positions
 	private void LinkDots(Vector2 dotPosA, Vector2 dotPosB){
 		GameObject line = new GameObject("Line", typeof(Image));
 		line.transform.SetParent(dataContainer, false);
@@ -177,6 +168,7 @@ public class GraphManager : MonoBehaviour {
 		rectTransform.localEulerAngles = new Vector3(0, 0, getAngleFromVector(direction));
 	}
 
+	// Gets the angle from a direction for the links
 	private float getAngleFromVector(Vector2 direction)
 	{
 		direction = direction.normalized;

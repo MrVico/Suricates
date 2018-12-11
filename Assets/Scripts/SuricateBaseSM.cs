@@ -4,10 +4,9 @@ using UnityEngine;
 
 public class SuricateBaseSM : StateMachineBehaviour {
 
+    // Suricate state machine parameters
     protected float wanderingRadius = 10f;
-    // If we change this we need to change the moveDistance
     protected float wanderingTime = 3f;
-    // Same thing here
     protected float moveSpeed = 1.5f;
     protected float moveDistance = 7f;
     protected float rotationSpeed = 5f;
@@ -18,7 +17,6 @@ public class SuricateBaseSM : StateMachineBehaviour {
     protected GameObject raptor;
 
     private Quaternion rotation;
-    //private Animator animator;
 
     // If we are a tutor we have to wait for the babies
     private bool wait;
@@ -26,7 +24,6 @@ public class SuricateBaseSM : StateMachineBehaviour {
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         obj = animator.gameObject;
-        //this.animator = animator;
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks

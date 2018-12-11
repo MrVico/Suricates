@@ -17,25 +17,19 @@ public class Spawner : MonoBehaviour {
 
     private int nbOfPreys;
     private int initialColonySize;
-
-    // For testing purposes only
-    public bool spawnSuricates;
-    // Just for testing purposes
     private int totalPreys;
 
     private List<GameObject> suricates;
-
     private GameObject preyContainer;
     private List<GameObject> preys;
     // List of preys that respawned and wait to show themselves
     private List<GameObject> waitingPreys;
-
     private List<Vector3> sentinelPosts;
-
-    private float timer;
 
     private bool simulationStarted = false;   
     private int chosenPredatorRespawnTime;
+
+    private float timer;
     
     // The ground zone boundaries
     private Bounds groundBoundaries;
@@ -61,6 +55,7 @@ public class Spawner : MonoBehaviour {
         }
 	}
 
+    // Set up the simulation information and start it
     public void SetUpSimulation(int nbOfSuricates, int predatorReSpawnTime, int nbOfPreys, bool kidsForEveryone){
         initialColonySize = nbOfSuricates;
         chosenPredatorRespawnTime = predatorReSpawnTime;
@@ -74,10 +69,10 @@ public class Spawner : MonoBehaviour {
         timer = 0;
         suricates = new List<GameObject>();
         waitingPreys = new List<GameObject>();
-        if (spawnSuricates)
-            InitialSuricateSpawn();
+        InitialSuricateSpawn();
     }
 
+    // Once a prey dies it is respawned after a certain time
     private IEnumerator SpawnPreyWithDelay(GameObject prey){
         yield return new WaitForSeconds(Random.Range(30, 45));
         // The prey can be hunted
@@ -85,6 +80,7 @@ public class Spawner : MonoBehaviour {
         prey.SetActive(true);
     }
 
+    // Returns the amount of sentinels
     public int GetNumberOfPostedSentinels(){
         int amount = 0;
         foreach(GameObject suricate in GameObject.FindGameObjectsWithTag("Suricate")){
@@ -109,6 +105,7 @@ public class Spawner : MonoBehaviour {
         }
     }
     
+    // Spawns a prey
     private GameObject SpawnPrey(bool initialSpawn) {
         Vector3 position;
         if(initialSpawn){
@@ -139,6 +136,7 @@ public class Spawner : MonoBehaviour {
         preys.Remove(prey);
     }
 
+    // A suricate died, we need to take action if it was a sentinel or an alpha
     private void SuricateDied(Suricate suricate){
         aliveSuricates--;
         // This way the suricate is seen as dead by the game straight away
@@ -194,7 +192,7 @@ public class Spawner : MonoBehaviour {
         }
     }
 
-    // IRL there are about 20 members per family, always an alpha male & female
+    // Spawns the suricates of the initial colony
     private void InitialSuricateSpawn(){
         // All the initial suricates start inside their home
         Vector3 position = GameObject.FindGameObjectWithTag("Hole").transform.position;
@@ -237,7 +235,7 @@ public class Spawner : MonoBehaviour {
         }
     }
 
-    // Between 2 and 7 suricates per brood
+    // Spawns the baby once the pregnancy was fulfiled
     private void SpawnBabies(Transform transform) {
         GameObject suricate;
         Vector3 position = transform.position;
@@ -259,6 +257,7 @@ public class Spawner : MonoBehaviour {
         }        
     }
 
+    // Self explanatory
     private void DetermineSuricateGender(Suricate suricate) {
         // I guess it's 1/2 male/female
         if (Random.value < 0.5) {
@@ -269,7 +268,7 @@ public class Spawner : MonoBehaviour {
         }
     }
 
-    // For the sake of simplicty we only spawn raptors on the left or on the right...
+    // For the sake of simplicty we only spawn raptors on the left or on the right
     private void SpawnRaptor(){
         Vector3 position = new Vector3(0, 10f, Random.Range(groundBoundaries.min.z+5f, groundBoundaries.max.z-5f));
         // On the left
@@ -282,6 +281,7 @@ public class Spawner : MonoBehaviour {
         raptor.name = "Raptor";
     }
 
+    // Gets the sentinel post that we need to go to
     public Vector3 GetUnoccupiedSentinelPost(){
         Vector3 otherPost;
         foreach(GameObject suricate in GameObject.FindGameObjectsWithTag("Suricate")){
@@ -297,6 +297,7 @@ public class Spawner : MonoBehaviour {
         return Vector3.zero;
     }
 
+    // Returns the amount of suricates that are safe at home
     public int GetNumberOfSafeSuricates(){
         int amount = 0;
         foreach(GameObject suricate in GameObject.FindGameObjectsWithTag("Suricate")){

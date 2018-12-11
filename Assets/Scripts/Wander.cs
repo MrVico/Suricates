@@ -12,9 +12,8 @@ public class Wander : SuricateBaseSM {
         base.OnStateEnter(animator, stateInfo, layerIndex);
         moveSpeed = 1.5f;
         timer = 0;
-        // The first time we can wander in any direction (to fix the out of home issue)
-        destination = MovementController.GetNewDestination(obj.transform.position, obj.transform.forward, 180f/*rotationAngle*/, moveDistance);
-        //Debug.DrawRay(obj.transform.position, destination, Color.red, wanderingTime);
+        // The first time we can wander in any direction, so all suricates don't come out of their home in the same direction
+        destination = MovementController.GetNewDestination(obj.transform.position, obj.transform.forward, 180f, moveDistance);
     }
 
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -24,7 +23,6 @@ public class Wander : SuricateBaseSM {
             timer += Time.deltaTime;
             if (timer >= wanderingTime) {
                 destination = MovementController.GetNewDestination(obj.transform.position, obj.transform.forward, rotationAngle, moveDistance);
-                //Debug.DrawRay(obj.transform.position, destination, Color.red, wanderingTime);
                 timer = 0;
             }
             Move(destination);

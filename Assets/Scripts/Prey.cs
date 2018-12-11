@@ -53,8 +53,8 @@ public class Prey : MonoBehaviour {
             Dead();
     }
 
+    // We just died
     private void Dead() {
-        // call method on Spawner...
         FindObjectOfType<Spawner>().SendMessage("PreyDied", gameObject);
     }
 }

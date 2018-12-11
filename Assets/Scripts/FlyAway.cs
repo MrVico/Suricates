@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class FlyAway : RaptorBaseSM {
 
-    // Position where the raptor goes once he is done
-    private Vector3 destination = new Vector3(0, 25, 25);
+    // Position where the raptor goes once he is done, randomly chosen
+    private Vector3 destination = new Vector3(0f, 25f, 25f);
 
 	 // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
 	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {

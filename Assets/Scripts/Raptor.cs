@@ -9,6 +9,7 @@ public class Raptor : MonoBehaviour {
     public static int diveHash = Animator.StringToHash("dive");
     public static int flyAwayHash = Animator.StringToHash("fly away");
     
+    // Gameobjects
     private Animator animator;
     private GameObject prey;
 
@@ -26,6 +27,7 @@ public class Raptor : MonoBehaviour {
         prey = null;
     }
 
+    // When we see a suricate
     private void OnCollisionEnter(Collision collision) {
         // If we aren't busy and see a vulnerable suricate
         if (prey == null && collision.gameObject.CompareTag("Suricate") 
@@ -33,6 +35,7 @@ public class Raptor : MonoBehaviour {
         && !collision.gameObject.GetComponent<Suricate>().IsDead()) {
             prey = collision.gameObject;
             animator.ResetTrigger(flyHash);
+            // We dive for it
             animator.SetTrigger(diveHash);
         }
     }
